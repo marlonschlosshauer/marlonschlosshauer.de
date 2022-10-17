@@ -1,0 +1,14 @@
+.container {
+  padding-bottom: 64px;
+}
+
+.content {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  grid-gap: 32px;
+  min-width: 300px;
+  width: 80vw;
+  max-width: 600px;
+  margin: auto;
+}

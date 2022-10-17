@@ -1,0 +1,27 @@
+.header {
+  margin: 0 auto;
+  padding-top: 64px;
+  padding-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-logo-container {
+  height: 48px;
+  width: 48px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.header-logo {
+  transition-property: width height;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+  width: 32px;
+  height: 32px;
+}
+
+.header-logo-image {
+}
