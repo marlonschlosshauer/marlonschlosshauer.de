@@ -25,13 +25,3 @@
 
 .header-logo-image {
 }
-
-.header-logo:hover {
-  width: 38px;
-  height: 38px;
-}
-
-.header-logo:active {
-  width: 48px;
-  height: 48px;
-}

@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import * as React from "react";
 import './header.css';
 
+import Logo from '../assets/logo.svg';
+
 const links = [
   {
     title: 'About',
@@ -24,13 +26,9 @@ const links = [
 const Header = ({ current }) => (
   <header className='header'>
     <div className="header-logo-container">
-      <StaticImage
-        loading="eager"
-        alt="Logo"
-        className="header-logo"
-        imgClassName="header-logo-image"
-        src="../images/logo.svg"
-      />
+      <div className="header-logo">
+        <Logo className="header-logo-image" />
+      </div>
     </div>
     {
       /*
