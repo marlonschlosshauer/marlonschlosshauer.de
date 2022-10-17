@@ -9,7 +9,7 @@ const AboutAvatar = ({ language = 'en' }) => (
       alt={language === 'en' ? "Picture of me" : "Bild von mir"}
       imgClassName='about-avatar-image'
       className='about-avatar-wrapper'
-      src="../../images/me.jpg"
+      src="../../../static/me.jpg"
     />
     <div className="about-email-container">
       <a className="about-email-link" href="mailto:marlon@gedankenessen.de">marlon@gedankenessen.de</a>

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import * as React from "react";
 import './header.css';
 
-import Logo from '../assets/logo.svg';
+import Logo from '../../static/logo.svg';
 
 const links = [
   {

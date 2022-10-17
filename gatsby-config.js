@@ -12,7 +12,7 @@ module.exports = {
       resolve: `gatsby-source-filesystem`,
       options: {
         name: `images`,
-        path: `${__dirname}/src/images`,
+        path: `${__dirname}/static`,
       },
     },
     `gatsby-transformer-sharp`,
@@ -28,7 +28,7 @@ module.exports = {
         // https://css-tricks.com/meta-theme-color-and-trickery/
         // theme_color: `#1E5B51`,
         display: `minimal-ui`,
-        icon: './src/images/favicon.png'
+        icon: './static/favicon.png'
       },
     },
     `gatsby-plugin-mdx`,
@@ -44,7 +44,7 @@ module.exports = {
       resolve: "gatsby-plugin-react-svg",
       options: {
         rule: {
-          include: /assets/
+          include: /static/
         }
       }
     }
