@@ -21,7 +21,6 @@
   background-color: #2E7267;
   border-radius: 64px;
   padding: 6px 12px;
-  max-width: 192px;
   margin: auto;
   display: flex;
   align-items: center;
@@ -29,6 +28,6 @@
 
 .about-email-link {
   text-decoration: none;
-  font-size: 12px;
+  font-size: 14px;
 }
 
