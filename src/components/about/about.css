@@ -1,4 +1,5 @@
 .container {
+  margin-bottom: 128px;
 }
 
 .content {
@@ -6,17 +7,8 @@
   flex-wrap: nowrap;
   flex-direction: column;
   grid-gap: 32px;
-  max-width: 300px;
+  min-width: 300px;
+  width: 80vw;
+  max-width: 600px;
   margin: auto;
-}
-
-.about-me {
-}
-
-.profile {
-
-}
-
-.tech-stacks {
-
 }

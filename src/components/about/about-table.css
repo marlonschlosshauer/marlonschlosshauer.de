@@ -26,3 +26,10 @@
   list-style-type: '- ';
   font-size: 14px;
 }
+
+@media (min-width: 680px) {
+  .about-me-table-container {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+  }
+}

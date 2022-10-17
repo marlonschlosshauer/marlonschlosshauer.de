@@ -9,12 +9,8 @@ const About = () => (
   <div className='container'>
     <Header />
     <content className='content'>
-      <div className="about-me">
-        <AboutText />
-      </div>
-      <div className="profile"></div>
+      <AboutText />
       <AboutAvatar />
-      <div className="tech-stacks"></div>
       <AboutTable />
     </content>
     <footer></footer>
