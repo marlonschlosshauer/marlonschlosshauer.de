@@ -72,17 +72,22 @@ const frontend = [
     modifiers: ['bold'],
   },
   {
+    content: "GraphQL",
+    modifiers: ['bold'],
+  },
+  {
     content: "React Navigation",
     modifiers: [],
   },
   {
-    content: "RevenueCat",
-    modifiers: [''],
-  },
-  {
-    content: "GraphQL",
+    content: "Gatsby",
     modifiers: ['bold'],
   },
+  {
+    content: "RevenueCat",
+    modifiers: [],
+  },
+
   {
     content: "Redux",
     modifiers: ['bold'],
@@ -179,6 +184,10 @@ const tools = [
   {
     content: "Slack",
     modifiers: [],
+  },
+  {
+    content: "Storybook",
+    modifiers: ['bold'],
   },
   {
     content: "Github",
