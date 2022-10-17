@@ -1,0 +1,28 @@
+.about-me-table-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  justify-content: center;
+}
+
+.about-me-table-category {
+  justify-self: center;
+}
+
+.about-me-table-category-title,
+.about-me-table-list,
+.about-me-table-item {
+  margin: 0;
+  padding :0;
+}
+
+.about-me-table-category-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 24px 0px 6px -12px;
+}
+
+.about-me-table-item {
+  list-style-type: '- ';
+  font-size: 14px;
+}

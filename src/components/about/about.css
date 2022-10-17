@@ -1,0 +1,22 @@
+.container {
+}
+
+.content {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  grid-gap: 32px;
+  max-width: 300px;
+  margin: auto;
+}
+
+.about-me {
+}
+
+.profile {
+
+}
+
+.tech-stacks {
+
+}
