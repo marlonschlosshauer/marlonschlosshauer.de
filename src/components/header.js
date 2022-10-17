@@ -23,13 +23,15 @@ const links = [
 
 const Header = ({ current }) => (
   <header className='header'>
-    <StaticImage
-      loading="eager"
-      alt="Logo"
-      height={20}
-      className='headerLogo'
-      src="../images/logo.svg"
-    />
+    <div className="header-logo-container">
+      <StaticImage
+        loading="eager"
+        alt="Logo"
+        className="header-logo"
+        imgClassName="header-logo-image"
+        src="../images/logo.svg"
+      />
+    </div>
     {
       /*
       links.map((item, key) =>

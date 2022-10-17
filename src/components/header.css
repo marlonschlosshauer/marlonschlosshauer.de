@@ -1,13 +1,37 @@
 .header {
   margin: 0 auto;
-  padding: 48px 0;
+  padding-top: 48px;
+  padding-bottom: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.headerItem {
+.header-logo-container {
+  height: 48px;
+  width: 48px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 
-.headerLogo {
+.header-logo {
+  transition-property: width height;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+  width: 32px;
+  height: 32px;
+}
+
+.header-logo-image {
+}
+
+.header-logo:hover {
+  width: 38px;
+  height: 38px;
+}
+
+.header-logo:active {
+  width: 48px;
+  height: 48px;
 }
