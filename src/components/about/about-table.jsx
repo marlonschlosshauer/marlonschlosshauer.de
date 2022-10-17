@@ -166,10 +166,6 @@ const backend = [
     modifiers: [],
   },
   {
-    content: "gRPC",
-    modifiers: [],
-  },
-  {
     content: "Selenium",
     modifiers: [],
   },
