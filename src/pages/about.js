@@ -7,11 +7,19 @@ import AboutTable from '../components/about/about-table';
 
 const About = () => (
   <div className='container'>
-    <Header />
+    <div className="animated animatdFadeInUp fadeInUp" style={{ animationDelay: 0 }}>
+      <Header />
+    </div>
     <content className='content'>
-      <AboutText />
-      <AboutAvatar />
-      <AboutTable />
+      <div className="animated animatdFadeInUp fadeInUp" style={{ animationDelay: '100ms' }}>
+        <AboutText />
+      </div>
+      <div className="animated animatdFadeInUp fadeInUp" style={{ animationDelay: '200ms' }}>
+        <AboutAvatar />
+      </div>
+      <div className="animated animatdFadeInUp fadeInUp" style={{ animationDelay: '300ms' }}>
+        <AboutTable />
+      </div>
     </content>
     <footer></footer>
   </div>
