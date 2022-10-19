@@ -1,18 +1,21 @@
 import { graphql } from "gatsby";
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from '../components/layout';
+import '../components/projects/project.css';
 
 export default function Template({
   data,
 }) {
   const { markdownRemark } = data ?? {}
   const { frontmatter, html } = markdownRemark ?? {};
+  useEffect(() => {
+    document.title = frontmatter?.title ?? 'Project';
+  }, []);
   return (
     <Layout>
       <div className="project-post-container">
         <div className="project-post">
-          <h1>{frontmatter?.title}</h1>
-          <h2>{frontmatter?.date}</h2>
+          <h1 className="project-title">{frontmatter?.title}</h1>
           <div
             className="project-post-content"
             dangerouslySetInnerHTML={{ __html: html }}
