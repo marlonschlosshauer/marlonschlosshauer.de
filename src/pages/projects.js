@@ -4,10 +4,8 @@ import Seo from "../components/seo"
 import Layout from '../components/layout';
 import '../components/projects/projects.css';
 
-const Project = ({ title, link, description, position, start, end }) => {
-  console.log({title, link, res: `/project/${link ?? title?.toLowerCase()}`})
-  return (
-  <Link className='link' to={`/project/${link ?? title?.toLowerCase()}`}>
+const Project = ({ title, link, description, position, start, end }) => (
+  <Link className='link' to={`project/${link ?? title?.toLowerCase()}`}>
     <div className="project-container">
       <h1 className="title">{title}</h1>
       <p className="description">{description}</p>
@@ -20,7 +18,7 @@ const Project = ({ title, link, description, position, start, end }) => {
       </div>
     </div>
   </Link>
-)}
+)
 
 const Projects = () => {
   const data = useStaticQuery(graphql`
