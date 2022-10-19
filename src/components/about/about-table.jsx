@@ -174,6 +174,17 @@ const backend = [
 
 const tools = [
   {
+    content: "Emacs",
+    modifiers: ['bold',],
+  }, {
+    content: "VSCode",
+    modifiers: [,],
+  },
+  {
+    content: "Jetbrains IDEs",
+    modifiers: [],
+  },
+  {
     content: "Figma",
     modifiers: ['bold',],
   },
