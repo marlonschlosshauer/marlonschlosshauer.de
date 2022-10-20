@@ -44,7 +44,6 @@ body {
   margin: 0;
   word-wrap: break-word;
   background: var(--color-background);
-  padding: 40px;
 }
 a {
   background-color: transparent;
