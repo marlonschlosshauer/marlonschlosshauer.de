@@ -1,7 +1,7 @@
 import { graphql, useStaticQuery } from "gatsby"
 import PropTypes from "prop-types"
 import * as React from "react"
-import Header from "./header"
+import {HeaderMobile} from "./header"
 import "./layout.css"
 
 const Layout = ({ children }) => {
@@ -17,7 +17,7 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
+      <HeaderMobile siteTitle={data.site.siteMetadata?.title || `Title`} />
       <div
         style={{
         }}

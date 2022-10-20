@@ -146,6 +146,10 @@ const backend = [
     modifiers: [],
   },
   {
+    content: "express-graphql",
+    modifiers: [],
+  },
+  {
     content: "Spring",
     modifiers: [],
   },
@@ -197,6 +201,10 @@ const tools = [
     modifiers: [],
   },
   {
+    content: "Postman",
+    modifiers: [],
+  },
+  {
     content: "Figma",
     modifiers: ['bold',],
   },
@@ -204,7 +212,6 @@ const tools = [
     content: "Slack",
     modifiers: [],
   },
-
   {
     content: "Github",
     modifiers: ['bold'],

@@ -25,6 +25,8 @@
   --size-content: 54rem;
   --size-gutter: var(--space-5);
   --size-gap: var(--space-6);
+  /* cannot be used in media queries but nice to have as guidence */
+  --breakpoint-desktop: 680px;
 }
 html {
   -webkit-text-size-adjust: 100%;
