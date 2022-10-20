@@ -225,11 +225,7 @@ pre tt:after {
   content: none;
 }
 
-.container {
-  padding-bottom: 64px;
-}
-
-.content {
+body {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
