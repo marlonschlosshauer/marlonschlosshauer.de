@@ -101,6 +101,18 @@ const frontend = [
     modifiers: [],
   },
   {
+    content: "Karma",
+    modifiers: [],
+  },
+  {
+    content: "Protractor",
+    modifiers: [],
+  },
+  {
+    content: "Jest",
+    modifiers: [],
+  },
+  {
     content: "Antd",
     modifiers: [],
   },
@@ -110,7 +122,7 @@ const frontend = [
   },
   {
     content: "Reacl-C",
-    modifiers: [],
+    modifiers: ['bold'],
   },
 
   {
@@ -192,10 +204,7 @@ const tools = [
     content: "Slack",
     modifiers: [],
   },
-  {
-    content: "Storybook",
-    modifiers: ['bold'],
-  },
+
   {
     content: "Github",
     modifiers: ['bold'],
@@ -211,6 +220,10 @@ const tools = [
   {
     content: "Adobe Suite",
     modifiers: [],
+  },
+  {
+    content: "Storybook",
+    modifiers: ['bold'],
   },
   {
     content: "Zoom",
