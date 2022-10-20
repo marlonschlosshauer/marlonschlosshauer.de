@@ -1,10 +1,8 @@
 import { Link } from "gatsby";
-import { StaticImage } from "gatsby-plugin-image";
 import PropTypes from "prop-types";
 import * as React from "react";
-import './header.css';
-
 import Logo from '../../static/logo.svg';
+import './header.css';
 
 const links = [
   {
@@ -26,9 +24,11 @@ const links = [
 const Header = ({ current }) => (
   <header className='header'>
     <div className="header-logo-container">
-      <div className="header-logo">
-        <Logo className="header-logo-image" />
-      </div>
+      <Link to='/'>
+        <div className="header-logo">
+          <Logo className="header-logo-image" />
+        </div>
+      </Link>
     </div>
     {
       /*
