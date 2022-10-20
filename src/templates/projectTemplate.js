@@ -13,16 +13,14 @@ export default function Template({
   }, []);
   return (
     <Layout>
-      <div className="project-post-container">
-        <div className="project-post">
-          <h1 className="project-title">{frontmatter?.title}</h1>
-          <div
-            className="project-post-content"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-        </div>
+      <div className="content">
+        <h1 className="project-title">{frontmatter?.title}</h1>
+        <div
+          className="project-content"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
       </div>
-    </Layout>
+    </Layout >
   )
 }
 

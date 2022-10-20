@@ -44,6 +44,7 @@ body {
   margin: 0;
   word-wrap: break-word;
   background: var(--color-background);
+  padding: 40px;
 }
 a {
   background-color: transparent;
@@ -223,4 +224,73 @@ pre code:after,
 pre tt:before,
 pre tt:after {
   content: none;
+}
+
+.container {
+  padding-bottom: 64px;
+}
+
+.content {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  grid-gap: 32px;
+  min-width: 300px;
+  width: 80vw;
+  max-width: 600px;
+  margin: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  main>.content>*, .animated {
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+    opacity: 0;
+    animation-name: fadeInUp;
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-fill-mode: both;
+    -webkit-animation-name: fadeInUp;
+  }
+}
+
+main>.content>*:nth-child(1) {
+  animation-delay: 100ms;
+}
+
+main>.content>*:nth-child(2) {
+  animation-delay: 200ms;
+}
+
+main>.content>*:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+main>.content>*:nth-child(4) {
+  animation-delay: 400ms;
+}
+
+main>.content>*:nth-child(n+5) {
+  animation-delay: 500ms;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translate3d(0,40px,0)
+  }
+
+  to {
+    transform: translate3d(0,0,0);
+    opacity: 1
+  }
+}
+
+@-webkit-keyframes fadeInUp {
+  from {
+    transform: translate3d(0,40px,0)
+  }
+
+  to {
+    transform: translate3d(0,0,0);
+    opacity: 1
+  }
 }
