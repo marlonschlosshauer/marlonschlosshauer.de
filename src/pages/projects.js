@@ -5,7 +5,7 @@ import Layout from '../components/layout';
 import '../components/projects/projects.css';
 
 const Project = ({ title, link, description, position, start, end }) => (
-  <Link className='link' to={`project/${link ?? title?.toLowerCase()}`}>
+  <Link className='link' to={`/project/${link ?? title?.toLowerCase()}`}>
     <div className="project-container">
       <h1 className="title">{title}</h1>
       <p className="description">{description}</p>
