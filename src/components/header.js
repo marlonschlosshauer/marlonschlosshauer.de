@@ -1,8 +1,8 @@
 import { Link } from "gatsby";
 import PropTypes from "prop-types";
 import * as React from "react";
-import Burger from '../../static/burger.svg';
-import Logo from '../../static/logo.svg';
+import Burger from '../assets/burger.svg';
+import Logo from '../assets/logo.svg';
 import './header.css';
 
 const links = [
