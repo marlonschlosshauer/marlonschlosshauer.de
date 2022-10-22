@@ -15,10 +15,8 @@ const Post = ({ slug, title, description }) => (
 
 const Blog = () => {
   const data = useStaticQuery(graphql`
-query GetAllFrontmatter {
-  allMarkdownRemark (
-    sort: {fields: frontmatter___index, order: DESC}
-    filter: {frontmatter: {type: {eq: "blog"}}}){
+query GetAllBlogFrontmatter {
+  allMarkdownRemark (sort: {fields: frontmatter___index, order: DESC}, filter: {frontmatter: {type: {eq: "blog"}}}){
     nodes {
       frontmatter {
         slug

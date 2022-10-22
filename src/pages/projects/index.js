@@ -22,7 +22,7 @@ const Project = ({ title, slug, description, position, start, end }) => (
 
 const Projects = () => {
   const data = useStaticQuery(graphql`
-query GetAllFrontmatter {
+query GetAllProjectFrontmatter {
   allMarkdownRemark (sort: {fields: frontmatter___index, order: DESC}, filter: {frontmatter: {type: {eq: "project"}}}){
     nodes {
       frontmatter {
