@@ -13,6 +13,9 @@ const links = [
     title: 'Projects',
   },
   {
+    title: 'Blog',
+  },
+  {
     title: 'Github',
     link: 'https://github.com/marlonschlosshauer',
     asNewTab: true,
@@ -29,8 +32,8 @@ export const HeaderMobile = ({ current }) => (
     <div className="header-burger-icon-container">
       <input className="header-burger-toggle" type="checkbox" />
       <span className="header-burger-icon"></span>
-      <span style={{marginTop: 12}} className="header-burger-icon"></span>
-      <span  style={{marginTop: 24}} className="header-burger-icon"></span>
+      <span style={{ marginTop: 12 }} className="header-burger-icon"></span>
+      <span style={{ marginTop: 24 }} className="header-burger-icon"></span>
       <div className="header-burger-nav">
         <div className="header-burger-item">
           {
