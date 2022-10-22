@@ -58,7 +58,16 @@ module.exports = {
     {
       resolve: "gatsby-transformer-remark",
       options: {
-        plugins: ["gatsby-remark-unwrap-images"],
+        plugins: [
+          "gatsby-remark-unwrap-images",
+          {
+            resolve: "gatsby-remark-external-links",
+            options: {
+              target: "_blank",
+              rel: "nofollow"
+            }
+          }
+        ],
       },
     },
     {
@@ -68,6 +77,7 @@ module.exports = {
           include: /static/,
         }
       }
-    }
+    },
+
   ],
 }
