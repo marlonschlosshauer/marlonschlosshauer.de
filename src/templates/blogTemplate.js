@@ -1,7 +1,7 @@
 import { graphql } from "gatsby";
 import React, { useEffect } from "react";
 import Layout from '../components/layout';
-import '../components/blogs/blog.css';
+import '../components/blog/blog.css';
 
 export default function Template({
   data,

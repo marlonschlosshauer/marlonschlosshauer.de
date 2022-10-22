@@ -1,8 +1,8 @@
 import React from 'react';
 import { useStaticQuery, graphql, Link } from 'gatsby'
-import Seo from "../components/seo"
-import Layout from '../components/layout';
-import '../components/projects/projects.css';
+import Seo from "../../components/seo"
+import Layout from '../../components/layout';
+import '../../components/projects/projects.css';
 
 const Project = ({ title, link, description, position, start, end }) => (
   <Link className='link' to={`/project/${link ?? title?.toLowerCase()}`}>
