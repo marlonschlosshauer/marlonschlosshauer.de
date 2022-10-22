@@ -1,5 +1,5 @@
 ---
-slug: "/project/tippinho"
+slug: "/projects/tippinho"
 type: 'project'
 index: 0
 date: "2022-10-19"
@@ -10,7 +10,6 @@ start: "04.2022"
 end: "11.2022"
 ---
 
-## Description
 
 **Amateur Soccer Prediction Platform**
 Position: **CTO** 04.2022 - 11.2022

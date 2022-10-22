@@ -4,8 +4,8 @@ import Seo from "../../components/seo"
 import Layout from '../../components/layout';
 import '../../components/projects/projects.css';
 
-const Project = ({ title, link, description, position, start, end }) => (
-  <Link className='link' to={`/project/${link ?? title?.toLowerCase()}`}>
+const Project = ({ title, slug, description, position, start, end }) => (
+  <Link className='link' to={slug}>
     <div className="project-container">
       <h1 className="title">{title}</h1>
       <p className="description">{description}</p>
@@ -26,6 +26,7 @@ query GetAllFrontmatter {
   allMarkdownRemark (sort: {fields: frontmatter___index, order: DESC}, filter: {frontmatter: {type: {eq: "project"}}}){
     nodes {
       frontmatter {
+        slug
         title
         description
         position
