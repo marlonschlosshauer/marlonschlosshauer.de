@@ -6,7 +6,7 @@ module.exports = {
     twitterUsername: `@marlonschlosshauer`,
     githubUsername: `@marlonschlosshauer`,
     author: `Marlon Schlosshauer`,
-    image: `/static/card.png`,
+    image: `/card.png`,
     siteUrl: `https://marlonschlosshauer.de`,
   },
   plugins: [
