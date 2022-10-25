@@ -1,15 +1,8 @@
-/**
- * SEO component that queries for data with
- *  Gatsby's useStaticQuery React hook
- *
- * See: https://www.gatsbyjs.com/docs/use-static-query/
- */
-
 import * as React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 
-function Seo({ description, title, children }) {
+function Seo({ title, description, imageUrl, author, children }) {
   const { site } = useStaticQuery(
     graphql`
       query {
@@ -18,25 +11,34 @@ function Seo({ description, title, children }) {
             title
             description
             author
+            image
+            siteUrl
           }
         }
       }
     `
   )
 
-  const metaDescription = description || site.siteMetadata.description
-  const defaultTitle = site.siteMetadata?.title
+  const metaTitle = title || site.siteMetadata?.title;
+  const metaDescription = description || site.siteMetadata.description;
+  const metaImageUrl = imageUrl || site.siteMetadata?.image;
+  const metaAuthor = author || site.siteMetadata?.image;
+  const siteUrl = site.siteMetadata?.siteUrl;
 
   return (
     <>
-      <title>{defaultTitle ? `${title} | ${defaultTitle}` : title}</title>
+      <title>{metaTitle}</title>
       <meta name="description" content={metaDescription} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={metaDescription} />
+      <meta name="image" content={`${siteUrl}${metaImageUrl}`} />
+      <meta property="og:title" content={metaTitle} />
       <meta property="og:type" content="website" />
+      <meta property="og:description" content={metaDescription} />
+      <meta property="og:image" content={`${siteUrl}${metaImageUrl}`} />
+      <meta property="og:url" content={siteUrl} />
+      <meta property="og:site_name" content="Marlon Schlosshauer" />
       <meta name="twitter:card" content="summary" />
-      <meta name="twitter:creator" content={site.siteMetadata?.author || ``} />
-      <meta name="twitter:title" content={title} />
+      <meta name="twitter:creator" content={metaAuthor} />
+      <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDescription} />
       {children}
     </>

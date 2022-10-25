@@ -1,9 +1,13 @@
 module.exports = {
   pathPrefix: '/',
   siteMetadata: {
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
-    siteUrl: `https://gatsbystarterdefaultsource.gatsbyjs.io/`,
+    title: `Marlon Schlosshauer - Software developer`,
+    description: `I'm a software developer from Germany that loves to build products fast and design features by the 80:20 rule.`,
+    twitterUsername: `@marlonschlosshauer`,
+    githubUsername: `@marlonschlosshauer`,
+    author: `Marlon Schlosshauer`,
+    image: `/static/card.png`,
+    siteUrl: `https://marlonschlosshauer.de`,
   },
   plugins: [
     `gatsby-plugin-image`,
