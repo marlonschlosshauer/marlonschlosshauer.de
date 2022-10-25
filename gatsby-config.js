@@ -2,7 +2,7 @@ module.exports = {
   pathPrefix: '/',
   siteMetadata: {
     title: `Marlon Schlosshauer - Software developer`,
-    description: `I'm a software developer from Germany that loves to build products fast and design features by the 80:20 rule.`,
+    description: `I'm a full-stack + mobile developer from Germany that loves to build products fast and design features with the 80:20 rule.`,
     twitterUsername: `@marlonschlosshauer`,
     githubUsername: `@marlonschlosshauer`,
     author: `Marlon Schlosshauer`,
