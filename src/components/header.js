@@ -21,71 +21,77 @@ const links = [
     asNewTab: true,
   },
 ]
-export const HeaderMobile = ({ current }) => (
-  <div className="header-burger-content">
-    <div></div>
-    <div className="header-burger-logo-container">
-      <Link to='/'>
-        <Logo className="header-burger-logo-image" />
-      </Link>
-    </div>
-    <div className="header-burger-icon-container">
-      <input className="header-burger-toggle" type="checkbox" />
-      <span className="header-burger-icon"></span>
-      <span style={{ marginTop: 12 }} className="header-burger-icon"></span>
-      <span style={{ marginTop: 24 }} className="header-burger-icon"></span>
-      <div className="header-burger-nav">
-        <div className="header-burger-item">
-          {
-            links.map((item, key) =>
-              <Link
-                key={key}
-                className={
-                  current === (item?.key ?? item?.title.toLowerCase())
-                    ? 'header-item-active'
-                    : 'header-item-inactive'
-                }
-                target={item?.asNewTab ? '_blank' : '_self'}
-                to={item?.link ?? `/${item?.title.toLowerCase()}`}>
-                {item?.title}
-              </Link>
-            )
-          }
-          <hr className="header-burger-divider" />
-          <p className="header-burger-subline">marlon@gedankenessen.de</p>
-        </div>
-      </div>
-    </div>
-  </div>
-)
 
-export const Header = ({ current, ...props }) => (
-  <header className='header'>
-    <div className="header-logo-container">
-      <Link to='/'>
+export const HeaderMobileOpen = ({ onClick }) => (
+  <header className='header-container-open'>
+    <div className="header-content-open">
+      <div className="header-nav">
+        <div className="header-empty" />
         <div className="header-logo">
-          <Logo className="header-logo-image" />
-        </div>
-      </Link>
-    </div>
-    <div className="header-item-container-mobile">
-      <Burger className="header-burger" />
-    </div>
-    <div className="header-item-container-desktop">
-      {
-        links.map((item, key) =>
-          <Link
-            key={key}
-            className={current === (item?.key ?? item?.title.toLowerCase()) ? 'header-item-active' : 'header-item-inactive'}
-            target={item?.asNewTab ? '_blank' : '_self'}
-            to={item?.link ?? `/${item?.title.toLowerCase()}`}>
-            {item?.title}
+          <Link to='/'>
+            <Logo className="header-logo-image" />
           </Link>
-        )
-      }
+        </div>
+        <button className="header-burger" onClick={onClick}>
+          <Burger className="header-burger-image" />
+        </button>
+      </div>
+      <div className="header-items">
+        {
+          links.map((item, key) =>
+            <Link
+              key={key}
+              className={'header-item'}
+              target={item?.asNewTab ? '_blank' : '_self'}
+              to={item?.link ?? `/${item?.title.toLowerCase()}`}>
+              {item?.title}
+            </Link>
+          )
+        }
+        <hr className="header-divider" />
+        <p className="header-subline">marlon@gedankenessen.de</p>
+      </div>
     </div>
   </header>
 )
+
+export const HeaderMobile = ({ onClick = () => { } }) => (
+  <header className='header-container'>
+    <div className="header-content">
+      <div className="header-nav">
+        <div className="header-empty" />
+        <div className="header-logo">
+          <Link to='/'>
+            <Logo className="header-logo-image" />
+          </Link>
+        </div>
+        <button className="header-burger" onClick={onClick}>
+          <Burger className="header-burger-image" />
+        </button>
+      </div>
+    </div>
+  </header>
+)
+
+
+export const Header = () => {
+  const [open, setOpen] = React.useState();
+
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.maxHeight = '100vh';
+    } else {
+      document.body.style.overflow = 'unset';
+      document.body.style.maxHeight = 'auto';
+    }
+
+  }, [open])
+
+  return (!open)
+    ? <HeaderMobile onClick={() => setOpen(!open)} />
+    : <HeaderMobileOpen onClick={() => setOpen(!open)} />
+}
 
 Header.propTypes = {
   siteTitle: PropTypes.string,
@@ -96,3 +102,4 @@ Header.defaultProps = {
 }
 
 export default Header
+

@@ -1,7 +1,7 @@
 import { graphql, useStaticQuery } from "gatsby"
 import PropTypes from "prop-types"
 import * as React from "react"
-import {HeaderMobile} from "./header"
+import { Header } from "./header"
 import "./layout.css"
 
 const Layout = ({ children }) => {
@@ -17,12 +17,12 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <HeaderMobile siteTitle={data.site.siteMetadata?.title || `Title`} />
+      <Header />
       <div
         style={{
         }}
       >
-        <main>{children}</main>
+        <main style={{ paddingTop: '138px' }}>{children}</main>
         <footer
           style={{
             marginTop: `var(--space-5)`,
