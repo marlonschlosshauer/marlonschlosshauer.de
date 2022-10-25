@@ -4,6 +4,10 @@ import './about-table.css';
 
 const languages = [
   {
+    content: "TypeScript",
+    modifiers: ['bold',],
+  },
+  {
     content: "JavaScript",
     modifiers: ['bold',],
   },
@@ -205,8 +209,16 @@ const tools = [
     modifiers: [],
   },
   {
+    content: "Docker",
+    modifiers: [],
+  },
+  {
     content: "Figma",
     modifiers: ['bold',],
+  },
+  {
+    content: "Storybook",
+    modifiers: ['bold'],
   },
   {
     content: "Slack",
@@ -229,10 +241,6 @@ const tools = [
     modifiers: [],
   },
   {
-    content: "Storybook",
-    modifiers: ['bold'],
-  },
-  {
     content: "Zoom",
     modifiers: [],
   },
@@ -240,8 +248,9 @@ const tools = [
     content: "Zeplin",
     modifiers: [],
   },
+
   {
-    content: "Docker",
+    content: "Blender",
     modifiers: [],
   },
 ];
