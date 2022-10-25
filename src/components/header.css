@@ -1,3 +1,5 @@
+@import './variables.css';
+
 .header-container, .header-container-open {
   display: flex;
   flex-direction: column;
@@ -23,8 +25,8 @@
 .header-content, .header-content-open {
   margin: auto;
   width: 80vw;
-  min-width: 300px;
-  max-width: 600px;
+  min-width: var(--min-width);
+  max-width: var(--max-width);
 }
 
 .header-content-open {
