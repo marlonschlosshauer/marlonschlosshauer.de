@@ -27,9 +27,7 @@ export const Header = () => (
       <div className="header-nav">
         <div className="header-empty" />
         <div className="header-logo">
-          <Link to='/'>
-            <Logo className="header-logo-image" />
-          </Link>
+          <Logo className="header-logo-image" />
         </div>
         <div className="header-burger"></div>
       </div>
