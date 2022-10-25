@@ -1,8 +1,8 @@
+import { graphql, Link, useStaticQuery } from 'gatsby';
 import React from 'react';
-import { useStaticQuery, graphql, Link } from 'gatsby'
-import Seo from "../../components/seo"
-import Layout from '../../components/layout';
 import '../../components/blog/index.css';
+import Layout from '../../components/layout';
+import Seo from "../../components/seo";
 
 const Post = ({ slug, title, description }) => (
   <Link className='link' to={slug}>
