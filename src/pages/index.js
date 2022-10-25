@@ -1,10 +1,20 @@
-import * as React from "react";
-import About, { Head as AboutHead } from './about';
+import React from 'react';
+import AboutAvatar from '../components/about/about-avatar';
+import AboutTable from '../components/about/about-table';
+import AboutText from '../components/about/about-text';
+import Layout from '../components/layout';
+import Seo from '../components/seo';
 
-const IndexPage = () => (
-  <About />
+const About = () => (
+  <Layout>
+    <content className='content'>
+      <AboutText />
+      <AboutAvatar />
+      <AboutTable />
+    </content>
+  </Layout >
 )
 
-export const Head = AboutHead;
+export const Head = () => <Seo title='About me' />
 
-export default IndexPage
+export default About;
