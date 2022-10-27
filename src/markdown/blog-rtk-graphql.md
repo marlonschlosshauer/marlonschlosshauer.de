@@ -3,7 +3,7 @@ slug: "/blog/rtk-query-graphql"
 type: 'blog'
 date: "2022-10-22"
 title: "Using RTK Query with GraphQL"
-description: ""
+description: "RTK Query is awesome! But how do you use it with GraphQL?"
 ---
 
 

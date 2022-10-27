@@ -5,7 +5,7 @@ index: 0
 date: "2022-10-19"
 title: "Tippinho"
 description: "Amateur Soccer prediction Community"
-position: "CTO"
+position: "Lead App Developer"
 start: "04.2022"
 end: "11.2022"
 ---
