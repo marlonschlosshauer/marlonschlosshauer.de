@@ -10,3 +10,22 @@ img {
   width: 280px;
   height: 280px;
 }
+
+.title {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 0px;
+}
+
+.date {
+  font-weight: 500;
+  font-size: 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-weight: 500;
+  font-size: 14px;
+}
