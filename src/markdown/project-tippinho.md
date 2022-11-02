@@ -7,7 +7,7 @@ title: "Tippinho"
 description: "Amateur Soccer prediction Community"
 position: "Lead Mobile Developer"
 start: "04.2022"
-end: "11.2022"
+end: "12.2022"
 ---
 
 
