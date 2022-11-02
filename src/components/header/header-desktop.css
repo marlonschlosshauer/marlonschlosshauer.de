@@ -16,7 +16,7 @@
 
 .header-desktop-links {
   display: flex;
-  grid-gap: 16px;
+  grid-gap: 48px;
 }
 
 .header-desktop-item-active {

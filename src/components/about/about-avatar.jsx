@@ -10,8 +10,8 @@ const AboutAvatar = ({ language = 'en' }) => (
       className='about-avatar-wrapper'
       src="../../assets/about/me.jpg"
     />
-    <div className="about-email-container">
-      <a className="about-email-link" href="mailto:marlon@gedankenessen.de">marlon@gedankenessen.de</a>
+    <div className="about-avatar-email-container">
+      <a className="about-avatar-email-link" href="mailto:marlon@gedankenessen.de">marlon@gedankenessen.de</a>
     </div>
   </div>
 )

@@ -1,34 +1,5 @@
-.project-title {
-  margin: 0;
-  margin-bottom: 24px;
-}
-
-.project-content {
-
-}
-
-img {
-  width: 280px;
-  height: 280px;
-}
-
-.period {
-  display: flex;
-}
-
-
-img {
-  width: 280px;
-  height: 280px;
-}
-
-.title {
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 18px;
-  margin-bottom: 8px;
-}
-
-.description, .position, .period-start, .-period-end, .text {
-  font-size: 14px;
+.project-content > img {
+  width: 192px;
+  height: 192px;
+  margin: auto;
 }

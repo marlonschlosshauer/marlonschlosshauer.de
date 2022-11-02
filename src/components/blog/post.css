@@ -1,0 +1,32 @@
+.blog-post-text,
+.blog-post-position,
+.blog-post-title,
+.blog-post-description {
+  margin: 0;
+  padding: 0;
+}
+
+.blog-post-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 64px;
+}
+
+.blog-post-title {
+  font-size: 20px;
+  font-weight: 600;
+  text-decoration: underline;
+  margin-bottom: 6px;
+}
+
+.blog-post-date {
+  font-size: 14px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.blog-post-description {
+  font-weight: 500;
+  font-size: 14px;
+}
+

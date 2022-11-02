@@ -1,22 +1,21 @@
 @import '../variables.css';
 
-/* header mobile */
 /* burger css implementation taken from https://codepen.io/erikterwan/pen/EVzeRP */
 
-.header-burger-wrapper {
+.header-mobile-burger-wrapper {
   padding-top: 32px;
   z-index: 10000;
   -webkit-user-select: none;
   user-select: none;
 }
 
-.header-burger-logo-container {
+.header-mobile-burger-logo-container {
   justify-self: center;
   align-self: center;
   z-index: 4;
 }
 
-.header-burger-logo {
+.header-mobile-burger-logo {
   position: absolute;
   top: 32px;
   left: 50%;
@@ -25,12 +24,12 @@
   z-index: 1001;
 }
 
-.header-burger-logo-image {
+.header-mobile-burger-logo-image {
   width: 36px;
   height: 36px;
 }
 
-.header-burger-toggle {
+.header-mobile-burger-toggle {
   position: absolute;
   top: 36px;
   /*right: 32px;*/
@@ -47,7 +46,7 @@
   z-index: 1002;
 }
 
-.header-burger-icon {
+.header-mobile-burger-icon {
   z-index: 1001;
   position: absolute;
   top: 36px;
@@ -68,12 +67,12 @@
               margin-top 0.5s ease-in-out;
 }
 
-.header-burger-wrapper span:first-child
+.header-mobile-burger-wrapper span:first-child
 {
   transform-origin: 0% 0%;
 }
 
-.header-burger-wrapper span:nth-last-child(2)
+.header-mobile-burger-wrapper span:nth-last-child(2)
 {
   transform-origin: 0% 100%;
 }
@@ -82,7 +81,7 @@
  * Transform all the slices of hamburger
  * into a crossmark.
  */
-.header-burger-wrapper input:checked ~ span
+.header-mobile-burger-wrapper input:checked ~ span
 {
   opacity: 1;
   transform: rotate(45deg) translate(-2px, -1px);
@@ -92,7 +91,7 @@
 /*
  * But let's hide the middle one.
  */
-.header-burger-wrapper input:checked ~ span:nth-last-child(3)
+.header-mobile-burger-wrapper input:checked ~ span:nth-last-child(3)
 {
   opacity: 0;
   transform: rotate(0deg) scale(0.2, 0.2);
@@ -101,12 +100,12 @@
 /*
  * Ohyeah and the last one should go the other direction
  */
-.header-burger-wrapper input:checked ~ span:nth-last-child(2)
+.header-mobile-burger-wrapper input:checked ~ span:nth-last-child(2)
 {
   transform: rotate(-45deg) translate(0, -1px);
 }
 
-.header-burger-nav {
+.header-mobile-burger-nav {
   grid-area: nav;
   z-index: 1000;
   position: fixed;
@@ -134,7 +133,7 @@
   transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
 }
 
-.header-burger-item {
+.header-mobile-burger-item {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
@@ -146,43 +145,43 @@
   margin-right: 18px !important;
 }
 
-.header-burger-divider {
+.header-mobile-burger-divider {
   background-color: white;
   height: 2px;
   border-radius: 4px;
   width: 100%;
 }
 
-.header-item-active, .header-item-inactive {
+.header-mobile-item-active, .header-mobile-item-inactive {
   font-size: 16px;
   text-decoration: none;
 }
 
-.header-item-active {
+.header-mobile-item-active {
   font-weight: 800;
 }
 
 /*
  * And let's slide it in from the left
  */
-.header-burger-toggle:checked ~ .header-burger-nav
+.header-mobile-burger-toggle:checked ~ .header-mobile-burger-nav
 {
   pointer-events: unset;
   transform: none;
 }
 
-.header-burger-toggle:checked ~ .header-burger-icon {
+.header-mobile-burger-toggle:checked ~ .header-mobile-burger-icon {
   position: fixed;
 }
 
-.header-burger-toggle:checked ~ .header-burger-logo {
+.header-mobile-burger-toggle:checked ~ .header-mobile-burger-logo {
   position: fixed;
 }
 
-.header-burger-toggle:checked {
+.header-mobile-burger-toggle:checked {
   position: fixed;
 }
 
-.header-burger-subline, .header-item-active, .header-item-inactive {
+.header-mobile-burger-subline, .header-mobile-item-active, .header-mobile-item-inactive {
   font-size: var(--font-lg)
 }

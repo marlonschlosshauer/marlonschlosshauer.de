@@ -4,26 +4,26 @@ import Logo from '../../assets/logo.svg';
 import './header-mobile.css';
 
 export const HeaderMobile = ({ current, links }) => (
-  <div className="header-burger-wrapper">
-    <input className="header-burger-toggle" type="checkbox" />
-    <div className="header-burger-logo">
+  <div className="header-mobile-burger-wrapper">
+    <input className="header-mobile-burger-toggle" type="checkbox" />
+    <div className="header-mobile-burger-logo">
       <Link to='/'>
-        <Logo className="header-burger-logo-image" />
+        <Logo className="header-mobile-burger-logo-image" />
       </Link>
     </div>
-    <span className="header-burger-icon"></span>
-    <span style={{ marginTop: 12 }} className="header-burger-icon"></span>
-    <span style={{ marginTop: 24 }} className="header-burger-icon"></span>
-    <div className="header-burger-nav">
-      <div className="header-burger-item">
+    <span className="header-mobile-burger-icon"></span>
+    <span style={{ marginTop: 12 }} className="header-mobile-burger-icon"></span>
+    <span style={{ marginTop: 24 }} className="header-mobile-burger-icon"></span>
+    <div className="header-mobile-burger-nav">
+      <div className="header-mobile-burger-item">
         {
           links.map((item, key) =>
             <Link
               key={key}
               className={
                 current === (item?.key ?? item?.title.toLowerCase())
-                  ? 'header-item-active'
-                  : 'header-item-inactive'
+                  ? 'header-mobile-item-active'
+                  : 'header-mobile-item-inactive'
               }
               target={item?.asNewTab ? '_blank' : '_self'}
               to={item?.link ?? `/${item?.title.toLowerCase()}/`}>
@@ -31,8 +31,8 @@ export const HeaderMobile = ({ current, links }) => (
             </Link>
           )
         }
-        <hr className="header-burger-divider" />
-        <p className="header-burger-subline">marlon@gedankenessen.de</p>
+        <hr className="header-mobile-burger-divider" />
+        <p className="header-mobile-burger-subline">marlon@gedankenessen.de</p>
       </div>
     </div>
   </div>

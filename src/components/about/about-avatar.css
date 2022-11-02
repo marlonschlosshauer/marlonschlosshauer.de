@@ -17,7 +17,7 @@
 .about-avatar-image {
 }
 
-.about-email-container {
+.about-avatar-email-container {
   background-color: #2E7267;
   border-radius: 64px;
   padding: 6px 12px;
@@ -26,7 +26,7 @@
   align-items: center;
 }
 
-.about-email-link {
+.about-avatar-email-link {
   text-decoration: none;
   font-size: 14px;
 }
