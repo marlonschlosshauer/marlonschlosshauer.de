@@ -1,12 +1,14 @@
-import { Link } from "gatsby";
 import PropTypes from "prop-types";
 import * as React from "react";
-import Logo from '../assets/logo.svg';
+import { HeaderMobile } from './header-mobile';
+import { HeaderDesktop } from './header-desktop';
 import './header.css';
 
 const links = [
   {
     title: 'About',
+    key: '/',
+    link:'/',
   },
   {
     title: 'Projects',
@@ -19,20 +21,17 @@ const links = [
     link: 'https://github.com/marlonschlosshauer',
     asNewTab: true,
   },
-]
+];
 
-export const Header = () => (
-  <header className='header-container'>
-    <div className="header-content">
-      <div className="header-nav">
-        <div className="header-empty" />
-        <div className="header-logo">
-          <Logo className="header-logo-image" />
-        </div>
-        <div className="header-burger"></div>
-      </div>
+export const Header = ({ current }) => (
+  <div className="header-container">
+    <div className="header-mobile">
+      <HeaderMobile current={current} links={links} />
     </div>
-  </header>
+    <div className="header-desktop">
+      <HeaderDesktop current={current} links={links} />
+    </div>
+  </div>
 )
 
 Header.propTypes = {

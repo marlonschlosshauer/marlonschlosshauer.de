@@ -1,0 +1,32 @@
+@import '../variables.css';
+
+.header-desktop-wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 32px;
+}
+
+.header-desktop-logo {
+}
+
+.header-desktop-logo-image {
+  width: 36px;
+  height: 36px;
+}
+
+.header-desktop-links {
+  display: flex;
+  grid-gap: 16px;
+}
+
+.header-desktop-item-active {
+  font-size: 16px;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.header-desktop-item-inactive {
+  font-size: 16px;
+  text-decoration: none;
+}
+
