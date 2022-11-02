@@ -4,6 +4,8 @@
   flex-wrap: wrap;
   justify-content: center;
   grid-gap: 16px;
+  margin-top: 64px;
+  margin-bottom: 64px;
 }
 
 .about-avatar-wrapper {
