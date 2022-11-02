@@ -1,16 +1,15 @@
 import { graphql } from "gatsby";
-import React, { useEffect } from "react";
-import Layout from '../components/layout';
+import React from "react";
 import '../components/blog/blog.css';
+import Layout from '../components/layout';
+import Seo from '../components/seo';
 
 export default function Template({
   data,
 }) {
   const { markdownRemark } = data ?? {}
   const { frontmatter, html } = markdownRemark ?? {};
-  useEffect(() => {
-    document.title = frontmatter?.title ?? 'Blog';
-  }, []);
+
   return (
     <Layout>
       <div className="content">
@@ -23,6 +22,12 @@ export default function Template({
       </div>
     </Layout >
   )
+}
+
+export const Head = ({ data }) => {
+  const { markdownRemark } = data ?? {}
+  const { frontmatter } = markdownRemark ?? {};
+  return <Seo title={frontmatter?.title ?? 'Blog'} />
 }
 
 export const pageQuery = graphql`
