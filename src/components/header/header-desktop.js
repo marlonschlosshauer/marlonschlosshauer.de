@@ -21,7 +21,7 @@ export const HeaderDesktop = ({ current, links }) => (
                 : 'header-desktop-item-inactive'
             }
             target={item?.asNewTab ? '_blank' : '_self'}
-            to={item?.link ?? `/${item?.title.toLowerCase()}`}>
+            to={item?.link ?? `/${item?.title.toLowerCase()}/`}>
             {item?.title}
           </Link>
         )
