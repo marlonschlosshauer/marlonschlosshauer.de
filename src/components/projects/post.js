@@ -8,8 +8,7 @@ export const Post = ({ slug, title, description, position, start, end }) => (
       <h1 className="project-post-title">{title}</h1>
       <p className="project-post-description">{description}</p>
       <div className="project-post-details">
-        <p className="project-post-text">Position:</p>
-        <p className="project-post-text">{position}</p>
+        <p className="project-post-text">Position: {position}</p>
         <div className="project-post-period">
           <p className="project-post-text">{start}</p>
           <p className="project-post-text"> - </p>
