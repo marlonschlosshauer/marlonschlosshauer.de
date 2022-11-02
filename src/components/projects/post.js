@@ -3,7 +3,7 @@ import { Link } from 'gatsby'
 import './post.css';
 
 export const Post = ({ slug, title, description, position, start, end }) => (
-  <Link className='link' to={slug}>
+  <Link className='project-post-link' to={slug}>
     <div className="project-post-container">
       <h1 className="project-post-title">{title}</h1>
       <p className="project-post-description">{description}</p>

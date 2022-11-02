@@ -6,6 +6,9 @@
   padding: 0;
 }
 
+.project-post-link {
+  text-decoration: none;
+}
 
 .project-post-container {
   display: flex;

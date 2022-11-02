@@ -6,6 +6,10 @@
   padding: 0;
 }
 
+.blog-post-link {
+  text-decoration: none;
+}
+
 .blog-post-container {
   display: flex;
   flex-direction: column;

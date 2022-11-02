@@ -4,7 +4,6 @@
   margin-bottom: 48px;
 }
 
-
 .project-details {
   display: flex;
   flex-direction: row;
@@ -12,10 +11,6 @@
   grid-gap: 8px;
 }
 
-.text, .position, .title, .description, .perdio-start, .period-end {
-  margin: 0;
-  padding: 0;
-}
 
 .description {
   font-weight: 800;
