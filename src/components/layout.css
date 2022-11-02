@@ -210,8 +210,12 @@ body {
   margin: auto;
 }
 
+.main {
+  padding-top: 64px;
+}
+
 footer {
-  margin-bottom: 64px;
+  padding-bottom: 64px;
 }
 
 @media (prefers-reduced-motion: no-preference) {

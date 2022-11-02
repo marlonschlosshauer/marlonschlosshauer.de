@@ -7,7 +7,7 @@ const Layout = ({ current, children }) => (
   <>
     <Header current={current} />
     <div className="content-wrapper">
-      <div className="main" style={{ paddingTop: '128px' }}>{children}</div>
+      <div className="main">{children}</div>
       <footer
         style={{
           marginTop: `var(--space-5)`,

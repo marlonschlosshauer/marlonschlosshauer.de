@@ -7,6 +7,7 @@
 
 .about-me-table-category {
   justify-self: center;
+  margin-bottom: 24px;
 }
 
 .about-me-table-category-title,
@@ -19,7 +20,7 @@
 .about-me-table-category-title {
   font-size: 14px;
   font-weight: 700;
-  margin: 24px 0px 6px -12px;
+  margin: 0px 0px 0px -12px;
 }
 
 .about-me-table-item {
