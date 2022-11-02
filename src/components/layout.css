@@ -210,6 +210,10 @@ body {
   margin: auto;
 }
 
+footer {
+  margin-bottom: 64px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .main>*, .animated {
     animation-duration: 0.5s;
