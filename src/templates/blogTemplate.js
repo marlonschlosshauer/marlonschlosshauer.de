@@ -4,22 +4,18 @@ import '../components/blog/blog.css';
 import Layout from '../components/layout';
 import Seo from '../components/seo';
 
-export default function Template({
-  data,
-}) {
+export default function Template({ data }) {
   const { markdownRemark } = data ?? {}
   const { frontmatter, html } = markdownRemark ?? {};
 
   return (
     <Layout>
-      <div className="content">
-        <h1 className="blog-title">{frontmatter?.title}</h1>
-        <h4 className="blog-date">{frontmatter?.date}</h4>
-        <div
-          className="blog-content"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      </div>
+      <h1 className="blog-title">{frontmatter?.title}</h1>
+      <h4 className="blog-date">{frontmatter?.date}</h4>
+      <div
+        className="blog-content"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     </Layout >
   )
 }
