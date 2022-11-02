@@ -7,11 +7,9 @@ import Seo from '../components/seo';
 
 const About = ({ path }) => (
   <Layout current={path}>
-    <content className='content'>
-      <AboutText />
-      <AboutAvatar />
-      <AboutTable />
-    </content>
+    <AboutText />
+    <AboutAvatar />
+    <AboutTable />
   </Layout >
 )
 

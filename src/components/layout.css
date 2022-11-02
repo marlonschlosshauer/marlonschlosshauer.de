@@ -211,7 +211,7 @@ body {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  main>.content>*, .animated {
+  .main>*, .animated {
     animation-duration: 0.5s;
     animation-fill-mode: both;
     opacity: 0;
@@ -222,23 +222,23 @@ body {
   }
 }
 
-main>.content>*:nth-child(1) {
+.main>*:nth-child(1) {
   animation-delay: 100ms;
 }
 
-main>.content>*:nth-child(2) {
+.main>*:nth-child(2) {
   animation-delay: 200ms;
 }
 
-main>.content>*:nth-child(3) {
+.main>*:nth-child(3) {
   animation-delay: 300ms;
 }
 
-main>.content>*:nth-child(4) {
+.main>*:nth-child(4) {
   animation-delay: 400ms;
 }
 
-main>.content>*:nth-child(n+5) {
+.main>*:nth-child(n+5) {
   animation-delay: 500ms;
 }
 

@@ -22,16 +22,14 @@ query GetAllBlogFrontmatter {
 
   return (
     <Layout current={'blog'}>
-      <div className="content">
-        {
-          data
-            ?.allMarkdownRemark
-            ?.nodes
-            .map(({ frontmatter: blog }, key) => (
-              <Post key={key} {...blog} />
-            ))
-        }
-      </div>
+      {
+        data
+          ?.allMarkdownRemark
+          ?.nodes
+          .map(({ frontmatter: blog }, key) => (
+            <Post key={key} {...blog} />
+          ))
+      }
     </Layout>
   )
 };

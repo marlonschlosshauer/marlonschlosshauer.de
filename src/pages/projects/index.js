@@ -25,16 +25,14 @@ query GetAllProjectFrontmatter {
 
   return (
     <Layout current={'projects'}>
-      <div className="content">
-        {
-          data
-            ?.allMarkdownRemark
-            ?.nodes
-            .map(({ frontmatter: project }, key) => (
-              <Post key={key} {...project} />
-            ))
-        }
-      </div>
+      {
+        data
+          ?.allMarkdownRemark
+          ?.nodes
+          .map(({ frontmatter: project }, key) => (
+            <Post key={key} {...project} />
+          ))
+      }
     </Layout>
   )
 };
