@@ -1,6 +1,6 @@
-import * as React from "react"
-import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
+import { graphql, useStaticQuery } from "gatsby";
+import PropTypes from "prop-types";
+import * as React from "react";
 
 function Seo({ title, description, imageUrl, author, children }) {
   const { site } = useStaticQuery(
@@ -19,10 +19,10 @@ function Seo({ title, description, imageUrl, author, children }) {
     `
   )
 
-  const metaTitle = title || site.siteMetadata?.title;
-  const metaDescription = description || site.siteMetadata.description;
-  const metaImageUrl = imageUrl || site.siteMetadata?.image;
-  const metaAuthor = author || site.siteMetadata?.image;
+  const metaTitle = title ?? site.siteMetadata?.title;
+  const metaDescription = description ?? site.siteMetadata.description;
+  const metaImageUrl = imageUrl ?? site.siteMetadata?.image;
+  const metaAuthor = author ?? site.siteMetadata?.image;
   const siteUrl = site.siteMetadata?.siteUrl;
 
   return (

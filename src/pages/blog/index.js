@@ -34,6 +34,6 @@ query GetAllBlogFrontmatter {
   )
 };
 
-export const Head = () => <Seo title="Blog" />
+export const Head = () => <Seo title="Blog" description='' />
 
 export default Blog;

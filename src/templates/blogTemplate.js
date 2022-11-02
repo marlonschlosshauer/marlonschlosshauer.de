@@ -23,7 +23,7 @@ export default function Template({ data }) {
 export const Head = ({ data }) => {
   const { markdownRemark } = data ?? {}
   const { frontmatter } = markdownRemark ?? {};
-  return <Seo title={frontmatter?.title ?? 'Blog'} />
+  return <Seo title={frontmatter?.title ?? 'Blog'} description={frontmatter?.description} />
 }
 
 export const pageQuery = graphql`
@@ -34,6 +34,7 @@ export const pageQuery = graphql`
         date(formatString: "MMMM DD, YYYY")
         slug
         title
+        description
       }
     }
   }
