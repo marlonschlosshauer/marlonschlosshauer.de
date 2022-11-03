@@ -2,7 +2,7 @@ import React from "react";
 import { Header } from "./header/header";
 import "./layout.css";
 
-const Layout = ({ current, children }) => (
+export const Layout = ({ current, children }) => (
   <>
     <Header current={current} />
     <div className="content-wrapper">
