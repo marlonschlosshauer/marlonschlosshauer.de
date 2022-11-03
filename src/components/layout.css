@@ -101,6 +101,7 @@ p {
   margin: 0;
   padding: 0;
   margin-bottom: var(--space-4);
+  text-align: justify;
 }
 ul,
 ol {
