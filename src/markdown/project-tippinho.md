@@ -10,12 +10,6 @@ start: "04.2022"
 end: "12.2022"
 ---
 
-
-**Amateur Soccer Prediction Platform**
-
-Position: **Lead Mobile Developer**
-04.2022 - 11.2022
-
 **Tippinho** is a platform where you and your friends make friendly predictions on upcoming matches in various amateur soccer leagues. You can then compare your predictions to your friends predictions. All this is done through an app.
 
 As the only **app developer** at Tippinho it was my job to **handle everything** relating to our core product: The Tippinho App. Backend development was handled by another developer.

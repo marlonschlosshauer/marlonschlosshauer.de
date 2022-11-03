@@ -1,5 +1,46 @@
-.project-content > img {
+.project-index-title {}
+
+.project-index-description {
+  margin: 0;
+}
+
+.project-index-start {
+  margin: 0;
+}
+
+.project-index-end {
+  margin: 0;
+}
+
+.project-index-text {
+  margin: 0;
+}
+
+
+.project-index-position-details {
+  display: flex;
+  flex-direction: row;
+  grid-gap: 8px;
+}
+
+.project-index-position {
+  font-weight: 600;
+  margin: 0;
+}
+
+.project-index-period-details {
+  display: flex;
+  flex-direction: row;
+  grid-gap: 8px;
+}
+
+.project-index-content {
+  margin-top: 32px;
+}
+
+.project-index-content > img {
   width: 192px;
   height: 192px;
   margin: auto;
 }
+

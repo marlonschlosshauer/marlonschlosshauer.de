@@ -10,9 +10,19 @@ export default function Template({ data }) {
 
   return (
     <Layout>
-      <h1 className="project-title">{frontmatter?.title}</h1>
+      <h1 className="project-index-title">{frontmatter?.title}</h1>
+      <p className="project-index-description">{frontmatter?.description}</p>
+      <div className="project-index-position-details">
+        <p className="project-index-text">Position: </p>
+        <p className="project-index-position">{frontmatter?.position}</p>
+      </div>
+      <div className="project-index-period-details">
+        <p className="project-index-start">{frontmatter?.start}</p>
+        <p className="project-index-divider">{` - `}</p>
+        <p className="project-index-end">{frontmatter?.end}</p>
+      </div>
       <div
-        className="project-content"
+        className="project-index-content"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </Layout >
@@ -34,6 +44,9 @@ export const pageQuery = graphql`
         slug
         title
         description
+        position
+        start
+        end
       }
     }
   }

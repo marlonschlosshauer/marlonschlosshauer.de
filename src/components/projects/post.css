@@ -17,8 +17,8 @@
 }
 
 .project-post-title {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   text-decoration: underline;
   margin-bottom: 6px;
 }
@@ -29,10 +29,14 @@
 
 .project-post-description {
   font-size: 14px;
-  font-weight: 500;
 }
 
-.project-post-details {
+.project-post-position {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.project-post-position-details {
   display: flex;
   flex-direction: row;
   grid-gap: 8px;
