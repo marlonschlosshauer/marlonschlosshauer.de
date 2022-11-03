@@ -10,31 +10,34 @@ start: "04.2022"
 end: "12.2022"
 ---
 
-**Tippinho** is a platform where you and your friends make friendly predictions on upcoming matches in various amateur soccer leagues. You can then compare your predictions to your friends predictions. All this is done through an app.
+**Tippinho** is a platform where you and your friends make friendly predictions on upcoming matches in various amateur soccer leagues in Germany. You can then compare your score to your friend's predictions. All this is done through an app.
 
-As the only **app developer** at Tippinho it was my job to **handle everything** relating to our core product: The Tippinho App. Backend development was handled by another developer.
+I joined **Tippinho** as the only mobile developer - and such handled everything related to the app.
 
 ## Tasks
 
-- Requirements Engineering
+- Implementing the entire app (in RN)
+- Making (all) architecture decisions
+- Requirements engineering
 - UX prototyping and design
-- Making Architecture decisions
 - Creating feature roadmaps
-- Actual Implementation
-- Deployment to Stores
-- Maintance and bug fixes
+- Presenting designs, features and progress
+- Deployment to App & Play Store
+- Maintenance and bug fixes
 
 ## Stack
 
-**React Native** was choosen early on because of my familiarity with **React** and the possible interoperability with other JS packages.
+After evaluating other frameworks like Flutter, I ultimately decided on **React Native** because of my familiarity with **React** and the interoperability with JS packages (which I was also familiar with).
 
-We choose **GraphQL** as a communication medium because it allowed us to shift the implementation of specific endpoints towards the frontend.
+We choose **GraphQL** as a communication medium because it allowed us to shift the definition of endpoint data towards the frontend, thus freeing up time for the backend developer.
 
-**TypeScript** was added early on to provide type hints. Thanks to GraphQL schemas (and the interactive tools out there) it was really easy to get accurate types for our data flows.
+**TypeScript** was added early on to provide type hints. Thanks to GraphQL schemas (and interactive tools like GraphiQL) it was easy to get accurate types for our data flows.
 
-To enable payed subscribptions and in-app purchases we used **RevenueCat**, because it offered a unified and easy to use API. That allowed me to seperate purchasing logic and reduce it to an absolute minimum.
+To enable paid subscriptions and in-app purchases we used **RevenueCat**, because it offered a unified and easy to use API. That allowed me to reduce and isolate purchasing logic.
 
-I was happy to see that not only mockups were present, but that they were done in **Figma**, my prefered design tool. I continued to use Figma for designing and feedback gathering.
+**Github** was used for VC hosting, issue tracking and project planning. **Github Issues** made communication about TODOs happen in one single place and helped establish traceability between related issues. **Github Projects** made it trivial to share the administrative state of the app with the team.
+
+Earlier mockups were already done by the team in **Figma**. I extended those designs and used Figma to prototype and present future screens. Figma also allowed me to easily and asynchronously gather feedback from the team.
 
 ## Screenshots
 

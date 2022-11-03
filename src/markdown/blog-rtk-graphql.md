@@ -3,9 +3,8 @@ slug: "/blog/rtk-query-graphql"
 type: 'blog'
 date: "2022-10-22"
 title: "Using RTK Query with GraphQL"
-description: "RTK Query is awesome! But how do you use it with GraphQL?"
+description: "RTK Query is awesome! But how do we use it with GraphQL? Luckily, RTK Query comes with the necessary tools and documentation."
 ---
-
 
 [Redux Toolkit](https://redux-toolkit.js.org/) and the included [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) are awesome. Not only are both packages incredibly well designed, easy to use and production-ready, but they also provide tons of documentation.
 
@@ -13,7 +12,7 @@ However, I had trouble finding code examples for certain GraphQL use-cases. In t
 
 This uses `@reduxjs-toolkit: 1.8.1` and `@rtk-query/graphql-request-base-query: 2.2.0`. Consult the docs to see if this information is now outdated.
 
-# Using graphqlRequestBaseQuery
+# Using `graphqlRequestBaseQuery`
 
 If you want to use GraphQL the official documentation quickly points you to a custom build [graphqlBaseQuery](https://redux-toolkit.js.org/rtk-query/usage/customizing-queries#graphql-basequery). But `RTK Query` actually provides a more sophisticated GraphQL query: `graphqlRequestBaseQuery`. That one is used in [some of the sandbox code examples](https://redux-toolkit.js.org/rtk-query/usage/examples#react-with-graphql), too.
 
@@ -30,7 +29,7 @@ export const api = createApi({
 });
 ```
 
-If your api requires a token to access, you can pass it via the `prepareHeaders` param.
+If your api requires a token to access, you can pass the token via the `prepareHeaders` param.
 
 ```ts
 import { createApi } from '@reduxjs/toolkit/query/react';
@@ -59,10 +58,9 @@ export const api = createApi({
 I store that token in another api-splice (e.g. `auth-slice`). RTK Query gives you [an easy way to access other slices](https://redux-toolkit.js.org/rtk-query/api/fetchBaseQuery) from with-in the `prepareHeaders` function.
 
 
-
 # Dynamically changing the API url
 
-A React Native app that I was working on required me to dynamically change between our production and staging API.
+A React Native app that I was working on required me to dynamically change between our production and staging API (for testing).
 
 Luckily, RTK Query supports this use-case and even provides an example for a `fetch` based API. [The changes](https://redux-toolkit.js.org/rtk-query/usage/customizing-queries#constructing-a-dynamic-base-url-using-redux-state) are trivial. It's _almost_ plug and play to get it to work with GraphQL. TypeScript kept complaining because the types for `graphqlRequestBaseQuery` didn't match, so I ditched the typing.
 
@@ -87,5 +85,5 @@ export const api = createApi({
 });
 ```
 
-Like with our token earlier, the necessary url is store in a `config-slice`. And just like with `prepareHeaders`, we can use the second parameter to access `getState` (and retrieve our redux state).
+Like with our token earlier, the necessary url is stored in a `config-slice`. And just like with `prepareHeaders`, we can use the second parameter to access `getState` (and retrieve our url from the redux state).
 
