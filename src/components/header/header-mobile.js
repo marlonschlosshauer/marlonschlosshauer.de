@@ -5,7 +5,7 @@ import './header-mobile.css';
 
 export const HeaderMobile = ({ current, links }) => (
   <div className="header-mobile-burger-wrapper">
-    <input className="header-mobile-burger-toggle" type="checkbox" />
+    <input className="header-mobile-burger-toggle" type="checkbox" labe="burger-menu-toggle"/>
     <div className="header-mobile-burger-logo">
       <Link to='/'>
         <Logo className="header-mobile-burger-logo-image" />

@@ -1,5 +1,4 @@
 import { graphql, useStaticQuery } from "gatsby";
-import PropTypes from "prop-types";
 import * as React from "react";
 
 function Seo({ title, description, imageUrl, author, children }) {
@@ -43,15 +42,6 @@ function Seo({ title, description, imageUrl, author, children }) {
       {children}
     </>
   )
-}
-
-Seo.defaultProps = {
-  description: ``,
-}
-
-Seo.propTypes = {
-  description: PropTypes.string,
-  title: PropTypes.string.isRequired,
 }
 
 export default Seo
