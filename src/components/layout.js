@@ -1,5 +1,4 @@
-import PropTypes from "prop-types";
-import * as React from "react";
+import React from "react";
 import { Header } from "./header/header";
 import "./layout.css";
 
@@ -18,9 +17,5 @@ const Layout = ({ current, children }) => (
     </div>
   </>
 )
-
-Layout.propTypes = {
-  children: PropTypes.node.isRequired,
-}
 
 export default Layout

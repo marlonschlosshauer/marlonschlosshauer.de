@@ -2,7 +2,7 @@ import React from 'react';
 import { StaticImage } from "gatsby-plugin-image";
 import './about-avatar.css';
 
-const AboutAvatar = ({ language = 'en' }) => (
+export const AboutAvatar = ({ language = 'en' }) => (
   <div className="about-avatar-container">
     <StaticImage
       alt={language === 'en' ? "Picture of me" : "Bild von mir"}

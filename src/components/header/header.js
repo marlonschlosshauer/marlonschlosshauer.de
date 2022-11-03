@@ -1,5 +1,4 @@
-import PropTypes from "prop-types";
-import * as React from "react";
+import React from "react";
 import { HeaderMobile } from './header-mobile';
 import { HeaderDesktop } from './header-desktop';
 import './header.css';
@@ -8,7 +7,7 @@ const links = [
   {
     title: 'About',
     key: '/',
-    link:'/',
+    link: '/',
   },
   {
     title: 'Projects',
@@ -33,14 +32,6 @@ export const Header = ({ current }) => (
     </div>
   </div>
 )
-
-Header.propTypes = {
-  siteTitle: PropTypes.string,
-}
-
-Header.defaultProps = {
-  siteTitle: `Marlon Schlosshauer`,
-}
 
 export default Header
 

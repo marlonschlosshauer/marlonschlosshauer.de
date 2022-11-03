@@ -1,11 +1,11 @@
-import React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
+import React from 'react';
+import { Layout } from '../../components/layout';
 import '../../components/projects/index.css';
 import { Post } from '../../components/projects/post';
-import Layout from '../../components/layout';
-import Seo from "../../components/seo";
+import { Seo } from "../../components/seo";
 
-const Projects = () => {
+export const Projects = () => {
   const data = useStaticQuery(graphql`
 query GetAllProjectFrontmatter {
   allMarkdownRemark (sort: {fields: frontmatter___end, order: DESC}, filter: {frontmatter: {type: {eq: "project"}}}){

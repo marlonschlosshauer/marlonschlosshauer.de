@@ -1,11 +1,11 @@
-import React from 'react';
 import { graphql, useStaticQuery } from 'gatsby';
+import React from 'react';
 import '../../components/blog/index.css';
 import { Post } from '../../components/blog/post';
-import Layout from '../../components/layout';
-import Seo from "../../components/seo";
+import { Layout } from '../../components/layout';
+import { Seo } from "../../components/seo";
 
-const Blog = () => {
+export const Blog = () => {
   const data = useStaticQuery(graphql`
 query GetAllBlogFrontmatter {
   allMarkdownRemark (sort: {fields: frontmatter___date, order: DESC}, filter: {frontmatter: {type: {eq: "blog"}}}){

@@ -23,7 +23,7 @@ const Modifier = ({ modifier = '', children }) => {
   }
 }
 
-const Modifiers = ({ modifiers = [], children }) => (
+export const Modifiers = ({ modifiers = [], children }) => (
   (modifiers?.length > 0)
     ? (
       <Modifiers modifiers={modifiers.slice(1)}>

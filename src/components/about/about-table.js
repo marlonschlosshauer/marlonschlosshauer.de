@@ -1,5 +1,5 @@
 import React from 'react';
-import Modifiers from '../../utility/modifiers';
+import { Modifiers } from '../../utility/modifiers';
 import './about-table.css';
 
 const languages = [
@@ -270,7 +270,7 @@ const AboutTableCategory = ({ title = '', items = [] }) => (
   </div>
 )
 
-const AboutTable = () => (
+export const AboutTable = () => (
   <div className="about-me-table-container">
     <AboutTableCategory items={languages} title='Languages' />
     <AboutTableCategory items={frontend} title='Frontend' />
