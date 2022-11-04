@@ -62,14 +62,19 @@ I store that token in another api-splice (e.g. `auth-slice`). RTK Query gives yo
 
 A React Native app that I was working on required me to dynamically change between our production and staging API (for testing).
 
-Luckily, RTK Query supports this use-case and even provides an example for a `fetch` based API. [The changes](https://redux-toolkit.js.org/rtk-query/usage/customizing-queries#constructing-a-dynamic-base-url-using-redux-state) are trivial. It's _almost_ plug and play to get it to work with GraphQL. TypeScript kept complaining because the types for `graphqlRequestBaseQuery` didn't match, so I ditched the typing.
+Luckily, RTK Query supports this use-case and even provides an example for a `fetch` based API. [The changes](https://redux-toolkit.js.org/rtk-query/usage/customizing-queries#constructing-a-dynamic-base-url-using-redux-state) are trivial. It's _almost_ plug and play to get it to work with GraphQL.
 
 ```ts
-import { createApi } from '@reduxjs/toolkit/query/react';
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
+import type { BaseQueryFn } from '@reduxjs/toolkit/query/react';
+import { DocumentNode } from 'graphql';
 import { ClientError } from 'graphql-request';
 
-const dynamicGraphqlBaseQuery = async (args, api, extraOptions) => {
+const dynamicGraphqlBaseQuery: BaseQueryFn<{
+  document: string | DocumentNode;
+  variables?: any;
+}, unknown, unknown, Partial<Pick<ClientError, "request" | "response">>, {}>
+= async (args, api, extraOptions) => {
   const baseUrl = api.getState().config.env.url;
   const rawBaseQuery = graphqlRequestBaseQuery<Partial<ClientError>>({
     url: `${baseUrl}/graphql`,
