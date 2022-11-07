@@ -154,6 +154,10 @@ const backend = [
     modifiers: [],
   },
   {
+    content: "MongoDB",
+    modifiers: [],
+  },
+  {
     content: "Spring",
     modifiers: [],
   },
@@ -166,15 +170,11 @@ const backend = [
     modifiers: [],
   },
   {
-    content: "Ring",
+    content: "Luminus",
     modifiers: [],
   },
   {
-    content: "HTTP-Kit",
-    modifiers: [],
-  },
-  {
-    content: "Compojure",
+    content: "Monger",
     modifiers: [],
   },
   {
