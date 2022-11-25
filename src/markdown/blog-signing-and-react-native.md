@@ -6,7 +6,7 @@ title: "Signing, React Native and the Play Store"
 description: "To deploy a React Native app to the Play Store developers have to sign it with a key. How do you get that key? And what do you do if you lose it?"
 ---
 
-To deploy their app to the Play Store, developers have to generate a `.keystore` file to sign their release with. The [React Native docs](https://reactnative.dev/docs/signed-apk-android) do a good job explaining everything.
+To deploy their app to the Play Store, developers have to generate a `.keystore` file and sign their release with it. The [React Native docs](https://reactnative.dev/docs/signed-apk-android) do a good job explaining the necessary steps.
 
 To summarize, as of right now  (Version `0.70` on macOS) all you have to do is:
 1. Navigate to your JDK folder by following the output of `/usr/libexec/java_home`
