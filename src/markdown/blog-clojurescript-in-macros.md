@@ -1,9 +1,9 @@
 ---
-slug: "/blog/macros-in-clojurescript"
+slug: "/blog/clojurescript-in-macros"
 type: 'blog'
 date: "2022-03-31"
 title: "Writing macros that consume ClojureScript code"
-description: "Clojure macros are extremely powerful but I had issues finding a simple ressource on how to make them work in ClojureScript - and with ClojureScript code. So, here are two ways that worked for me."
+description: "Clojure macros are extremely powerful, but how do you get them to consum some of your ClojureScript? Here are some first steps and material for further readin."
 ---
 
 Clojure macros are extremely powerful but I had issues finding a simple ressource on how to make them work in ClojureScript - and with ClojureScript code. So, here are two ways that worked for me.
