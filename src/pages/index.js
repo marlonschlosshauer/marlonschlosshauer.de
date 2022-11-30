@@ -13,6 +13,6 @@ const About = ({ path }) => (
   </Layout >
 )
 
-export const Head = () => <Seo title='About me' />
+export const Head = () => <Seo title='Marlon Schlosshauer' />
 
 export default About;
