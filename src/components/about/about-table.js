@@ -155,7 +155,7 @@ const backend = [
   },
   {
     content: "MongoDB",
-    modifiers: [],
+    modifiers: ['bold'],
   },
   {
     content: "Spring",
@@ -170,12 +170,16 @@ const backend = [
     modifiers: [],
   },
   {
-    content: "Luminus",
-    modifiers: [],
+    content: "Ring",
+    modifiers: ['bold'],
   },
   {
     content: "Monger",
-    modifiers: [],
+    modifiers: ['bold'],
+  },
+  {
+    content: "Buddy",
+    modifiers: ['bold'],
   },
   {
     content: "Django",
@@ -198,7 +202,7 @@ const tools = [
     modifiers: ['bold',],
   }, {
     content: "VSCode",
-    modifiers: [,],
+    modifiers: [],
   },
   {
     content: "Jetbrains IDEs",
