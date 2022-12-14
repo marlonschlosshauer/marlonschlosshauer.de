@@ -9,7 +9,7 @@ export default function Template({ data }) {
   const { frontmatter, html } = markdownRemark ?? {};
 
   return (
-    <Layout>
+    <Layout current="projects">
       <h1 className="project-index-title">{frontmatter?.title}</h1>
       <p className="project-index-description">{frontmatter?.description}</p>
       <div className="project-index-position-details">
