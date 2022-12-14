@@ -25,6 +25,7 @@ export const HeaderMobile = ({ current, links }) => (
                   ? 'header-mobile-item-active'
                   : 'header-mobile-item-inactive'
               }
+              style={item?.asNewTab ? {textDecoration: 'underline'} : {}}
               target={item?.asNewTab ? '_blank' : '_self'}
               to={item?.link ?? `/${item?.title.toLowerCase()}/`}>
               {item?.title}

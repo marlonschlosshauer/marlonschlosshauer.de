@@ -20,6 +20,7 @@ export const HeaderDesktop = ({ current, links }) => (
                 ? 'header-desktop-item-active'
                 : 'header-desktop-item-inactive'
             }
+            style={item?.asNewTab ? { textDecoration: 'underline' } : {}}
             target={item?.asNewTab ? '_blank' : '_self'}
             to={item?.link ?? `/${item?.title.toLowerCase()}/`}>
             {item?.title}
