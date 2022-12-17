@@ -214,7 +214,7 @@ const tools = [
   },
   {
     content: "Docker",
-    modifiers: [],
+    modifiers: ['bold'],
   },
   {
     content: "Figma",
@@ -234,11 +234,11 @@ const tools = [
   },
   {
     content: "Google Drive",
-    modifiers: [],
+    modifiers: ['bold'],
   },
   {
     content: "Notion",
-    modifiers: [],
+    modifiers: ['bold'],
   },
   {
     content: "Adobe Suite",
