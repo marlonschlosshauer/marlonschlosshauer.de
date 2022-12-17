@@ -5,8 +5,8 @@ import AboutText from '../components/about/about-text';
 import Layout from '../components/layout';
 import Seo from '../components/seo';
 
-const About = ({ path }) => (
-  <Layout current={path}>
+const About = () => (
+  <Layout current={'/'}>
     <AboutText />
     <AboutAvatar />
     <AboutTable />
