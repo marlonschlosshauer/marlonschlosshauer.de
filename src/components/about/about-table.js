@@ -13,11 +13,9 @@ const languages = [
   },
   {
     content: "CSS",
-    modifiers: [],
   },
   {
     content: "HTML",
-    modifiers: [],
   },
   {
     content: "Clojure",
@@ -25,44 +23,34 @@ const languages = [
   },
   {
     content: "ClojureScript",
-    modifiers: [],
   },
-
   {
     content: "SQL",
     modifiers: ['bold'],
   },
   {
     content: "Java",
-    modifiers: [],
   },
   {
     content: "Python",
-    modifiers: [],
   },
   {
     content: "C#",
-    modifiers: [],
   },
   {
     content: "Haskell",
-    modifiers: [],
   },
   {
     content: "PHP",
-    modifiers: [],
   },
   {
     content: "C++",
-    modifiers: [],
   },
   {
     content: "C",
-    modifiers: [],
   },
   {
     content: "ASM",
-    modifiers: [],
   },
 ];
 
@@ -80,49 +68,25 @@ const frontend = [
     modifiers: ['bold'],
   },
   {
-    content: "React Navigation",
-    modifiers: [],
+    content: "Storybook",
+    modifiers: ['bold'],
   },
   {
     content: "Gatsby",
     modifiers: ['bold'],
   },
   {
+    content: "Redux (Toolkit)",
+    modifiers: ['bold'],
+  },
+  {
+    content: 'msw',
+  },
+  {
+    content: "React Navigation",
+  },
+  {
     content: "RevenueCat",
-    modifiers: [],
-  },
-
-  {
-    content: "Redux",
-    modifiers: ['bold'],
-  },
-  {
-    content: "Redux Toolkit",
-    modifiers: ['bold'],
-  },
-  {
-    content: "Angular",
-    modifiers: [],
-  },
-  {
-    content: "Karma",
-    modifiers: [],
-  },
-  {
-    content: "Protractor",
-    modifiers: [],
-  },
-  {
-    content: "Jest",
-    modifiers: [],
-  },
-  {
-    content: "Antd",
-    modifiers: [],
-  },
-  {
-    content: "Bootstrap",
-    modifiers: [],
   },
   {
     content: "Reacl-C",
@@ -137,6 +101,25 @@ const frontend = [
     content: "Reagent",
     modifiers: ['bold'],
   },
+  {
+    content: "Angular",
+  },
+  {
+    content: "Karma",
+  },
+  {
+    content: "Protractor",
+  },
+  {
+    content: "Jest",
+  },
+  {
+    content: "Antd",
+  },
+  {
+    content: "Bootstrap",
+  },
+
 ];
 
 
@@ -147,11 +130,9 @@ const backend = [
   },
   {
     content: "passport",
-    modifiers: [],
   },
   {
     content: "express-graphql",
-    modifiers: [],
   },
   {
     content: "MongoDB",
@@ -159,15 +140,12 @@ const backend = [
   },
   {
     content: "Spring",
-    modifiers: [],
   },
   {
     content: "Quarkus",
-    modifiers: [],
   },
   {
     content: "Akka",
-    modifiers: [],
   },
   {
     content: "Ring",
@@ -183,15 +161,12 @@ const backend = [
   },
   {
     content: "Django",
-    modifiers: [],
   },
   {
     content: "gRPC",
-    modifiers: [],
   },
   {
     content: "Selenium",
-    modifiers: [],
   },
 
 ];
@@ -202,15 +177,12 @@ const tools = [
     modifiers: ['bold',],
   }, {
     content: "VSCode",
-    modifiers: [],
   },
   {
     content: "Jetbrains IDEs",
-    modifiers: [],
   },
   {
     content: "Postman",
-    modifiers: [],
   },
   {
     content: "Docker",
@@ -220,13 +192,10 @@ const tools = [
     content: "Figma",
     modifiers: ['bold',],
   },
-  {
-    content: "Storybook",
-    modifiers: ['bold'],
-  },
+
   {
     content: "Slack",
-    modifiers: [],
+    modifiers: ['bold'],
   },
   {
     content: "Github",
@@ -242,20 +211,16 @@ const tools = [
   },
   {
     content: "Adobe Suite",
-    modifiers: [],
   },
   {
     content: "Zoom",
-    modifiers: [],
   },
   {
     content: "Zeplin",
-    modifiers: [],
   },
 
   {
     content: "Blender",
-    modifiers: [],
   },
 ];
 
