@@ -35,8 +35,8 @@ const projects = [
     project: 'software',
     slug: 'https://github.com/marlonschlosshauer/thesis',
     description: 'Bachelor Thesis in Applied Computer Science about Composition of UI elements in reacl-c (ClojureScript) using Monads',
-    start: "2022-03-29",
-    end: "2022-09-11"
+    start: "2021-09-11",
+    end: "2022-03-29",
   },
   {
     title: 'Goose',
@@ -90,17 +90,19 @@ query GetAllProjectFrontmatter {
       .map(({ frontmatter: project }) => ({ ...project })),
     ...projects
   ].sort((a, b) =>
-    a.start > b.start
+    a.end == undefined
       ? -1
-      : a.start < b.start
+      : b.end == undefined
         ? 1
-        : (a.end && b.end)
-          ? a.end > b.end
-            ? -1
-            : a.end < b.end
-              ? 1
-              : 0
-          : 0)
+        : a.start > b.start
+          ? -1
+          : a.start < b.start
+            ? 1
+            : a.end > b.end
+              ? -1
+              : a.end < b.end
+                ? 1
+                : 0)
   );
 
   return (
