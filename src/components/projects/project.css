@@ -40,7 +40,6 @@
 
 .project-index-content > img {
   width: 192px;
-  height: 192px;
+  height: 100%;
   margin: auto;
 }
-

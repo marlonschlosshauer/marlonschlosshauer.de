@@ -1,13 +1,13 @@
 ---
 slug: "/projects/tippinho"
 type: 'project'
-index: 0
 date: "2022-10-19"
 title: "Tippinho"
+project: 'job'
 description: "Amateur Soccer prediction Community"
 position: "Lead Mobile Developer"
-start: "04.2022"
-end: "12.2022"
+start: "2022-04-01"
+end: "2022-12-31"
 ---
 
 **Tippinho** is a platform where you and your friends make friendly predictions on upcoming matches in various amateur soccer leagues in Germany. You can then compare your score to your friend's predictions. All this is done through an app.
