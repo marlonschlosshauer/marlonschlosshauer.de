@@ -12,7 +12,7 @@ end: "2022-12-31"
 
 **Tippinho** is a platform where you and your friends make friendly predictions on upcoming matches in various amateur soccer leagues in Germany. You can then compare your score to your friend's predictions. All this is done through an app.
 
-I joined **Tippinho** as the only mobile developer - and such handled everything related to the app.
+I joined **Tippinho** as the only mobile developer - and as such handled everything related to the app.
 
 ## Tasks
 
