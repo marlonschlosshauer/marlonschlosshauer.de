@@ -19,7 +19,7 @@ export default function Template({ data }) {
       <div className="project-index-period-details">
         <p className="project-index-start">{frontmatter?.start}</p>
         <p className="project-index-divider">{` - `}</p>
-        <p className="project-index-end">{frontmatter?.end}</p>
+        <p className="project-index-end">{frontmatter?.end ?? 'Currently'}</p>
       </div>
       <div
         className="project-index-content"

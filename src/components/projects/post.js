@@ -25,7 +25,7 @@ export const Post = ({ title, project, slug, description, position, start, end }
       <div className="project-post-period">
         <p className="project-post-text">{dateFormatter(start)}</p>
         <p className="project-post-text"> - </p>
-        <p className="project-post-text">{end ? dateFormatter(end) : <i>Currently</i>}</p>
+        <p className="project-post-text">{end ? dateFormatter(end) : 'Currently'}</p>
       </div>
     </div>
   </Link>
