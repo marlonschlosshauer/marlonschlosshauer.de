@@ -64,7 +64,7 @@ const projects = [
   },
 ]
 
-export const Projects = () => {
+const Projects = () => {
   const data = useStaticQuery(graphql`
 query GetAllProjectFrontmatter {
   allMarkdownRemark (sort: {fields: frontmatter___end, order: DESC}, filter: {frontmatter: {type: {eq: "project"}}}){
@@ -81,14 +81,14 @@ query GetAllProjectFrontmatter {
     }
   }
 }
-`)
+`);
 
-  const x = ([...
-    data
+  const x = ([
+    ...data
       ?.allMarkdownRemark
       ?.nodes
       .map(({ frontmatter: project }) => ({ ...project })),
-  ...projects
+    ...projects
   ].sort((a, b) =>
     a.start > b.start
       ? -1
