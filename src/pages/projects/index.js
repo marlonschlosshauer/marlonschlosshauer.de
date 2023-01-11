@@ -112,6 +112,6 @@ query GetAllProjectFrontmatter {
   )
 };
 
-export const Head = () => <Seo title="Projects" description='' />
+export const Head = () => <Seo title="Projects" description='Jobs, projects and software of mine' />
 
 export default Projects;

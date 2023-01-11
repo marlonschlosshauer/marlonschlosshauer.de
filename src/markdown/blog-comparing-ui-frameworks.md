@@ -6,7 +6,6 @@ title: "A small comparison between Antd, Base-Web and Chakra-UI"
 description: "I had great success using Antd for small personal projects but always wondered how it would stack up when compared to other UI frameworks, so I looked at some alternatives."
 ---
 
-# Intro
 I had great success using Antd for small personal projects but always wondered how it would stack up when compared to other UI frameworks. I've previously used Material UI for Angular, Bootstrap for pure HTML and Antd for React. I like Antd. It looks great, has a rich feature-set and provides a simple API. So, what does the competition look like? I had no idea, so I decided to do a small comparison between Antd and other UI frameworks.
 
 Besides the provided API and number of components available, the actual file size of the deployed site was something I was also curious about, too.
@@ -26,7 +25,6 @@ If I expand this comparison in the future I'd like to include [MaterialUI](https
 ![antd](https://user-images.githubusercontent.com/24259317/211889542-b395ea87-3ab2-460c-8462-7be5af105366.png)
 
 Link: [Antd](https://ant.design/)
-
 
 Implementing the example in Antd was easy. Afterall, it is what I am most familiar with. Of the three it had the most concise syntax. As a result I built it the fastest. It also had all the components that I needed, though this could be the result of starting with an Antd design in my head and working it backwards to an example page.
 Something that I noticed while building the site with the other two frameworks is that I rarely had to adjust spacing. This could be because of my inexperience in possible grid/layout systems with the other two frameworks though.
@@ -50,7 +48,6 @@ Link: [Chakra-UI](https://chakra-ui.com/)
 
 Unsurprisingly, I needed the most lines of CSS with Chakra (Antd: 20, Base: 40, Chakra: 61), as it doesn't offer as many pre-built layouts. However this is far from a dealbreaker, as most layouts can be easily replicated with flexbox or grid. Chakra is mostly concise but doesn't have the huge feature list that the other two offer (at least in the standard version). For instance: I needed to build the table myself, instead of passing my column definition and data to a component.
 Like Base-Web, Chakra is very minimalistic. The components are simpler to use, which makes it easier to change things.
-
 
 # Sizes and load times
 To get a ballpark number I deployed all three sites to github using [gh-pages](https://github.com/tschaub/gh-pages). It's an easy process that I often use to get something I can share quickly.

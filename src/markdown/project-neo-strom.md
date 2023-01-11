@@ -8,7 +8,7 @@ position: "CTO"
 start: "2021-12-07"
 ---
 
-neo strom is a modern electricity provider that uses AI, automation and modern supply strategies to take full advantage of renewable energy.
+neo strom is a modern electricity provider that uses AI, automation and modern supply strategies to take full advantage of renewable energy. Our goal is to give our customers the cheapest price for renewable energy while also providing full transparency about consumption and prices.
 
 I joined **neo-strom** as a software developer and UX designer. I'm one of three founding members.
 
@@ -18,7 +18,7 @@ I joined **neo-strom** as a software developer and UX designer. I'm one of three
 - Evaluating automation opportunities
 - Designing UI for our MVP
 - Provide interactive prototype using figma
-- Keeping key-value-proposition focused
+- Keeping the key-value-proposition focused
 - Building a lean corporate-identity
 - Representing our startup at events and meetings
 
