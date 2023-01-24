@@ -3,10 +3,10 @@ slug: "/blog/handling-errors-clojure-api"
 type: 'blog'
 date: "2022-12-09"
 title: "Handling errors in your Clojure REST API"
-description: "With my first Clojure REST API I wanted to handle errors a little bit differently. Usually I'd throw exceptions to deal with errors, but having a REPL and great nil-pruning made me want to try something more straight forward."
+description: "With my first Clojure REST API I wanted to handle errors a little bit differently. Usually I'd throw exceptions to deal with errors, but having a REPL and great nil-punning made me want to try something more straight forward."
 ---
 
-With my first Clojure REST API I wanted to handle errors a little bit differently. Usually I'd throw exceptions to deal with errors, but having a REPL and great nil-pruning made me want to try something more straight forward.
+With my first Clojure REST API I wanted to handle errors a little bit differently. Usually I'd throw exceptions to deal with errors, but having a REPL and great nil-punning made me want to try something more straight forward.
 
 # Data and Errors
 To encapsulate both the success and the error case I return a `[data error]` tuple. `data` holds the data on a success case, `error` is `nil` if no error occurd. `[nil nil]` is valid, but `[{} {}]` is not.
