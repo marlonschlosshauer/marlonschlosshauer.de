@@ -7,8 +7,8 @@ const dateFormatter = (date) => {
   return d.getFullYear() + "." + `${d.getMonth() + 1}`.padStart(2, '0')
 };
 
-export const Post = ({ title, project, slug, description, position, start, end }) => (
-  <Link className='project-post-link' to={slug} target={project === 'job' ? '_self' : '_blank'}>
+export const Post = ({ title, project, target = '_self', slug, description, position, start, end }) => (
+  <Link className='project-post-link' to={slug} target={target}>
     <div className="project-post-container">
       <h1 className="project-post-title">{title.trim()}</h1>
       <p className="project-post-description">{description.trim()}</p>

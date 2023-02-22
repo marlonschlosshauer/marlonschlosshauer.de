@@ -71,6 +71,7 @@ query GetAllProjectFrontmatter {
     nodes {
       frontmatter {
         slug
+        target
         title
         project
         description
