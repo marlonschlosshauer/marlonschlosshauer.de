@@ -6,6 +6,7 @@ project: 'job'
 description: "The electricity provider of the future"
 position: "CTO"
 start: "2021-12-07"
+end: "2023-02-22"
 ---
 
 neo strom is a modern electricity provider that uses AI, automation and modern supply strategies to take full advantage of renewable energy. Our goal is to give our customers the cheapest price for renewable energy while also providing full transparency about consumption and prices.
