@@ -90,17 +90,17 @@ query GetAllProjectFrontmatter {
       .map(({ frontmatter: project }) => ({ ...project })),
     ...projects
   ].sort((a, b) =>
-    a.end == undefined
+    a.end === undefined
       ? -1
-      : b.end == undefined
+      : b.end === undefined
         ? 1
-        : a.start > b.start
+        : a.end > b.end
           ? -1
-          : a.start < b.start
+          : a.end < b.end
             ? 1
-            : a.end > b.end
+            : a.start > b.start
               ? -1
-              : a.end < b.end
+              : a.start < b.start
                 ? 1
                 : 0)
   );
