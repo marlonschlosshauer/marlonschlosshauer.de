@@ -17,7 +17,7 @@ body {
   font-weight: normal;
   margin: 0;
   word-wrap: break-word;
-  background: var(--color-background);
+  background: var(--color-brand);
 }
 a {
   background-color: transparent;

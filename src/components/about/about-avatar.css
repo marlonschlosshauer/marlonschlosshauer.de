@@ -20,7 +20,7 @@
 }
 
 .about-avatar-email-container {
-  background-color: #2E7267;
+  background-color: var(--color-brand-off);
   border-radius: 64px;
   padding: 6px 12px;
   margin: auto;
@@ -32,4 +32,3 @@
   text-decoration: none;
   font-size: 14px;
 }
-
