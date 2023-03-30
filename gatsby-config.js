@@ -46,9 +46,9 @@ module.exports = {
         background_color: `#1E5B51`,
         // This will impact how browsers show your PWA/website
         // https://css-tricks.com/meta-theme-color-and-trickery/
-        // theme_color: `#1E5B51`,
+        theme_color: `#1E5B51`,
         display: `minimal-ui`,
-        icon: './static/favicon.png'
+        icon: './static/favicon.svg'
       },
     },
     `gatsby-plugin-mdx`,

@@ -39,6 +39,8 @@ export const Seo = ({ title, description, imageUrl, author, children }) => {
       <meta name="twitter:creator" content={metaAuthor} />
       <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDescription} />
+      <link rel="icon" type="image/png" href={`${siteUrl}/favicon.png`} />
+      <link rel="icon" type="image/svg+xml" href={`${siteUrl}/favicon.svg`}  sizes="any"/>
       {children}
     </>
   )
