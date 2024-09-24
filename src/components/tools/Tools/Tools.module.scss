@@ -1,0 +1,7 @@
+@use "@/scss/mixins.scss" as *;
+
+.tool {
+    @include text("text", "M");
+    width: 100%;
+    white-space: nowrap;
+}

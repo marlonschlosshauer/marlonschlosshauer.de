@@ -1,0 +1,23 @@
+@use "@/scss/mixins.scss" as *;
+
+.container {
+  text-decoration: none;
+
+  &.link {
+    cursor: pointer;
+  }
+}
+
+.title {
+  @include text("headline", "S");
+  font-weight: 600;
+  width: 100%;
+  white-space: nowrap;
+  text-decoration: underline;
+}
+
+.text {
+  @include text("text", "M");
+  width: 100%;
+  white-space: nowrap;
+}

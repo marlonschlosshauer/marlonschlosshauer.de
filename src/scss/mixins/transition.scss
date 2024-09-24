@@ -1,0 +1,28 @@
+@mixin reduced {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+@mixin slow {
+  @media (update: slow) {
+    @content;
+  }
+}
+
+@mixin transition($property) {
+  transition-duration: 0.3s;
+  transition-property: $property;
+  transition-timing-function: ease-in-out;
+  will-change: $property;
+
+  @include reduced {
+    transition-property: none;
+    will-change: none;
+  }
+
+  @include slow {
+    transition-property: none;
+    will-change: none;
+  }
+}

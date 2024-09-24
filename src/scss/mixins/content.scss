@@ -1,0 +1,46 @@
+@import "./breakpoints.scss";
+
+@mixin content {
+  width: calc(100vw - 4rem);
+  margin-left: auto;
+  margin-right: auto;
+
+  @include tablet {
+    width: calc(100vw - 6.6rem);
+  }
+
+  @include desktop {
+    width: calc(100vw - 9.6rem);
+  }
+
+  @include large-desktop {
+    margin-left: 4.8rem;
+    margin-right: 4.8rem;
+    max-width: 144rem;
+  }
+}
+
+@mixin shift($side: "left") {
+  @if $side == "left" {
+    margin-left: 2rem;
+
+    @include tablet {
+      margin-left: 3.3rem;
+    }
+
+    @include desktop {
+      margin-left: 4.8rem;
+    }
+  }
+  else {
+    margin-right: 2rem;
+
+    @include tablet {
+      margin-right: 3.3rem;
+    }
+
+    @include desktop {
+      margin-right: 4.8rem;
+    }
+  }
+}

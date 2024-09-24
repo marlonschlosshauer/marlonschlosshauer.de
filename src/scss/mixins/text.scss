@@ -1,0 +1,221 @@
+@import "./breakpoints.scss";
+
+@mixin mobileHeadlineXL {
+  font-size: 4.8rem;
+}
+
+@mixin mobileHeadlineL {
+  font-size: 4rem;
+}
+
+@mixin mobileHeadlineM {
+  font-size: 3.4rem;
+}
+
+@mixin mobileHeadlineS {
+  font-size: 2.8rem;
+}
+
+@mixin mobileTextXL {
+  font-size: 2.2rem;
+}
+
+@mixin mobileTextL {
+  font-size: 1.8rem;
+}
+
+@mixin mobileTextM {
+  font-size: 1.6rem;
+}
+
+@mixin mobileTextS {
+  font-size: 1.4rem;
+}
+
+@mixin mobileTextXS {
+  font-size: 1.2rem;
+}
+
+@mixin tabletHeadlineXL {
+  font-size: 6.8rem;
+}
+
+@mixin tabletHeadlineL {
+  font-size: 5.6rem;
+}
+
+@mixin tabletHeadlineM {
+  font-size: 4.8rem;
+}
+
+@mixin tabletHeadlineS {
+  font-size: 3.6rem;
+}
+
+@mixin tabletTextXL {
+  font-size: 2.8rem;
+}
+
+@mixin tabletTextL {
+  font-size: 2.4rem;
+}
+
+@mixin tabletTextM {
+  font-size: 2rem;
+}
+
+@mixin tabletTextS {
+  font-size: 1.5rem;
+}
+
+@mixin tabletTextXS {
+  font-size: 1.2rem;
+}
+
+@mixin desktopHeadlineXL {
+    font-size: 9.4rem;
+}
+
+@mixin desktopHeadlineL {
+  font-size: 7.8rem;
+}
+
+@mixin desktopHeadlineM {
+  font-size: 6.2rem;
+}
+
+@mixin desktopHeadlineS {
+  font-size: 4.8rem;
+}
+
+@mixin desktopTextXL {
+  font-size: 3.6rem;
+}
+
+@mixin desktopTextL {
+  font-size: 3.2rem;
+}
+
+@mixin desktopTextM {
+  font-size: 2.8rem;
+}
+
+@mixin desktopTextS {
+  font-size: 2.2rem;
+}
+
+@mixin desktopTextXS {
+  font-size: 1.6rem;
+}
+
+@mixin text($type, $size) {
+  @if $type == "headline" {
+    @if $size == "XL" {
+      @include mobileHeadlineXL;
+
+      @include tablet {
+        @include tabletHeadlineXL;
+      }
+
+      @include desktop {
+        @include desktopHeadlineXL;
+      }
+    }
+
+    @if $size == "L" {
+      @include mobileHeadlineL;
+
+      @include tablet {
+        @include tabletHeadlineL;
+      }
+
+      @include desktop {
+        @include desktopHeadlineL;
+      }
+    }
+
+    @if $size == "M" {
+      @include mobileHeadlineM;
+
+      @include tablet {
+        @include tabletHeadlineM;
+      }
+
+      @include desktop {
+        @include desktopHeadlineM;
+      }
+    }
+
+    @if $size == "S" {
+      @include mobileHeadlineS;
+
+      @include tablet {
+        @include tabletHeadlineS;
+      }
+
+      @include desktop {
+        @include desktopHeadlineS;
+      }
+    }
+  } @else {
+    @if $size == "XL" {
+      @include mobileTextXL;
+
+      @include tablet {
+        @include tabletTextXL;
+      }
+
+      @include desktop {
+        @include desktopTextXL;
+      }
+    }
+
+    @if $size == "L" {
+      @include mobileTextL;
+
+      @include tablet {
+        @include tabletTextL;
+      }
+
+      @include desktop {
+        @include desktopTextL;
+      }
+    }
+
+    @if $size == "M" {
+      @include mobileTextM;
+
+      @include tablet {
+        @include tabletTextM;
+      }
+
+      @include desktop {
+        @include desktopTextM;
+      }
+    }
+
+    @if $size == "S" {
+      @include mobileTextS;
+
+      @include tablet {
+        @include tabletTextS;
+      }
+
+      @include desktop {
+        @include desktopTextS;
+      }
+    }
+
+    @if $size == "XS" {
+      @include mobileTextS;
+
+      @include tablet {
+        @include tabletTextS;
+      }
+
+      @include desktop {
+        @include desktopTextS;
+      }
+    }
+  }
+}

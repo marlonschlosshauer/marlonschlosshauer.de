@@ -1,0 +1,29 @@
+:root {
+  --primary: #163219;
+  --secondary: #c66840;
+
+  --off-primary: #27542c;
+  --off-secondary: #824227;
+
+  --white: #fff;
+  --black: #000;
+  --gray: #c2c2c2;
+
+  --font: Sans-Serif;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--white);
+  background-color: var(--primary);
+  overflow-x: hidden;
+}
+
+*::selection {
+  background-color: var(--secondary);
+}
+
+a {
+  color: var(--white);
+  text-decoration: var(--white) underline;
+}

@@ -1,0 +1,53 @@
+@use "@/scss/mixins.scss" as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.content {
+  @include content;
+}
+
+.hero {
+  @include text("text", "M");
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: var(--white);
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.headline {
+  @include text("headline", "XL");
+  font-weight: 300;
+}
+
+.sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+}
+
+@include tablet {
+  .container {
+    gap: 4rem;
+  }
+
+  .hero {
+    margin-top: 12rem;
+    margin-bottom: 12rem;
+  }
+
+  .sliders {
+    gap: 12rem;
+  }
+}

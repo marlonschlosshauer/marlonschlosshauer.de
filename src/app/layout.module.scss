@@ -1,0 +1,18 @@
+@use "@/scss/mixins.scss" as *;
+
+.header {
+  @include content;
+  padding-top: 6rem;
+}
+
+.logo {
+  display: inline-block;
+  width: 6.2rem;
+  height: 6.2rem;
+}
+
+.main {
+  min-height: 100vh;
+  padding-top: 6rem;
+  padding-bottom: 12rem;
+}

@@ -1,0 +1,14 @@
+@use "@/scss/mixins.scss" as *;
+
+.link {
+    @include transition(color fill text-decoration-color);
+    color: var(--white);
+    fill: var(--white);
+    text-decoration-color: var(--white);
+
+    @include hover {
+        color: var(--gray);
+        fill: var(--gray);
+        text-decoration-color: var(--gray);
+    }
+}

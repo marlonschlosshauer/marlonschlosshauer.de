@@ -1,0 +1,114 @@
+@use "@/scss/mixins.scss" as *;
+
+.content {
+  @include content;
+
+  p,
+  a,
+  li,
+  pre,
+  code {
+    @include text("text", "S");
+  }
+
+  h1,
+  h1 > pre,
+  h1 > code {
+    @include text("headline", "XL");
+    font-weight: 400;
+  }
+
+  h2,
+  h2 > pre,
+  h2 > code {
+    @include text("headline", "L");
+    font-weight: 400;
+  }
+
+  h3,
+  h3 > pre,
+  h3 > code {
+    @include text("headline", "M");
+    font-weight: 400;
+  }
+
+  p,
+  ol,
+  ul {
+    margin-bottom: 6rem;
+  }
+
+  p + ol,
+  p + ul {
+    margin-top: -6rem;
+  }
+
+  ol + pre,
+  ul + pre {
+    margin-top: -6rem;
+  }
+
+  ol + p,
+  ul + p {
+    margin-top: -3rem;
+  }
+
+  pre + p,
+  code + p {
+    margin-top: 3rem;
+  }
+
+  a {
+    @include transition(color text-decoration-color);
+    color: var(--white);
+    text-decoration-color: var(--white);
+
+    @include hover {
+      color: var(--gray);
+      text-decoration-color: var(--gray);
+    }
+  }
+
+  h1 + * {
+    margin-bottom: 6rem;
+  }
+
+  img {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.backWrapper {
+  @include transition(color);
+  display: inline-block;
+  color: var(--white);
+  margin-bottom: 3rem;
+
+  @include hover {
+    color: var(--gray);
+
+    .back {
+      transform: translate3d(1rem, 0, 0);
+    }
+  }
+}
+
+.back {
+  @include transition(transform);
+  width: 4.8rem;
+  height: 4.8rem;
+}
+
+@include tablet {
+  .content {
+    h1 + * {
+      margin-bottom: 22rem;
+    }
+  }
+
+  .backWrapper {
+    margin-top: 12rem;
+    margin-bottom: 12rem;
+  }
+}
