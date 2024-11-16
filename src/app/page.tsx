@@ -32,7 +32,7 @@ export default function LandingPage() {
           <Link
             className={styles.link}
             target="_blank"
-            href="https://en.wikipedia.org/wiki/Design_engineer"
+            href="https://vercel.com/blog/design-engineering-at-vercel"
           >
             Design Engineering
           </Link>
