@@ -50,6 +50,7 @@ export default function LandingPage() {
         </div>
         <Link
           className={styles.link}
+          target="_blank"
           href="https://github.com/marlonschlosshauer"
         >
           Marlon
