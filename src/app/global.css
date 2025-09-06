@@ -1,1 +1,75 @@
-@import "tailwindcss";
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+    --color-primary: #49c224;
+    --color-primary-alt: #39901f;
+
+    --color-secondary: #9d71f7;
+    --color-secondary-alt: #9e82d7;
+
+    --color-black: #1e1e1e;
+    --color-black-alt: #3b3b3b;
+
+    --color-white: #f1f1f1;
+}
+
+:root {
+    --sh-class: var(--color-white);
+    --sh-identifier: var(--color-primary);
+    --sh-sign: var(--color-white);
+    --sh-property: var(--color-primary);
+    --sh-entity: var(--color-secondary);
+    --sh-jsxliterals: var(--color-primary);
+    --sh-string: var(--color-white);
+    --sh-keyword: var(--color-secondary);
+    --sh-comment: var(--color-white);
+}
+
+:focus {
+    outline-color: var(--color-primary);
+    border-color: transparent;
+}
+
+::selection {
+    background-color: var(--color-primary);
+    text-decoration: var(--color-white);
+}
+
+html {
+    scrollbar-gutter: stable;
+}
+
+body {
+    text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    text-wrap: balance;
+}
+
+a {
+    transition: text-decoration-color 0.3s;
+    will-change: text-decoration-color;
+    text-decoration: underline;
+    text-decoration-color: var(--color-primary);
+}
+
+a:hover {
+    text-decoration-color: var(--color-primary-alt);
+}
+
+code {
+    text-wrap: wrap;
+}
+
+code span::selection {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
