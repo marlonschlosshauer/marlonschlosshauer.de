@@ -23,9 +23,6 @@ export const metadata: Metadata = {
     openGraph: {
         siteName: "Marlon Schlosshauer",
         url: "https://marlonschlosshauer.de",
-        title: "Marlon Schlosshauer",
-        description:
-            "Fullstack Developer from Germany who loves to build, design and optimize products into reality.",
         locale: "en",
         firstName: "Marlon",
         lastName: "Schlosshauer",
