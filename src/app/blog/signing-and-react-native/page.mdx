@@ -1,3 +1,5 @@
+import { Meta } from "@/components/blog/meta/Meta";
+
 export const metadata = {
     title: "Signing, React Native and the Play Store",
     description:
@@ -7,6 +9,8 @@ export const metadata = {
 };
 
 # Signing, React Native and the Play Store
+
+<Meta {...metadata} />
 
 To deploy their app to the Play Store, developers have to generate a `.keystore` file and sign their release with it. The [React Native docs](https://reactnative.dev/docs/signed-apk-android) do a good job explaining the necessary steps.
 

@@ -1,3 +1,5 @@
+import { Meta } from "@/components/blog/meta/Meta";
+
 export const metadata = {
     title: "Handling errors in your Clojure REST API",
     description:
@@ -7,6 +9,8 @@ export const metadata = {
 };
 
 # Handling errors in your Clojure REST API
+
+<Meta {...metadata} />
 
 With my first Clojure REST API I wanted to handle errors a little bit differently. Usually I'd throw exceptions to deal with errors, but having a REPL and great nil-punning made me want to try something more straight forward.
 

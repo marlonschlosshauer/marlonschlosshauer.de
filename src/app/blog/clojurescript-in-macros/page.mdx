@@ -1,3 +1,5 @@
+import { Meta } from "@/components/blog/meta/Meta";
+
 export const metadata = {
     title: "Writing macros that consume ClojureScript code",
     description:
@@ -7,6 +9,8 @@ export const metadata = {
 };
 
 # Writing macros that consume ClojureScript code
+
+<Meta {...metadata} />
 
 Clojure macros are extremely powerful but I had issues finding a simple ressource on how to make them work in ClojureScript - and with ClojureScript code. So, here are two ways that worked for me.
 
