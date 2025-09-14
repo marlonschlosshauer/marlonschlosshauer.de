@@ -27,9 +27,6 @@ export const metadata: Metadata = {
         firstName: "Marlon",
         lastName: "Schlosshauer",
     },
-    alternates: {
-        canonical: "/",
-    },
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
