@@ -11,6 +11,8 @@
     --color-secondary: #9d71f7;
     --color-secondary-alt: #9e82d7;
 
+    --color-tertiary: #ff32b1;
+    --color-tertiary-alt: #de6ab2;
     --color-black: #1e1e1e;
     --color-black-alt: #3b3b3b;
 
@@ -19,15 +21,15 @@
 }
 
 :root {
-    --sh-class: var(--color-white);
+    --sh-class: var(--color-secondary-alt);
     --sh-identifier: var(--color-primary);
-    --sh-sign: var(--color-white);
+    --sh-sign: var(--color-white-alt);
     --sh-property: var(--color-primary);
-    --sh-entity: var(--color-secondary);
-    --sh-jsxliterals: var(--color-primary);
+    --sh-entity: var(--color-tertiary);
+    --sh-jsxliterals: var(--color-tertiary);
     --sh-string: var(--color-white);
     --sh-keyword: var(--color-secondary);
-    --sh-comment: var(--color-white);
+    --sh-comment: var(--color-white-alt);
 }
 
 :focus {
