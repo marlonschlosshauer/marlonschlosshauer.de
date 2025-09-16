@@ -25,6 +25,8 @@ This has multiple benefits:
 -   Explicit error field allows `[nil nil]` to still communicate success
 -   **Destructuring** makes handling the tuple really ease
 
+<br />
+
 ```clojure
 (let [[data error] (db/get-user-by-mail db email)]
   (if error

@@ -13,6 +13,7 @@
 
     --color-tertiary: #ff32b1;
     --color-tertiary-alt: #de6ab2;
+
     --color-black: #1e1e1e;
     --color-black-alt: #3b3b3b;
 
@@ -64,4 +65,17 @@ code {
 code span::selection {
     background-color: var(--color-primary);
     color: var(--color-white);
+}
+
+pre {
+    padding: 20px;
+    border: 1px solid var(--color-black-alt);
+    border-radius: 12px;
+}
+
+ol + pre,
+ul + pre {
+    padding: initial;
+    border: initial;
+    border-radius: initial;
 }
