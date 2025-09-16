@@ -55,17 +55,6 @@ h4 {
     text-wrap: balance;
 }
 
-a {
-    transition: text-decoration-color 0.3s;
-    will-change: text-decoration-color;
-    text-decoration: underline;
-    text-decoration-color: var(--color-primary);
-}
-
-a:hover {
-    text-decoration-color: var(--color-primary-alt);
-}
-
 code {
     text-wrap: wrap;
 }
