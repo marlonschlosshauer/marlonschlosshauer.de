@@ -1,6 +1,6 @@
 <p align="center">
 	<a href="https://marlonschlosshauer.de">
-		<img  src="./static/hat.png" width="48" />
+		<img  src="./static/image/hat.png" width="48" />
 	</a>
 </p>
 
