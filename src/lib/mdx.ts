@@ -9,3 +9,5 @@ export const getMdxFiles = async (dir: string[]) => {
 
     return entries.filter(entry => entry.isFile() && entry.name.endsWith(".mdx"));
 };
+
+export const getBlogPosts = () => getMdxFiles(["src", "content", "blog"]);

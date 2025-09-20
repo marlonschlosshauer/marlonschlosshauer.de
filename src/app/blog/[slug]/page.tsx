@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import { getMdxFiles } from "@/lib/mdx";
+import { getBlogPosts } from "@/lib/mdx";
 
 export const generateStaticParams = async () => {
-    const files = await getMdxFiles(["src", "content", "blog"]);
+    const files = await getBlogPosts();
     return files.map(file => ({ slug: file.name.slice(0, -4) }));
 };
 
