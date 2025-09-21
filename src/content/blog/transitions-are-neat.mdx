@@ -1,0 +1,189 @@
+import { Form } from "@/components/blog/demo/transitions-are-neat/form/Form";
+import { Teaser } from "@/components/blog/demo/transitions-are-neat/teaser/Teaser";
+
+# React Transitions are neat
+
+I have to be honest, the Concurrent API hasn't revolutionized the way I write components (yet). While being a rare sight, I'm always delighted when I get to use one of its tools. It reminds me of when I first played around with Hooks. Joys of using useEffect for everything! Jokes aside, it makes my work feel more like engineering. Behavior that I previously hacked together in a non-idiomatic way now are nativ to React. Today where exploring some neat interactions with the `useTransition` hook.
+
+## Introducing transitions
+
+The docs describe [useTransition](https://react.dev/reference/react/useTransition) as a hook to render parts of our UI in the background. That is almost a deceptively simple explanation, as it makes it sound like just a performance optimisation. In my opinion its integration into React is as much of a win as the performance gains.
+
+With the `useTransition` hook we get a tuple that contains a `pending` flag and a function to mark something as a transition. What initially drew me to `useTransition` was the `pending` flag. It, in combination with the ability to start (async) transition, meant I didn't have to reach for tools like SWR when dealing with minor await work. Here is an example:
+
+<Teaser />
+
+Pressing the button just wasts 2 seconds of your life. Here is an excerp from the code:
+
+```
+export const Teaser = () => {
+    const [isDone, setIsDone] = useState(false);
+    const [isPending, startTransition] = useTransition();
+
+    const onComplete = () =>
+        startTransition(async () => {
+            await wasteTime(1000);
+            setIsDone(true);
+        });
+
+    return (
+        <Button disabled={isPending || isDone} loading={isPending} onClick={onComplete}>
+            {!isDone ? "Mark as complete" : "Completed"}
+        </Button>
+    );
+};
+```
+
+You can find the full source-code [here](#).
+
+As you can see we get a `pending` flag for free with our transition. Inside of a transition you can simply await to trigger a loading state. Do note that we still have to manage state to keep whatever is computed during our transition. Transitions aren't a replacement for query tools like React Query, SWR or RTKQ. More on that soon.
+
+Like mentioned, transitions are well integrated into other functions & hooks. Server actions work well with transitions. And it goes without saying that transitions work well with Suspense. So we could wrap our `<Teaser/>` component in a `<Suspense>` and have it trigger a fallback.
+
+**However, transitions go further than that.** Remember that they're able to render in the background. Yes -- you can wrap your transition in a Suspense, but what about the other way around? What happens if we have Suspending components in our transition? Lets explore.
+
+## Inverting flow
+
+Server actions have something really cool called [useFormStatus](https://react.dev/reference/react-dom/hooks/useFormStatus). It lets you inspect (among other things) a loading state of a form in specific parts of your UI. This is more fine grained control then a Suspense boundary. Imagine you have a form. If the user presses the submit button you wouldn't want to show a loading skeleton for the entire form, rather you would like to show a spinner next to the button (and disable the inputs). And that is exactly what we can do with the `status` flag returned by the `useFormStatus` hook.
+
+Here is some example code:
+
+```tsx
+
+"use client";
+
+import Form from "next/form";
+import {login} from "@server/actions/login";
+
+export const FormWithServerAction = () => (
+    <Form action={login}>
+		<Body/>
+		<Submit/>
+    </Form>
+);
+
+const Body = () => {
+	const [_1, _2, pending] = useFormStatus();
+	return (
+		<>
+			<input name="email" placeholder="email@website.com" type="email" disabled={pending} />
+			<input name="password" placeholder="**************" type="password" disabled={pending} />)
+		<>
+}
+
+const Submit = () => {
+	const [_1, _2, pending] = useFormStatus();
+
+	return <button type="submit" disabled={pending}>{pending ? "Loading" : "Submit"}</button>
+}
+
+```
+
+As you can see the `useFormStatus` hook can be used in components beneath a form element to check for a pending status.
+
+That is cool, but nothing really revolutionary. The producer (form) of the async action is still above the consumers (inputs, button). We can also achieve something similar by using `useTransition` and passing the pending flag down to the children. Its worth mentioning that you can have your form be entirely SSR if you split this up into multiple files (which is something that you couldn't do with just `useTransition`). That aside, `useTransition` actually allows us to do something even cooler.
+
+Lets say our form shows a component conditionally, e.g if a user selects a specific country a note should be shown. Lets go a step further: That component needs to fetch and we cannot allow the user to submit the form without the loading being completed..
+
+Usually we would move our fetch call up (into our parent) & render it conditionally. That way both our fetch and button are (atleast) at the same level, thus allowing us to show a loading spinner and controlling the submit button. With transitions we have another way of solving this.
+
+## A recent use case
+
+In the following component you can choose a country. Once you have selecting a country, a component will be rendered that will need to await something async. Depending on that result, it will show a note. If you select `German` as the language, the note will appear.
+
+<Form />
+
+Notice that the submit button shows a loading state after you make a selection. That is because the transition triggered a state update, which included a suspending component. In short: We have an in-between state with our value and our pending flag, that is used until we can transition to the state where the value of the async action has been resolved. We're transitioning the UI from state `A` to state `B`.
+
+Here is an excerp from the code:
+
+```tsx
+export const Form: FC = () => {
+    const [isPending, startTransition] = useTransition();
+    const [country, setCountry] = useState<string | null>(null);
+
+    const onSetCountry = (country: string | null) => startTransition(() => setCountry(country));
+
+    return (
+        <div className="p-4 border border-black-alt rounded-lg">
+            <div className="flex flex-col gap-4">
+                <Badge label="Page" />
+                <p className="text-4xl">Select your destination</p>
+                <div className="flex flex-col gap-8">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer semper odio
+                        eu imperdiet fringilla. Nam orci purus, bibendum vestibulum nisi ut,
+                        eleifend commodo orci. Vivamus rhoncus imperdiet lacus, ac pulvinar ligula
+                        hendrerit eget.
+                    </p>
+                    <div className="flex flex-col gap-4">
+                        <Select
+                            label="Country"
+                            placeholder="Choose your country"
+                            value={country}
+                            options={countries}
+                            onSelection={onSetCountry}
+                        />
+                    </div>
+                </div>
+                <div className="h-[200px]">{country && <Alternative country={country} />}</div>
+                <div className="flex flex-row gap-2">
+                    <Button disabled={!country || isPending} loading={isPending}>
+                        Confirm
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+};
+```
+
+You can find the full source-code [here](#).
+
+Note that our `<Select>` is calling the `onSetCountry` function when a value changes. Crucially, in that function we wrap our `setCountry` call with `startTransition`. That marks whatever depends on that value as secondary.
+
+We can see that `<Alternative country={country}>` is relying on the value to render. If we take a look at `<Alternative>`:
+
+```tsx
+export const Alternative: FC<AlternativeProps> = ({ country }) => {
+    const { data: alternative } = useSWR(
+        `api/alternative/${country}`,
+        async () => {
+            await wasteTime(2000);
+            return country === "de";
+        },
+        {
+            suspense: true,
+        }
+    );
+
+    if (!alternative) {
+        return null;
+    }
+
+    return (
+        <Note.Provider>
+            <Note.Frame>
+                <Note.Header>
+                    <Note.Headline>An alternative is available</Note.Headline>
+                    <Note.Exit />
+                </Note.Header>
+                <Note.Body>
+                    For your selection there is an alternative destination available.
+                </Note.Body>
+                <Note.Footer>
+                    <Note.Link href="#">Visit alternative</Note.Link>
+                </Note.Footer>
+            </Note.Frame>
+        </Note.Provider>
+    );
+};
+```
+
+We see it has a pretty simple `useSWR` call with a custom fetcher function that just wastes time and returns true when we selected `de`. The `{suspsense: true}` is important. That tells SWR to be suspense enabled.
+
+It is that suspense signal which our transition the consumes!
+
+## Conclusion
+
+While the Concurrency API wasn't a revolution for somebody like me that works on medium sized React applications, it still provides interesting new toys to play with. Personally, I love what RSC has done for handling fetching on the server. I hope the React Team can iterate on what toys they give us, to interact with the Concurrency API -- I'm personally still holding out for a more opinionated way to do fetching on the client.
