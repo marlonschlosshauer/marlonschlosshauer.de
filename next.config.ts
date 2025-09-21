@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
         "/blog/[slug]/opengraph-image": ["./public/font/**/*"],
         "/opengraph-image": ["./public/font/**/*"],
     },
+    htmlLimitedBots: /.*/,
 };
 
 const withMDX = createMDX({});
