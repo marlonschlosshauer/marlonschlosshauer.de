@@ -22,15 +22,15 @@
 }
 
 :root {
-    --sh-class: var(--color-secondary-alt);
+    --sh-class: var(--color-tertiary);
     --sh-identifier: var(--color-primary);
-    --sh-sign: var(--color-white-alt);
-    --sh-property: var(--color-primary);
-    --sh-entity: var(--color-tertiary);
-    --sh-jsxliterals: var(--color-tertiary);
-    --sh-string: var(--color-white);
-    --sh-keyword: var(--color-secondary);
-    --sh-comment: var(--color-white-alt);
+    --sh-sign: var(--color-primary-alt);
+    --sh-property: var(--color-tertiary-alt);
+    --sh-entity: var(--color-secondary);
+    --sh-jsxliterals: var(--color-white-alt);
+    --sh-string: var(--color-secondary-alt);
+    --sh-keyword: var(--color-white-alt);
+    --sh-comment: var(--color-black-alt);
 }
 
 :focus {
