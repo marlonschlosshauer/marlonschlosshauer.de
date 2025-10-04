@@ -33,7 +33,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
     return (
         <html lang="en" className={clsx(inter.className, "bg-black text-white")}>
             <head></head>
-            <body className="antialiased px-8 py-10 flex flex-col gap-8 min-h-screen mx-auto my-auto md:max-w-[640px] md:pt-14 md:min-h-[minmax(800px,100svh)] md:justify-center">
+            <body className="antialiased px-8 py-10 flex flex-col gap-8 min-h-screen mx-auto my-auto md:px-0 md:max-w-[640px] md:pt-14 md:min-h-[minmax(800px,100svh)] md:justify-center">
                 <nav className="flex">
                     <Header />
                 </nav>
