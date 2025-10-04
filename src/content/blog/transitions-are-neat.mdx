@@ -1,0 +1,290 @@
+import { Form } from "@/components/blog/demo/transitions-are-neat/form/Form";
+import { SuspendedForm } from "@/components/blog/demo/transitions-are-neat/form/SuspendedForm";
+import { SuspendedTeaser } from "@/components/blog/demo/transitions-are-neat/teaser/SuspendedTeaser";
+import { Teaser } from "@/components/blog/demo/transitions-are-neat/teaser/Teaser";
+import { Meta } from "@/components/blog/meta/Meta";
+
+export const metadata = {
+    title: "React Transitions are neat",
+    description: "Exploring async composition on the client with React Transitions.",
+    date: "2025-10-04",
+    words: 1800,
+};
+
+# React Transitions are neat
+
+<Meta {...metadata} />
+
+The Concurrent API hasn't revolutionized the way I write components but I'm always delighted when I get to use one of its tools. While building a new feature I found a neat interaction with the `useTransition` hook and I wanted to document it here.
+
+We're going to explore the interplay between conditional rendering, `useTransition` and Suspense.
+
+## Introducing transitions
+
+The docs describe [useTransition](https://react.dev/reference/react/useTransition) as a hook to "render a part of our UI in the background". When I initially read that, my brain instantly categorized it as a performance optimization, but as we're going to see, it is more than that.
+
+With the `useTransition` hook we get a tuple that contains a `pending` flag and a function to mark something as a transition. What initially drew me to `useTransition` was the `pending` flag! To me it meant I could delay reaching for tools like React Query, SWR etc. Here is an example:
+
+<Teaser />
+
+Pressing the button just wastes 2 seconds of your life. Here is a simplified excerpt from the code:
+
+```
+export const Teaser = () => {
+    const [isDone, setIsDone] = useState(false);
+    const [isPending, startTransition] = useTransition();
+
+    const onComplete = () =>
+        startTransition(async () => {
+            await wasteTime(1000);
+            setIsDone(true);
+        });
+
+    return (
+        <Button disabled={isPending || isDone} loading={isPending} onClick={onComplete}>
+            {!isDone ? "Mark as complete" : "Completed"}
+        </Button>
+    );
+};
+```
+
+You can find the full source-code [here](https://github.com/marlonschlosshauer/marlonschlosshauer.de/blob/main/src/components/blog/demo/transitions-are-neat/teaser/Teaser.tsx).
+
+As you can see we get a `pending` flag for free with our transition. Inside of a transition you can simply await anything to trigger a loading state.
+
+Do note that we still have to manage state, if we want to keep whatever is computed during our transition (e.g. if we fetch a resource from a server). Transitions aren't a replacement for query tools like React Query, SWR or RTKQ. More on that soon.
+
+An assumption that I had early on was that transitions are suspense enabled, i.e. they trigger a `<Suspense>` boundary, during a transition -- however that is **not** the case. So if we take our `<Teaser/>` component and wrap a `<Suspense>` around it, pressing the button will not invoke the Suspense boundary.
+
+```tsx
+export const SuspendedTeaser: FC = () => (
+    <Suspense fallback={<p>Loading...</p>}>
+        <Teaser />
+    </Suspense>
+);
+```
+
+You can try it for yourself here:
+
+<SuspendedTeaser />
+
+You can find the full source-code [here](https://github.com/marlonschlosshauer/marlonschlosshauer.de/blob/main/src/components/blog/demo/transitions-are-neat/teaser/SuspendedTeaser.tsx).
+
+In fact, as I understand it, these two features are complementary to each other! What do I mean by this? Well: We can't wrap a `<Suspense>` around our transition (because transitions aren't Suspense-enabled). But what happens if we do the opposite?
+
+What happens if we wrap our transition around something Suspense-enabled?
+
+## Inverting flow
+
+Server actions have something cool called [useFormStatus](https://react.dev/reference/react-dom/hooks/useFormStatus). It lets you inspect (among other things) a loading state of a form in specific parts of your UI. This gives you more precise control than a Suspense boundary.
+
+Imagine you have a form. If the user presses the submit button, you wouldn't want to show a loading skeleton for the entire form. Showing a spinner next to the button (and disabling the inputs) would be less jarring to users. That is exactly what we can do with the `status` flag, returned by the `useFormStatus` hook.
+
+Here is some example code:
+
+```tsx
+import Form from "next/form";
+import {login} from "@server/actions/login";
+import {Body, Submit} from "./components";
+
+export const FormWithServerAction = () => (
+    <Form action={login}>
+		<Body/>
+		<Submit/>
+    </Form>
+);
+
+// components.tsx
+"use client";
+const Body = () => {
+	const {pending} = useFormStatus();
+	return (
+		<>
+			<input
+				name="email"
+				placeholder="email@website.com"
+				type="email"
+				disabled={pending} />
+			<input
+				name="password"
+				placeholder="**************"
+				type="password"
+				disabled={pending} />)
+		<>
+}
+
+const Submit = () => {
+	const {pending} = useFormStatus();
+	return (
+		<button type="submit" disabled={pending}>
+			{pending ? "Loading" : "Submit"}
+		</button>
+	);
+}
+
+```
+
+As you can see the `useFormStatus` hook can be used in components beneath a form element to check for a pending status. It is almost like the `<Form>` acts like a provider.
+
+That is cool, but nothing really revolutionary. The producer (form) of the async action is still above the consumers (inputs, button). Or in other words: **The thing causing the loading is above the components showing the spinner.**
+
+We can achieve something similar by using `useTransition` and passing the pending flag down to the children (or using a provider). Using the `useFormStatus` hook does have the benefit of allowing you to render the Form in an RSC (which you could not do with the `useTransition` approach).
+
+That aside, `useTransition` actually allows us to do something much cooler!
+
+## However
+
+Let's say our form shows a component conditionally: e.g. if a user selects a country, a note should appear. Let's go a step further: That note should only be shown sometimes and the only way to find out, is to do call a server. In the meantime we cannot allow the user to submit the form without the loading being completed.
+
+Usually we would move our fetch call up (into our parent) & render it conditionally. That way both our fetch and button are (at least) at the same level, thus allowing us to show a loading spinner and controlling the submit button. Our code would look like this:
+
+```
+export const Form = () => {
+	const [country, setCountry] = useState<string | null>(null);
+	const {data, isPending} = useSWR(
+		country
+			? `/api/alternative/{coutry}`
+			: undefined,
+		fetcher
+	);
+
+	const onConfirm = () => {};
+
+	return (
+		<>
+			<Select
+				value={country}
+				onChange={setCountry}
+				options={countries}
+				disabled={loading} />
+			{data && <Alternative {...data} />}
+			<Button
+				loading={isPending}
+				disabled={isPending}
+				onClick={onConfirm}>Confirm</Button>
+		</>
+	)
+}
+```
+
+We have moved the fetch into our form. It already holds our state, so it needed to be a client component anyway. This works. Though it has the annoying downside that, if we want to add more fetching and more edge-cases, we will start to bloat our form. We could try to clean up the wiring by moving most of it into a Provider, but that is hardly a joyful solution.
+
+With transitions we have another way of solving this.
+
+## Async composition on the client
+
+I have brought our thought experiment to life in the following component. Select a country to see the loading state get triggered. Hint: If you select `Germany`, a note will appear.
+
+<Form />
+
+This form is interesting because it moved the fetch into the note. And it uses the `useTransition` hook to capture the loading state. The following is happening:
+
+1. We conditionally render the note
+2. The note always fetches, to check if it should be shown
+3. If it should be shown, the note shows a message (otherwise it exits early)
+4. Our setting of state is marked as a _transition_
+
+Notice that the submit button shows a loading state after you make a selection. So despite the fact that the child starts the fetch, our parent still knows about its loading progress. That is because our state update was marked as a transition!
+
+Here is a snippet from the code:
+
+```tsx
+export const Form: FC = () => {
+    const [isPending, startTransition] = useTransition();
+    const [country, setCountry] = useState<string | null>(null);
+
+    // 1. We wrap our setCountry call in a transition
+    const onSetCountry = (country: string | null) => startTransition(() => setCountry(country));
+
+    return (
+        <div className="p-4 border border-black-alt rounded-lg">
+            <div className="flex flex-col gap-4">
+                <Badge label="Page" />
+                <p className="text-4xl">Select your destination</p>
+                <div className="flex flex-col gap-8">
+                    <p>Lorem ipsum...</p>
+                    <div className="flex flex-col gap-4">
+                        <Select
+                            label="Country"
+                            placeholder="Choose your country"
+                            value={country}
+                            options={countries}
+                            onSelection={onSetCountry}
+                        />
+                    </div>
+                </div>
+                {/* 2. We render the suspending component conditionally  */}
+                {country && <Alternative country={country} />}
+                {/* 3. Our button uses the pending flag  */}
+                <Button disabled={!country || isPending} loading={isPending}>
+                    Confirm
+                </Button>
+            </div>
+        </div>
+    );
+};
+```
+
+You can find the full source-code [here](https://github.com/marlonschlosshauer/marlonschlosshauer.de/blob/main/src/components/blog/demo/transitions-are-neat/form/Form.tsx).
+
+The `<Select>` calls `onSetCountry`, which wraps `setCountry` and starts a transition via `startTransition`. The `isPending` flag is now set to `true` until everything that is stopping us from rendering the desired state, has completed. By setting `country` we begin to render `<Alternative>`, which is Suspense-enabled.
+
+If we take a look at `<Alternative>`:
+
+```tsx
+export const Alternative: FC<AlternativeProps> = ({ country }) => {
+    const { data: alternative } = useSWR(
+        `api/alternative/${country}`,
+        async () => {
+            await wasteTime(2000);
+            return country === "de";
+        },
+        {
+            suspense: true,
+        }
+    );
+
+    if (!alternative) {
+        return null;
+    }
+
+    return (
+        <Note.Provider>
+            <Note.Frame>
+                <Note.Header>
+                    <Note.Headline>An alternative is available</Note.Headline>
+                    <Note.Exit />
+                </Note.Header>
+                <Note.Body>
+                    For your selection there is an alternative destination available.
+                </Note.Body>
+                <Note.Footer>
+                    <Note.Link href={alternative}>Visit alternative</Note.Link>
+                </Note.Footer>
+            </Note.Frame>
+        </Note.Provider>
+    );
+};
+```
+
+You can find the code [here](https://github.com/marlonschlosshauer/marlonschlosshauer.de/blob/main/src/components/blog/demo/transitions-are-neat/form/Alternative.tsx).
+
+We see it has a pretty simple `useSWR` call with a custom fetcher function that just wastes time and returns true when we selected `de`. The `{suspense: true}` is important. That tells SWR to be Suspense-enabled, which in turn causes our transition enter the pending (suspended?) state.
+
+It is that suspense signal which our transition consumes. This also allows us to re-use the same component, but with a `<Suspense>` wrapped around it. Example:
+
+<SuspendedForm />
+
+You can find the source-code [here](https://github.com/marlonschlosshauer/marlonschlosshauer.de/blob/main/src/components/blog/demo/transitions-are-neat/form/SuspendedForm.tsx).
+
+Quirky UX aside, to me this highlights a strength of transitions that wasn't immediately obvious when I read that transitions let you _"render a part of the UI in the background"_.
+
+We can now compose Suspense-enabled conditionally rendered client components, without having to give up fine control over loading states. Either we catch awaits by wrapping with `<Suspense>` or we catch the signal and divert the loading indicator elsewhere in our parent, with `useTransition`.
+
+## Conclusion
+
+This little pattern reminded me that composition is one of React's biggest strength. I am a huge fan of RSC and the new composition patterns it has brought to us. Especially the way we can compose asynchronous components is incredible. However, having now experienced the joy of async components, I can't help but wonder what a more opinionated way of doing client-side fetching in React would look like.
+
+React (rightfully) spent time to focus on the server, however I feel like it is time to return to where it all started: The client. With server tools in a great state and dependency management being solved, isn't it time for async client components?
+
+Would a rogue `await` alongside my `useState` really be the end of the world?

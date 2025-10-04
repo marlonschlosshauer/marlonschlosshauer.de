@@ -22,6 +22,28 @@
 
     --color-white: #f1f1f1;
     --color-white-alt: #b4b4b4;
+
+    --animate-shimmer: shimmer 1.5s infinite;
+}
+
+.shimmer-loading::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
 }
 
 :root {
