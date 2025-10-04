@@ -71,6 +71,14 @@ pre {
     padding: 20px;
     border: 1px solid var(--color-black-alt);
     border-radius: 12px;
+    font-size: 14px;
+
+    @media (min-width: 920px) {
+        max-width: 900px;
+        margin-left: -130px;
+        margin-right: -130px;
+        padding-left: 40px;
+    }
 }
 
 ol + pre,
