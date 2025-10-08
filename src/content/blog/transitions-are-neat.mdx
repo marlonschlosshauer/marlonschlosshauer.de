@@ -15,9 +15,9 @@ export const metadata = {
 
 <Meta {...metadata} />
 
-The Concurrent API hasn't revolutionized the way I write components but I'm always delighted when I get to use one of its tools. While building a new feature I found a neat interaction with the `useTransition` hook and I wanted to document it here.
+React's concurrent rendering hasn't revolutionized the way I write components but I'm always delighted when I get to use one of its tools! While building a new feature I found a neat interaction with the `useTransition` hook and I wanted to document it here.
 
-We're going to explore the interplay between conditional rendering, `useTransition` and Suspense.
+So let's explore the interplay between conditional rendering, `useTransition` and Suspense.
 
 ## Introducing transitions
 
@@ -70,7 +70,7 @@ You can try it for yourself here:
 
 You can find the full source-code [here](https://github.com/marlonschlosshauer/marlonschlosshauer.de/blob/main/src/components/blog/demo/transitions-are-neat/teaser/SuspendedTeaser.tsx).
 
-In fact, as I understand it, these two features are complementary to each other! What do I mean by this? Well: We can't wrap a `<Suspense>` around our transition (because transitions aren't Suspense-enabled). But what happens if we do the opposite?
+In fact, as I understand it, these two features are complementary to each other! What do I mean by this? Well: We can't wrap a `<Suspense>` around our transition. But what happens if we do the opposite?
 
 What happens if we wrap our transition around something Suspense-enabled?
 
