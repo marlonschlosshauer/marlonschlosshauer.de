@@ -132,11 +132,9 @@ We can achieve something similar by using `useTransition` and passing the pendin
 
 That aside, `useTransition` actually allows us to do something much cooler!
 
-## However
+Expanding on our example: Let's say our form shows a component conditionally. If a user selects a country, a note should appear. That note should only be shown conditionally and the only way to find out, is to call our server. And obviously the user can't submit the form, without the loading being done.
 
-Let's say our form shows a component conditionally: e.g. if a user selects a country, a note should appear. Let's go a step further: That note should only be shown sometimes and the only way to find out, is to do call a server. In the meantime we cannot allow the user to submit the form without the loading being completed.
-
-Usually we would move our fetch call up (into our parent) & render it conditionally. That way both our fetch and button are (at least) at the same level, thus allowing us to show a loading spinner and controlling the submit button. Our code would look like this:
+Usually we would move our fetch call up (into our parent) & render conditionally from there. That way both our fetch and button are (at least) at the same level, thus allowing us to show a loading spinner and controlling the submit button via the pending flag from our query tool. Our code would look like this:
 
 ```
 export const Form = () => {
@@ -177,12 +175,16 @@ I have brought our thought experiment to life in the following component. Select
 
 <Form />
 
-This form is interesting because it moved the fetch into the note. And it uses the `useTransition` hook to capture the loading state. The following is happening:
+This form is interesting because it moved the fetch into the note and it uses the `useTransition` hook to capture that loading state. The following is happening:
 
-1. We conditionally render the note
-2. The note always fetches, to check if it should be shown
-3. If it should be shown, the note shows a message (otherwise it exits early)
-4. Our setting of state is marked as a _transition_
+1. User selects something
+2. Transition is being started
+3. State is being updated
+4. Update causes note to be rendered
+5. Note starts a fetch (and signals suspending)
+6. Suspending keeps transition going, pending flag is true
+7. Note receives data, is done suspending
+8. Transition ends (because suspending is done), pending flag is false
 
 Notice that the submit button shows a loading state after you make a selection. So despite the fact that the child starts the fetch, our parent still knows about its loading progress. That is because our state update was marked as a transition!
 
@@ -287,4 +289,4 @@ This little pattern reminded me that composition is one of React's biggest stren
 
 React (rightfully) spent time to focus on the server, however I feel like it is time to return to where it all started: The client. With server tools in a great state and dependency management being solved, isn't it time for async client components?
 
-Would a rogue `await` alongside my `useState` really be the end of the world?
+Would a rogue `await` alongside my `useState` really be the end of the world? I hope this little composition pattern is the beginning of a journey, towards that.
