@@ -16,7 +16,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
     title: {
-        default: "Marlon Schlosshauer",
+        default: "Optimise into existence",
         template: "%s - Marlon Schlosshauer",
     },
     metadataBase: new URL("https://marlonschlosshauer.de"),
