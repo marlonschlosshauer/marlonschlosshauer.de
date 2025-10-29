@@ -12,7 +12,7 @@ Another gripe is the fact that rolling your own, type safe, optimized, i18n with
 
 Unsurprisingly, building your own i18n starts off similar to the setup guides for these libraries.
 
-1. Create a bunch of `.json` dictionaries somewhere
+Create a bunch of `.json` dictionaries somewhere
 
 ```
 // en.json
@@ -26,7 +26,7 @@ Unsurprisingly, building your own i18n starts off similar to the setup guides fo
 }
 ```
 
-2. Create a basic translation provider that loads the dictionaries
+Create a basic translation provider that loads the dictionaries
 
 ```
 // client.tsx
@@ -61,7 +61,7 @@ export const TranslationProvider: FC<
 };
 ```
 
-4. Add a hook that returns a translation function, which uses the dictionary from our provider
+Add a hook that returns a translation function, which uses the dictionary from our provider
 
 ```
 // client.tsx
@@ -72,7 +72,7 @@ export const useTranslation = () => {
 };
 ```
 
-5. Create a `layout.tsx` in `[locale]` and mount the provider
+Create a `layout.tsx` in `[locale]` and mount the provider
 
 ```
 // layout.tsx
