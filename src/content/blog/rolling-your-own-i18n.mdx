@@ -1,0 +1,394 @@
+# Rolling your own i18n in Next.js
+
+I see packages like next-intl, next-i18next and next-translate commonly recommended when people have the need to internationalize their Next.js apps. While I do not like to reinvent the wheel, I do take issues with making it the default to reach out for a library to handle i18n in Next.js.
+
+My main concern is with the _magic_ that some of these libraries provide. Not only can it lead to performance problems if you're new to Next.js, but it can also mentally box you into a solution that is sub-optimal for your use-case.
+
+Static rendering is a specific example where I would caution developers reconsider libraries. Both [next-intl](https://next-intl.dev/docs/routing/setup#static-rendering) & i18next opt your route into dynamic rendering by default, if you want to translate on the server. There are ways around it (at least for next-intl), however not only are we losing losing some of that slickness which made us choose those libraries in the first place, but you also have to realize that the deopt is going on!
+
+Another gripe is the fact that rolling your own, type safe, optimized, i18n with Next.js is trivial. Yes, that means implementing the translation logic and any other functionality yourself, however as you're about to see, that is straight forward, too.
+
+## The basics of client side translation
+
+Unsurprisingly, building your own i18n starts off similar to the setup guides for these libraries.
+
+1. Create a bunch of `.json` dictionaries somewhere
+
+```
+// en.json
+{
+  "WELCOME_MESSAGE": "Welcome"
+}
+
+// de.json
+{
+  "WELCOME_MESSAGE": "Willkommen"
+}
+```
+
+2. Create a basic translation provider that loads the dictionaries
+
+```
+// client.tsx
+import en from "./dictionary/en.json";
+import de from "./dictionary/de.json";
+import { createContext, FC, PropsWithChildren, useContext } from "react";
+
+export type Dictionary = typeof en | typeof de;
+export type Locale = "en" | "de";
+
+const getDictionary = (locale: Locale) => (locale === "en" ? en : de);
+
+export const isLocale = (locale: string): locale is Locale =>
+  ["de", "en"].includes(locale);
+
+export interface TranslationProviderData {
+  dictionary: Dictionary;
+}
+
+export interface TranslationProviderProps {
+  locale: Locale;
+}
+
+const Context = createContext({} as TranslationProviderData);
+
+export const TranslationProvider: FC<
+  PropsWithChildren<TranslationProviderProps>
+> = ({ locale, children }) => {
+  const dictionary = getDictionary(locale);
+
+  return <Context.Provider value={{ dictionary }}>{children}</Context.Provider>;
+};
+```
+
+4. Add a hook that returns a translation function, which uses the dictionary from our provider
+
+```
+// client.tsx
+export const useTranslation = () => {
+  const { dictionary } = useContext(Context);
+
+  return (key: keyof Dictionary) => dictionary[key] ?? key;
+};
+```
+
+5. Create a `layout.tsx` in `[locale]` and mount the provider
+
+```
+// layout.tsx
+import { isLocale, TranslationProvider } from "@/lib/i18n/client";
+import { notFound } from "next/navigation";
+
+export default async function LocaleLayout({
+  params,
+  children,
+}: LayoutProps<"/[locale]">) {
+  const { locale } = await params;
+
+  if (!isLocale(locale)) {
+    notFound();
+  }
+
+  return <TranslationProvider locale={locale}>{children}</TranslationProvider>;
+}
+```
+
+Congratulations, you have made your own minimal-viable i18n! Here is how you can use it:
+
+```
+// foo.tsx
+"use client";
+
+import {useTranslation} from "@/lib/i18n/client"
+
+export const Foo = () => {
+	const t = useTranslation();
+
+	return (
+		<p>{t("WELCOME_MESSAGE")}</p>
+	)
+}
+```
+
+## Server side translations
+
+With some minor refactoring we translate on the server, too! Lets clean up first by moving all of the shared stuff into a `shared.ts`:
+
+```
+// shared.ts
+import en from "./dictionary/en.json";
+import de from "./dictionary/de.json";
+
+export type Dictionary = typeof en | typeof de;
+export type Locale = "en" | "de";
+
+export const getDictionary = (locale: Locale) => (locale === "en" ? en : de);
+
+export const isLocale = (locale: string): locale is Locale =>
+  ["de", "en"].includes(locale);
+
+export const translate = (dictionary: Dictionary) => {
+  return (key: keyof Dictionary) => dictionary[key] ?? key;
+};
+```
+
+That leaves us with the following as our `client.tsx`:
+
+```
+// client.tsx
+"use client";
+
+import { createContext, FC, PropsWithChildren, useContext } from "react";
+import { Dictionary, getDictionary, Locale, translate } from "./shared";
+
+export interface TranslationProviderData {
+  dictionary: Dictionary;
+}
+
+export interface TranslationProviderProps {
+  locale: Locale;
+}
+
+const Context = createContext({} as TranslationProviderData);
+
+export const TranslationProvider: FC<
+  PropsWithChildren<TranslationProviderProps>
+> = ({ locale, children }) => {
+  const dictionary = getDictionary(locale);
+
+  return <Context.Provider value={{ dictionary }}>{children}</Context.Provider>;
+};
+
+export const useTranslation = () => {
+  const { dictionary } = useContext(Context);
+  return translate(dictionary);
+};
+```
+
+Now we can add a `server.ts` which we will be able to call from anywhere on the server:
+
+```
+// server.ts
+import { getDictionary, Locale, translate } from "./shared";
+
+export const getTranslation = (locale: Locale) => {
+  return translate(getDictionary(locale));
+};
+```
+
+You can call it in a server component like this:
+
+```
+// bar.tsx
+import { FC } from "react";
+import { getTranslation } from "@/lib/i18n/server";
+import { Locale } from "@/lib/i18n/shared";
+
+export interface BarProps {
+	locale: Locale;
+}
+
+export const Bar: FC<BarProps> = ({locale}) => {
+	const t = getTranslation(locale);
+
+    return (
+    	<p>{t("WELCOME_MESSAGE")}</p>
+    )
+
+}
+```
+
+You might notice the drawback to this implementation: The component needs to have a locale passed. We don't have access to providers in server components, so this is the simplest way of getting a locale. A bunch of libraries call the `cookies()` function, however that deopts your route into dynamic rendering. I will expand on an alternative to prop drilling the locale at the end.
+
+## Optimizing dictionaries
+
+Right now we call `getDictionary` on the client, which causes both dictionaries to be present on the client. To make our bundle as small as possible, we can update our `TranslationProvider` to take a `dictionary`, instead of a `locale`.
+
+First lets start by creating a `type.ts` file where we move the types from `shared.ts`:
+
+```
+// type.ts
+import en from "./dictionary/en.json";
+import de from "./dictionary/de.json";
+
+export type Dictionary = typeof en | typeof de;
+export type Locale = "en" | "de";
+```
+
+Now lets move the `getDictionary()` function into `server.ts`:
+
+```
+// server.ts
+import { translate } from "./shared";
+import { Locale } from "./type";
+import en from "./dictionary/en.json";
+import de from "./dictionary/de.json";
+
+export const getDictionary = (locale: Locale) => (locale === "en" ? en : de);
+
+export const getTranslation = (locale: Locale) => {
+  return translate(getDictionary(locale));
+};
+```
+
+We update types in `shared.ts`, which should now look like this:
+
+```
+// shared.ts
+import { Dictionary, Locale } from "./type";
+
+export const isLocale = (locale: string): locale is Locale =>
+  ["de", "en"].includes(locale);
+
+export const translate = (dictionary: Dictionary) => {
+  return (key: keyof Dictionary) => dictionary[key] ?? key;
+};
+
+```
+
+Now we update our `client.tsx` to only get a dictionary:
+
+```
+// client.tsx
+"use client";
+
+import { createContext, FC, PropsWithChildren, useContext } from "react";
+import { translate } from "./shared";
+import { Dictionary } from "./type";
+
+export interface TranslationProviderData {
+  dictionary: Dictionary;
+}
+
+const Context = createContext({} as TranslationProviderData);
+
+export const TranslationProvider: FC<
+  PropsWithChildren<TranslationProviderData>
+> = ({ dictionary, children }) => {
+  return <Context.Provider value={{ dictionary }}>{children}</Context.Provider>;
+};
+
+export const useTranslation = () => {
+  const { dictionary } = useContext(Context);
+  return translate(dictionary);
+};
+```
+
+Only `server.ts` is actually working with our dictionaries now. While `type.ts` is touching them, that will be stripped out of the bundle delivered to the client.
+
+The last thing we will have to do is to update our `<TranslationProvider>` in our `layout.tsx` to pass a dictionary. To achieve that we simply call `getDictionary` in the layout and pass it into the provider:
+
+```
+// layout.tsx
+import { TranslationProvider } from "@/lib/i18n/client";
+import { getDictionary } from "@/lib/i18n/server";
+import { isLocale } from "@/lib/i18n/shared";
+import { notFound } from "next/navigation";
+
+export default async function LocaleLayout({
+  params,
+  children,
+}: LayoutProps<"/[locale]">) {
+  const { locale } = await params;
+
+  if (!isLocale(locale)) {
+    notFound();
+  }
+
+  const dictionary = getDictionary(locale);
+
+  return (
+    <TranslationProvider dictionary={dictionary}>
+      {children}
+    </TranslationProvider>
+  );
+}
+```
+
+## Making it your own
+
+So far we only support very basic translations, however the beauty of owning the code is that you can add features as you need them. Lets add some basic string interpolation to our i18n!
+
+The `translate` function lives in `shared.ts` and is easy to expand. I add a second parameter to the returned function, which takes in a map of string:string (or number) pairs.
+
+```
+// shared.ts
+export const translate = (dictionary: Dictionary) => {
+  return (
+    key: keyof Dictionary,
+    instances?: Record<string, string | number>,
+  ) => {
+    const target = dictionary[key] ?? key;
+
+    if (!instances) {
+      return target;
+    }
+
+    return Object.entries(instances).map(([key, value]) =>
+      target.replace(`{{${key}}}`, `${value}`),
+    );
+  };
+};
+```
+
+With this I can now place templates into my translation files and replace them aftewards, during my translation:
+
+```
+// en.json
+{
+  "WELCOME_MESSAGE": "Welcome",
+  "MONTHLY_COST": "Starting from {{cost}}€ per month."
+}
+```
+
+And here is how it would look to translate that:
+
+```
+"use client";
+
+import {useTranslation} from "@/lib/i18n/client"
+
+export const Foo = () => {
+	const t = useTranslation();
+
+	return (
+		<p>{t("MONTHLY_COST", {cost: 123})}</p>
+	)
+}
+```
+
+With just a few lines of code we have seriously upgraded our translation function. And this is just the start. Even bigger features like namespaces or nested depths aren't as complicated as you might think. Another benefit is that you form the API to be the exact shape that fits your use case best.
+
+## An alternative to Locale
+
+Earlier I mentioned that you don't have to lug around `locale` to every RSC to translate (if you're brave enough). There is the option to define a const outside of an RSC, which will hold your dictionary. You create a set function which you call once and add a read function, which you wrap with React's [cache](https://react.dev/reference/react/cache) function.
+
+```
+// cache.ts
+import { cache } from "react";
+import { Locale } from "./type";
+
+const getCache = cache(() => {
+  return new Map();
+});
+
+export function setLocale(locale: Locale) {
+  getCache().set("locale", locale);
+}
+
+export function getLocale() {
+  return getCache().get("locale");
+}
+```
+
+I don't recommend this approach as I in the past I hit nasty issues where, for some requests, Next.js rendered my `not-found.tsx` first. For i18n reasons I had to set `cache` (which saved the `locale`) in the `not-found.tsx`. This meant I would randomly get the incorrect locale.
+
+This smells like skill issue, which is why, despite my issues, I wanted to mention this approach, as I think it should work (even if it didn't for me).
+
+## Final words
+
+Rolling your own i18n isn't just sipmle, it also lets you decide how much magic you want in your code base. Once you know how the pieces slot together it only takes a couple of minutes and you will never have to worry about a dependency ever again.
+
+That isn't to say there aren't use cases where a library is unquestionably better. Dynamically loading of dictionaries and cutting down dictionaries to only used strings aren't features that I would like to spend time on. Having to go beyond translating strings (like normalizing currencies and dates) is also a problem area where I would be tempted to look for a library.
+
+You can find a repository with all the code [here](https://github.com/marlonschlosshauer/next.js-roll-your-own-i18n-demo).
