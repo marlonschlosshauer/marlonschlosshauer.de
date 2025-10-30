@@ -309,7 +309,7 @@ export default async function LocaleLayout({
 
 ## Making it your own
 
-So far we only support very basic translations, however the beauty of owning the code is that you can add features as you need them. Lets add some basic string interpolation to our i18n!
+So far we only support very basic translations, however the beauty of owning the code is that you can add features as you need them. Let's add some basic string interpolation to our i18n!
 
 The `translate` function lives in `shared.ts` and is easy to expand. I add a second parameter to the returned function, which takes in a map of string:string (or number) pairs.
 
@@ -333,7 +333,7 @@ export const translate = (dictionary: Dictionary) => {
 };
 ```
 
-With this I can now place templates into my translation files and replace them aftewards, during my translation:
+With this I can now place templates into my translation strings and replace them aftewards, during translation:
 
 ```
 // en.json
@@ -383,14 +383,14 @@ export function getLocale() {
 }
 ```
 
-I don't recommend this approach as I in the past I hit nasty issues where, for some requests, Next.js rendered my `not-found.tsx` first. For i18n reasons I had to set `cache` (which saved the `locale`) in the `not-found.tsx`. This meant I would randomly get the incorrect locale.
+I don't recommend this approach as I hit nasty issues in the past where, for some requests, Next.js rendered my `not-found.tsx` first. For i18n reasons I had to set `cache` (which saved the `locale`) in the `not-found.tsx`. This meant I would randomly get the incorrect locale.
 
 This smells like skill issue, which is why, despite my issues, I wanted to mention this approach, as I think it should work (even if it didn't for me).
 
 ## Final words
 
-Rolling your own i18n isn't just sipmle, it also lets you decide how much magic you want in your code base. Once you know how the pieces slot together it only takes a couple of minutes and you will never have to worry about a dependency ever again.
+Rolling your own i18n isn't just simple, it also lets you decide how much magic you want in your code base. Once you know how the pieces slot together it only takes a couple of minutes and you will never have to worry about a dependency ever again.
 
-That isn't to say there aren't use cases where a library is unquestionably better. Dynamically loading of dictionaries and cutting down dictionaries to only used strings aren't features that I would like to spend time on. Having to go beyond translating strings (like normalizing currencies and dates) is also a problem area where I would be tempted to look for a library.
+That isn't to say there aren't use cases where a library is unquestionably better. Dynamic loading of dictionaries and cutting down dictionaries to only used strings aren't features that I would like to spend time on. Having to go beyond translating strings (like normalizing currencies and dates) is also a problem area where I would be tempted to look for a library.
 
 You can find a repository with all the code [here](https://github.com/marlonschlosshauer/next.js-roll-your-own-i18n-demo).
