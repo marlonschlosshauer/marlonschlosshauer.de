@@ -11,20 +11,20 @@ type AnchorProps = ComponentPropsWithoutRef<"a">;
 type CodeProps = ComponentPropsWithoutRef<"code">;
 
 const components: MDXComponents = {
-    h1: (props: HeadingProps) => <h1 className="font-semibold mb-8" {...props} />,
+    h1: (props: HeadingProps) => <h1 className="font-semibold mb-8 text-2xl" {...props} />,
     h2: (props: HeadingProps) => (
         <Anchor className=" mt-8 my-3">
-            <h2 className="font-semibold" {...props} />
+            <h2 className="font-semibold text-xl" {...props} />
         </Anchor>
     ),
     h3: (props: HeadingProps) => (
         <Anchor className=" mt-8 my-3">
-            <h3 className="font-semibold" {...props} />
+            <h3 className="font-semibold text-xl" {...props} />
         </Anchor>
     ),
     h4: (props: HeadingProps) => (
         <Anchor>
-            <h4 className="font-medium" {...props} />
+            <h4 className="font-medium text-lg" {...props} />
         </Anchor>
     ),
     p: (props: ParagraphProps) => <p className="leading-snug my-8" {...props} />,

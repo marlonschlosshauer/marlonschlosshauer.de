@@ -1,0 +1,84 @@
+import { Metadata } from "next";
+import { Link } from "@/components/shared/link/Link";
+import { buildMetadata } from "@/lib/meta";
+
+export const metadata: Metadata = buildMetadata({
+    title: "Optimise into existence",
+    description:
+        "Fullstack Developer from Germany who loves to build, design and optimize products into reality.",
+});
+
+export default function Page() {
+    return (
+        <div className="flex flex-col gap-8">
+            <h1 className="font-semibold text-xl">
+                Design Engineering + Pareto Principle ={" "}
+                <Link href="https://github.com/marlonschlosshauer">Marlon</Link>
+            </h1>
+            <p className="text-white-alt">
+                I'm a full-stack developer that loves to code, design and optimise products into
+                reality. I'm a firm believer in compromise. Time is limited and ideas are infinite.
+                We can get a lot done if we're brave enough to focus, narrow scope and ship
+                incrementally.
+            </p>
+            <p className="text-white-alt">
+                After finishing my{" "}
+                <Link href="https://github.com/marlonschlosshauer/thesis">bachelor's thesis</Link>{" "}
+                in applied computer science I joined{" "}
+                <Link href="https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=0-1&t=euCBXXiFDOqdV9dh-1">
+                    Tippinho
+                </Link>{" "}
+                as their app developer and designer. During my time there I also worked on{" "}
+                <Link href="https://www.figma.com/design/vbdX85EQ4ALcO1Txeeu4do/Portfolio--Neo-Strom?node-id=0-1&t=qyTLYo9BRQ5HifD8-1">
+                    Neo Strom
+                </Link>
+                , filling a technical and design role. I later took on a full-time position as a
+                frontend developer at <Link href="https://becklyn.com">Becklyn</Link>, building CMS
+                powered websites. While working full-time I also worked on{" "}
+                <Link href="https://www.figma.com/design/KgLQExaQWOnNiDD7zsw6e9/Portfolio--Secondwave?node-id=0-1&t=jy94MQDD9AeEXfUE-1">
+                    Secondwave
+                </Link>
+                as a designer and developer on the side. Afterwards I did a redesign of Tippinho,
+                called{" "}
+                <Link href="https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=6-5924&t=VgC4hyVQZblLkrTo-4">
+                    Golero
+                </Link>
+                .
+            </p>
+            <h2 className="font-semibold text-xl">Writing</h2>
+            <ul className="list-disc list-inside">
+                <li>
+                    <Link href="/blog/rolling-your-own-i18n">
+                        2025 Rolling your own i18n in Next.js
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/blog/transitions-are-neat">2025 React Transitions are neat</Link>
+                </li>
+                <li>
+                    <Link href="/blog/handling-errors-in-clojure-api">
+                        2022 Handling errors in your Clojure REST API
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/blog/rtk-query-graphql">2022 Using RTK Query with GraphQL</Link>
+                </li>
+                <li>
+                    <Link href="/blog/signing-and-react-native">
+                        2022 Signing, React Native and the Play Store
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/blog/clojurescript-in-macros">
+                        2022 Writing macros that consume ClojureScript code
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/blog/comparing-ui-frameworks">
+                        2021 A small comparison between Antd, Base-Web and Chakra-UI
+                    </Link>
+                </li>
+            </ul>
+        </div>
+    );
+}
