@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Posts } from "@/components/posts/Posts";
 import { Link } from "@/components/shared/link/Link";
 import { buildMetadata } from "@/lib/meta";
 
@@ -8,7 +9,7 @@ export const metadata: Metadata = buildMetadata({
         "Fullstack Developer from Germany who loves to build, design and optimize products into reality.",
 });
 
-export default function Page() {
+export default async function Page() {
     return (
         <div className="flex flex-col gap-8">
             <h1 className="font-semibold text-xl">
@@ -46,39 +47,7 @@ export default function Page() {
                 .
             </p>
             <h2 className="font-semibold text-xl">Writing</h2>
-            <ul className="list-disc list-inside">
-                <li>
-                    <Link href="/blog/rolling-your-own-i18n">
-                        2025 Rolling your own i18n in Next.js
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/blog/transitions-are-neat">2025 React Transitions are neat</Link>
-                </li>
-                <li>
-                    <Link href="/blog/handling-errors-in-clojure-api">
-                        2022 Handling errors in your Clojure REST API
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/blog/rtk-query-graphql">2022 Using RTK Query with GraphQL</Link>
-                </li>
-                <li>
-                    <Link href="/blog/signing-and-react-native">
-                        2022 Signing, React Native and the Play Store
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/blog/clojurescript-in-macros">
-                        2022 Writing macros that consume ClojureScript code
-                    </Link>
-                </li>
-                <li>
-                    <Link href="/blog/comparing-ui-frameworks">
-                        2021 A small comparison between Antd, Base-Web and Chakra-UI
-                    </Link>
-                </li>
-            </ul>
+            <Posts />
         </div>
     );
 }

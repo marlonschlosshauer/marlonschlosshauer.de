@@ -5,7 +5,7 @@ import { buildMetadata } from "@/lib/meta";
 
 export const generateStaticParams = async () => {
     const files = await getBlogPosts();
-    return files.map(file => ({ slug: file.name.slice(0, -4) }));
+    return files.map(file => ({ slug: file.slug }));
 };
 
 export interface PostProps {

@@ -1,17 +1,33 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-export const getMdxFiles = async (dir: string[]) => {
-    const entries = await fs.readdir(path.join(process.cwd(), ...dir), {
+export const getBlogPosts = async (tags?: string[]) => {
+    const entries = await fs.readdir(path.join(process.cwd(), ...["src", "content", "blog"]), {
         recursive: true,
         withFileTypes: true,
     });
 
-    return entries.filter(entry => entry.isFile() && entry.name.endsWith(".mdx"));
-};
+    const posts = await Promise.all(
+        entries
+            .filter(entry => entry.isFile() && entry.name.endsWith(".mdx"))
+            .flatMap(async file => {
+                const result = await import(`@/content/blog/${file.name}`);
 
-export const getBlogPosts = async (tags?: string[]) => {
-    const posts = await getMdxFiles(["src", "content", "blog"]);
+                if (!result) {
+                    return [];
+                }
+
+                const { metadata } = result;
+
+                if (!metadata) {
+                    return [];
+                }
+
+                const slug = file.name.slice(0, -4);
+
+                return { ...metadata, href: `/blog/${slug}`, slug };
+            })
+    );
 
     if (tags && tags.length) {
         return posts.filter((post: any) => {
@@ -19,7 +35,7 @@ export const getBlogPosts = async (tags?: string[]) => {
                 return false;
             }
 
-            return post.metadata.openGraph.tags.some((tag: string) => tags.includes(tag));
+            return post.tags.some((tag: string) => tags.includes(tag));
         });
     }
 
