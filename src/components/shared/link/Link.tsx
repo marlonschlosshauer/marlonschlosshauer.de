@@ -15,8 +15,6 @@ export const Link: FC<PropsWithChildren<PropsWithClassName<LinkProps>>> = ({
 }) => {
     return (
         <Base
-            target={inNewTab ? "_blank" : "_parent"}
-            rel={inNewTab ? "noopener noreferrer" : undefined}
             {...props}
             className={clsx(
                 "underline decoration-primary hover:decoration-primary-alt transition-[text-decoration-color] duration-300 will-change-[text-decoration-color]",

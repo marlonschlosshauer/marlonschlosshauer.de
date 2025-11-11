@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
         "/opengraph-image": ["./public/font/**/*"],
     },
     htmlLimitedBots: /.*/,
+    experimental: {
+        viewTransition: true,
+    },
 };
 
 const withMDX = createMDX({});

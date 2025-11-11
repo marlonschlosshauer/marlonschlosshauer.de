@@ -112,3 +112,16 @@ ul + pre {
     border: initial;
     border-radius: initial;
 }
+
+.anchor-target {
+    anchor-name: --foo;
+}
+
+.anchor-element {
+    position-anchor: --foo;
+    position: absolute;
+    top: anchor(bottom);
+    right: anchor(right);
+    left: anchor(left);
+    margin-top: 12px;
+}
