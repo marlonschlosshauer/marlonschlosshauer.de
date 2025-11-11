@@ -38,7 +38,7 @@ export default async function Page() {
                 powered websites. While working full-time I also worked on{" "}
                 <Link href="https://www.figma.com/design/KgLQExaQWOnNiDD7zsw6e9/Portfolio--Secondwave?node-id=0-1&t=jy94MQDD9AeEXfUE-1">
                     Secondwave
-                </Link>
+                </Link>{" "}
                 as a designer and developer on the side. Afterwards I did a redesign of Tippinho,
                 called{" "}
                 <Link href="https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=6-5924&t=VgC4hyVQZblLkrTo-4">
