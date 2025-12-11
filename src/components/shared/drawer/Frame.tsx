@@ -35,7 +35,7 @@ export const Frame: FC<PropsWithChildren<FrameProps>> = ({ target, children }) =
     return createPortal(
         <Trap>
             <aside
-                aria-expanded={isOpen}
+                aria-hidden={isOpen}
                 className="w-screen h-screen absolute top-[0] left-[0] grid [grid-template-areas:'backdrop_sidebar'] grid-cols-[1fr_1fr]">
                 <Backdrop />
                 <div className="grid [grid-area:sidebar] [grid-template-areas:'header_exit'_'headline_headline'_'body_body'_'footer_footer'] grid-rows-[auto_auto_1fr_auto] gap-y-16 m-12 justify-between align-start">

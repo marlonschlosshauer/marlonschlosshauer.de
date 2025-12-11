@@ -17,15 +17,15 @@ export default async function Page() {
                 <Link href="https://github.com/marlonschlosshauer">Marlon</Link>
             </h1>
             <p className="text-white-alt">
-                I'm a full-stack developer that loves to code, design and optimise products into
-                reality. I'm a firm believer in compromise. Time is limited and ideas are infinite.
-                We can get a lot done if we're brave enough to focus, narrow scope and ship
-                incrementally.
+                I&lsquo;m a full-stack developer that loves to code, design and optimise products
+                into reality. I&lsquo;m a firm believer in compromise. Time is limited and ideas are
+                infinite. We can get a lot done if we&lsquo;re brave enough to focus, narrow scope
+                and ship incrementally.
             </p>
             <p className="text-white-alt">
                 After finishing my{" "}
-                <Link href="https://github.com/marlonschlosshauer/thesis">bachelor's thesis</Link>{" "}
-                in applied computer science I joined{" "}
+                <Link href="https://github.com/marlonschlosshauer/thesis">bachelors thesis</Link> in
+                applied computer science I joined{" "}
                 <Link href="https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=0-1&t=euCBXXiFDOqdV9dh-1">
                     Tippinho
                 </Link>{" "}

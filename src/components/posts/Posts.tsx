@@ -9,7 +9,7 @@ export const Posts = async () => {
             {metadatas
                 .sort((a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf())
                 .toReversed()
-                .map((post: any, key: number) => (
+                .map((post, key) => (
                     <li key={key}>
                         <Link href={post.href}>
                             {new Date(post.date).getFullYear()} {post.title}
