@@ -7,6 +7,7 @@
 @theme {
     --color-primary: #49c224;
     --color-primary-alt: #39901f;
+    --color-primary-alt-alt: #1d4e0e;
 
     --color-secondary: #9d71f7;
     --color-secondary-alt: #9e82d7;
@@ -111,4 +112,8 @@ ul + pre {
     padding: initial;
     border: initial;
     border-radius: initial;
+}
+
+input[type="radio"] {
+    accent-color: var(--color-primary);
 }

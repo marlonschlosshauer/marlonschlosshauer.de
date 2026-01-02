@@ -1,0 +1,172 @@
+import { ExampleNavigation } from "@/components/blog/demo/why-parallel-routes/navigation/ExampleNavigation";
+import { Navigation } from "@/components/blog/demo/why-parallel-routes/navigation/Navigation";
+import { Meta } from "@/components/blog/meta/Meta";
+
+export const metadata = {
+    title: "Making layouts show page specific content",
+    description: "Using the power of parallel routes to inject page specific content into layouts",
+    date: "2026-01-02",
+    words: 900,
+};
+
+# Making layouts show page specific content
+
+<Meta {...metadata} />
+
+Parallel routes are a niche tool that is surprisingly powerful. The often talked about use cases are dashboard and [intercepting routes](https://nextjs.org/docs/app/api-reference/file-conventions/intercepting-routes#examples), however I want to showcase another possible application: Handling route specific content in a layout.
+
+Lets say we have the following structure in the app directory:
+
+```
+- /[locale]
+  - layout.tsx
+  - [[...slug]]
+	- page.tsx
+```
+
+We have our root layout wrapped within a `[locale]` to i18n our app. Afterwards we generate many different pages via `[[...slug]]`. The root layout could look something like this:
+
+```
+// [locale]/layout.tsx
+export default async function RootLayout({params, children}: LayoutProps<"/[locale]">) {
+	const {locale} = await params;
+
+	return (
+		<html lang={locale}>
+			<head></head>
+			<body>
+				<Navigation locale={locale} />
+				{children}
+				<Footer locale={locale}/>
+			</body>
+		</html>
+	)
+}
+```
+
+We consume the `params` promise to get our `locale`. We set up our `html`, `head` & `body`. Because we don't want our entire navigation & footer to re-render on every navigation, we also render it in this layout (instead of in a `page.tsx`).
+
+<Navigation />
+
+## The problem with page specific content
+
+What if we want to influence how the `<Navigation>` (or `<Footer>`) is rendered, based on the page that we're on? Maybe some sub-pages require a different home icon or a banner should be shown for everything under `/foo`. Other use case: We want to render a cart for `/shop`, a link to bookmarks for `/blog` or an account button for `/profile`.
+
+<ExampleNavigation />
+
+That isn't currently possible. We have however a couple of options! We could move the `<Navigation>` into `page.tsx`, guaranteeing that page & navigation are in-sync at the cost of rerendering more (among other downsides). Alternatively we could create a layout in `[[...slug]]` and move our entire `<Navigation>` there, however that would mean more book keeping & more rendering if we ever need additional routes.
+
+There is however another way: using parallel routes! Ultimately we have to acknowledge that given our requirements, the navigation and the page that it appears on are linked in some way. Parallel routes allow us to solve this problem by utilizing composition.
+
+## Splitting the problem up
+
+We can move our requirement into a parallel route and pass it as a child to our navigation. That way we benefit from all the rendering & streaming tricks that `layout.tsx` gives us, without any of the drawbacks mentioned above. Lets see how!
+
+Lets start by creating a `@logo` folder in our app directory.
+
+```
+- [locale]
+  - layout.tsx
+  - @logo // new
+  - [[...slug]]
+	- page.tsx
+```
+
+Afterwards place a dummy `default.tsx` file in our parallel route. We could export our default here or return null.
+
+```
+// /[locale]/@logo/default.tsx
+export default function LogoDefault() {
+    return null;
+}
+```
+
+We can now either create folders to correspond to specific routes or mirror our dynamic segment. As an example, `/foo` should have a different logo than the default logo. We could create a `foo` folder with a `page.tsx` that just exports our special logo:
+
+```
+// /[locale]/@logo/foo/page.tsx
+export default function FooLogo() {
+	return <FooLogo/>;
+}
+```
+
+Here is a quick look at what this should look like if we would use a dynamic segment:
+
+```
+// /[locale]/@logo/[[...slug]]/page.tsx
+export default async function SlugLogo({params}: PageProps</[locale]/@logo/[[...slug]]>) {
+	const {slug} = await params;
+
+	switch (slug.join("/").trim()) {
+		case "foo": return <FooLogo/>;
+		case "bar": return <BarLogo/>;
+		default: return <DefaultLogo/>;
+	}
+}
+```
+
+Our app directory would now look something like this:
+
+```
+- [locale]
+  - layout.tsx
+  - @logo // new
+	- default.tsx // new
+	- [[...slug]] // new
+		- page.tsx // new
+  - [[...slug]]
+	- page.tsx
+```
+
+The final step is to integrate our `@logo` parallel route into `<Navigation>` and update it, to use `children` for its logo.
+
+```
+// /[locale]/layout.tsx
+export default async function RootLayout({params, children, logo}: LayoutProps<"/[locale]">) {
+	const {locale} = await params;
+
+	return (
+		<html lang={locale}>
+			<head></head>
+			<body>
+				<Navigation locale={locale}>{logo}</Navigation>
+				{children}
+				<Footer locale={locale}/>
+			</body>
+		</html>
+	)
+}
+```
+
+If you have multiple of these "child" parallel routes you can use CSS Grid Template Areas to place them exactly where you want them:
+
+```
+// /[locale]/layout.tsx
+export default async function RootLayout({params, children, logo, banner, news, cart, account}: LayoutProps<"/[locale]">) {
+	const {locale} = await params;
+
+	return (
+		<html lang={locale}>
+			<head></head>
+			<body>
+				<Navigation locale={locale}>
+					{/* Example uses Tailwind */}
+					<div className="[grid-area:logo]">{logo}</div>
+					<div className="[grid-area:banner]">{banner}</div>
+					<div className="[grid-area:news]">{news}</div>
+					<div className="[grid-area:cart]">{cart}</div>
+					<div className="[grid-area:account]">{account}</div>
+				</Navigation>
+				{children}
+				<Footer locale={locale}/>
+			</body>
+		</html>
+	)
+}
+```
+
+## Closing thoughts
+
+This might seem overkill at first, but keep in mind that we have the full power of the app directory available to us when working with parallel routes. That means we can statically prerender them with `generateStaticProps` (independently to our `page.tsx`). That also means we can fetch based on dynamic content. We can pass `loading.tsx` (or `<Suspense>`) fallbacks, without blocking the streaming of either `layout.tsx` or `page.tsx`. We don't bloat parts of our app that shouldn't have to know about this relationship. Most importantly: There is no performance degradation despite the added functionality.
+
+The app directory is full of these little gems that highlight the power of composition. I hope this tiny showcase of parallel routes acts as a small appetizer for what you can do with the app directory.
