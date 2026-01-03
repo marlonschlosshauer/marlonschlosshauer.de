@@ -1,0 +1,141 @@
+import { RawAction } from "@/components/blog/demo/server-actions-are-not-for-fetching/cache/RawAction";
+import { UnstableAction } from "@/components/blog/demo/server-actions-are-not-for-fetching/cache/UnstableAction";
+import { WasteTimeAction } from "@/components/blog/demo/server-actions-are-not-for-fetching/cache/WasteTimeAction";
+import { Meta } from "@/components/blog/meta/Meta";
+
+export const metadata = {
+    title: "Server Actions are not for fetching data",
+    description:
+        "Server Actions deliver great DX, however they're often misused as a data delivery method. Find out interactively why they should not be used to fetch data.",
+    date: "2026-01-03",
+    words: 1300,
+};
+
+# Server Actions are not for fetching data
+
+<Meta {...metadata} />
+
+Server Actions are a Next.js feature that was introduced with the app directory. They supplement React Server Components by providing the ability to communicate important updates back to the server (without using JavaScript). They deliver great DX as they abstract away a lot of the wiring needed to do client-server communication. However, just because they make it easy to communicate with your server, doesn't mean you should be using actions to fetch data.
+
+We'll go over the reasons why you should not use server actions to fetch data. Afterwards, we will explore how you might do data fetching in Next.js.
+
+If you just want a TL:DR, the docs have a great & short section here: [How to use Next.js as a backend for your frontend](https://nextjs.org/docs/app/guides/backend-for-frontend#server-actions).
+
+## Server Actions do not cache well
+
+Server Actions are triggered via a POST request. By default they include a `Cache-Control: no-store, must-revalidate` header in their response and you cannot change that, so browsers will not cache the request.
+
+You can check this behavior for yourself by clicking this button and opening the network tab:
+
+<RawAction />
+
+Here is the equivalent code:
+
+```
+// action.ts
+"use server";
+
+export const rawAction = async () => {
+    return Date.now();
+};
+
+// RawAction.tsx
+"use client";
+
+import { Button } from "@/components/shared/button/Button";
+import { rawAction } from "./actions";
+
+export const RawAction = () => {
+    return <Button onClick={rawAction}>Execute (raw) server action</Button>;
+};
+```
+
+You can see the returned `Date.now()` is always different by checking the response.
+
+```
+0:{"a":"$@1","f":"","b":"eGq1W5hMia7hu6JrggIhz","q":"","i":false}
+1:1767437947507
+```
+
+Next.js does give you tools like [unstable_cache](https://nextjs.org/docs/app/api-reference/functions/unstable_cache) to cache the computation of the value though.
+
+Here we have a button that triggers a server action that is wrapped with `unstable_cache`:
+
+<UnstableAction />
+
+Again, here is the code:
+
+```
+// actions.ts
+"use server";
+
+import { unstable_cache } from "next/cache";
+
+export const unstableAction = unstable_cache(async () => {
+    return Date.now();
+}, ["unstable-action"]);
+
+// UnstableAction.tsx
+"use client";
+
+import { Button } from "@/components/shared/button/Button";
+import { unstableAction } from "./actions";
+
+export const UnstableAction = () => {
+    return <Button onClick={unstableAction}>Execute (unstable cache) server action</Button>;
+};
+
+```
+
+If you inspect the response you see that the `Date.now()` is now cached. However, you're still subjecting your users to a full round-trip. You're also still paying for the bandwidth. In this case I am still paying for the full bandwidth :)
+
+It is worth noting that while `unstable_cache` will be replaced by ["use cache"](https://nextjs.org/docs/app/api-reference/directives/use-cache) in the future, the same monstrosity can be constructed with `"use cache"`. A win for backwards compatibility, I guess.
+
+Before we move on I would like to mention the [cache()](https://react.dev/reference/react/cache) function provided by React. Like the huge note at the top of the docs hint at, this function is only available in React Server Components. This has implications for how this interacts with server actions. I will keep it brief as this isn't that important:
+
+-   `cache()` dedups network calls during a request on the server
+-   A server action called on the server is just a function, not a server action
+-   As we're about to learn, server actions run one-after another
+-   If you only ever cache for the given request and server actions are 1x request per action, _you never cache_
+-   If you call the action from the server it isn't a server action
+-   So: You using `cache()` on a server action is useless
+
+## Server Actions run sequentially
+
+If you have slow internet and you smashed the uncached (raw) action button earlier you probably already noticed that for the next request to go through, the server had to respond. This is probably the biggest drawback of using server actions for fetching data: They run sequential, not parallel.
+
+You can observe the same when pressing these two buttons one after each other. I have added a sleep of 2s per action so you don't have to slow down your internet:
+
+<WasteTimeAction />
+
+If you watch the network tab, you can see the next request only starts when the previous has completed. In practice this means relying on multiple actions to render a page (on the client) will come with serious performance costs, as you're not only always doing a round-trip, but you're also fetching in an ever rising waterfall.
+
+It is worth mentioning again that if you call server actions in a React Server Component, it is just regular function invocation, so you do not incur any of these downsides, as you don't cross any network boundary. However you also don't gain anything from marking the function as `"use server"` (aside from malicious actors being able to spam via an endpoint).
+
+## What do to instead
+
+The frequency with which people ask about server actions highlights how great of a DX they provide. While Next.js is all about making it easier to create complex applications, we shouldn't produce a far inferior experience for the user, just because it was easier to build. Especially not when alternatives are so plentiful!
+
+### Streaming from the server
+
+I think it is fair to say that the app directory spent the past few years focusing on drastically improving how server-driven applications are developed. A common pattern that emerged from that is fetching on the server and [passing the resulting promise to the client](https://nextjs.org/docs/app/getting-started/fetching-data#streaming-data-with-the-use-hook) (with the [use()](https://react.dev/reference/react/use) function).
+
+If your app can support that pattern, it is a great fit to replace any server action (or regular fetching) that you're using to get data from the server. You gain performance and add flexibility in how you can handle the loading state, all without losing type-safety.
+
+### tRCP
+
+While I have never worked with [tRPC](https://trpc.io/) before I have heard great things about it. Given what we observed about server actions it is fair to say that performance with tRPC will be guaranteed to be better. And type-safety remains!
+
+### API Routes
+
+The obvious choice for Next.js developers are API routes. They can be a hassle but are reliable, stable and have many different features. The introduction of Cache Components also make caching much easier to reason about. Lastly, you can bring whatever tool you want to consume them! TanstackQuery, SWR, RTK Query.
+
+### React Server Components
+
+It is worth taking a second and consider if you even need to fetch on the client. RSC comes with tons of benefits and the app directory is excellently setup to allow you to stream the resulting components to your client. This obviously isn't possible for all use-cases.
+
+## Closing thoughts
+
+Server Actions are great! However they are also a niche tool. The surprisingly excellent DX paired with the unopinionated way Next.js (or rather React) does client-server communication led to people seeing it as a solution to a problem that it never meant to solve.
+
+While we already have plenty of options, I think this showcases that a "server query" could be a great addition. Especially now with the new `"use cache"` semantic. Lets see what the future may bring.
