@@ -1,0 +1,337 @@
+import { Meta } from "@/components/blog/meta/Meta";
+
+export const metadata = {
+    title: "Optimizing InstantSearch for SSG without sacrificing dynamic search",
+    description:
+        "InstantSearch offers a lot of functionality out of the box, but support for different rendering strategies feels like an afterthought. Let's fix that!",
+    date: "2026-02-03",
+    words: 1700,
+    tags: ["instantsearch", "next.js", "react"],
+};
+
+# Optimizing InstantSearch for SSG without sacrificing dynamic search
+
+<Meta {...metadata} />
+
+InstantSearch offers a lot of functionality out of the box, but support for different rendering strategies feels like an afterthought. [react-instantsearch](https://www.npmjs.com/package/react-instantsearch) allows you to do traditional CSR. [react-instantsearch-nextjs](https://www.npmjs.com/package/react-instantsearch-nextjs) allows you to do SSR. But what about SSG? The docs [mention SSG](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react#static-site-generation-with-dynamic-route-segments), but at the expense of saving state into the URL (or other things). And that is just one of many gotchas that are attached to each implementation.
+
+## Problems & Motivation
+
+At work we had a use case where we wanted to have "blocks" that allowed users to query from Algolia. The blocks would have some hardcoded (base) queries applied with [Configure](https://www.algolia.com/doc/api-reference/widgets/configure/react#page-title). With react-instantsearch we saw two problems:
+
+1. No children inside of InstantSearch were server-rendered, resulting in a huge layout shift
+2. Each visitor would always do a request against Algolia
+
+While problem 1. can be circumvented with hacks, it really was the insane costs from problem 2. that made me want to dive deeper. Ideally our solution should:
+
+-   SSG based on a provided configuration (from our CMS)
+-   Hydrate on the client without doing a request
+-   Check if the URL is consistent with our state
+-   Do a request if the URL does not match state
+-   Allow user to further refine query with controls
+
+## Finding the right approach
+
+As I was building I kept running into issues that signaled to me that my requirements are at odds with each other. Or at least at odds with how InstantSearch expects you to use it. For example, a roadblock early on was that InstantSearch wants you to either SSG with client-side fetching (with an extra request every time) or SSG but without client-side fetching. I wanted SSG but with only a request when it was necessary. I was fine with stale data on initial load.
+
+This was a recurring theme. Getting half of the requirements right meant ending up in a stalemate, where the rest of the list was impossible to implement with the intended API. As such I decided to abandon the flaky documentation and made peace with the idea of short-circuiting the internals to get what I wanted.
+
+To get the knowledge that I needed, I cloned the InstantSearch monorepo and added a subagent to Claude Code, so it can query another Claude to get insights into how InstantSearch works. Using Claude as a (vibe) researcher was a game changer! It allowed me to better understand why my hacks don't work and how I could proceed.
+
+## Architecting the strategy
+
+The strategy that I settled on isn't complicated when you know what is going on. Essentially we want to control which URL InstantSearch receives, when it starts its internal updates and when it writes to the URL. The last part is crucial, as it is very easy to let InstantSearch override the actual URL (with search params), causing loss of the actual query.
+
+Here is a simplified rundown:
+
+1. Give InstantSearch a prepared URL on server
+2. Take over how and when InstantSearch starts its "update" cycle
+3. Stop InstantSearch from pushing to the URL until we are ready
+4. Override how InstantSearch sets the URL to get rid of unwanted behavior
+5. Hydrate on the client with the actual URL
+6. Allow URL to be read after hydration
+7. If (and only if) we have a search in the URL dispatch an update event
+8. Schedule that InstantSearch can touch the URL after initial render
+
+Worth noting: During step 1. we don't infer state through the URL, but rather through a `<Configure>` element that is rendered in the DOM elsewhere.
+
+## The solution
+
+Let's take a look at what this looks like in practice. Most of our shenanigans will be done by passing a custom router. InstantSearch is great here, as it gives us a lot of knobs to twist!
+
+I'll go over individual parts, to see the full code go to the end of this section. Let's take a look at our starting point:
+
+```tsx
+"use client";
+
+import { FC, PropsWithChildren, useEffect, useRef } from "react";
+import type { UiState } from "instantsearch.js";
+import {
+    InstantSearchNext
+    InstantSearchNextRouting,
+    createInstantSearchNextInstance,
+} from "react-instantsearch-nextjs";
+
+const instance = createInstantSearchNextInstance();
+
+export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProps>> = ({
+    url,
+    children,
+}) => {
+    const customRouting: InstantSearchNextRouting<UiState, UiState> = {
+        router: {},
+    };
+
+    return (
+        <InstantSearchNext
+            indexName={process.env.NEXT_PUBLIC_ALGOLIA_TOUBIZ_INDEX ?? ""}
+            searchClient={ALGOLIA_SERACH_CLIENT}
+            instance={instance}
+            routing={customRouting}
+            future={{ preserveSharedStateOnUnmount: true }}>
+            {children}
+        </InstantSearchNext>
+    );
+};
+```
+
+We import some stuff. We create a reusable (InstantSearchNext) instance. Our component creates an empty router and sets some props on `<InstantSearchNext>`. Nothing fancy. Do note that the component gets the URL of where it will be rendered.
+
+Let's focus on our router.
+
+```tsx
+const customRouting: InstantSearchNextRouting<UiState, UiState> = {
+    router: {},
+};
+```
+
+First, we will implement step 1, so overriding the URL on the server. This is simple! We check if `window` exists, if not we will use our server fallback. Keep in mind that without our (upcoming) changes, this will cause a hydration error. Also, we block if we are not allowed to read yet. This is also important. We will learn more about that flag, soon.
+
+```tsx
+const customRouting: InstantSearchNextRouting<UiState, UiState> = {
+    router: {
+        getLocation: () => {
+            // Return real browser location once reading is enabled
+            if (typeof window !== "undefined" && canReadRealLocation) {
+                return window.location;
+            }
+
+            // Server fallback
+            return new URL(`${process.env.NEXT_PUBLIC_APP_URL}/${url}`) as unknown as Location;
+        },
+    },
+};
+```
+
+Next up we short circuit InstantSearch's morning routine by passing a function to `start()`.
+
+```tsx
+const customRouting: InstantSearchNextRouting<UiState, UiState> = {
+    router: {
+        getLocation: () => {
+            // Return real browser location once reading is enabled
+            if (typeof window !== "undefined" && canReadRealLocation) {
+                return window.location;
+            }
+
+            // Server fallback
+            return new URL(`${process.env.NEXT_PUBLIC_APP_URL}/${url}`) as unknown as Location;
+        },
+        start() {},
+    },
+};
+```
+
+Before we can continue with step 3 we have to introduce two variables:
+
+```
+let canReadRealLocation = false;
+let canPush = false;
+```
+
+These will allow us to precisely reintroduce when InstantSearch can take control. You can place them outside of your component (see gotchas). FYI: I tried using refs for this and had mixed results.
+
+Now step 3 is trivial. We only touch the URL if InstantSearch is allowed to push.
+
+```tsx
+const customRouting: InstantSearchNextRouting<UiState, UiState> = {
+    router: {
+        getLocation: () => {
+            // Return real browser location once reading is enabled
+            if (typeof window !== "undefined" && canReadRealLocation) {
+                return window.location;
+            }
+
+            // Server fallback
+            return new URL(`${process.env.NEXT_PUBLIC_APP_URL}/${url}`) as unknown as Location;
+        },
+        start() {},
+        push(url) {
+            // Block push until after we've read from URL and updated state
+            if (!canPush) {
+                return;
+            }
+
+            window.history.pushState({}, "", url);
+        },
+    },
+};
+```
+
+Step 4 is also simple. Just provide a `parseURL` function that does exactly what we want from InstantSearch and nothing else.
+
+```tsx
+const customRouting: InstantSearchNextRouting<UiState, UiState> = {
+    router: {
+        getLocation: () => {
+            // Return real browser location once reading is enabled
+            if (typeof window !== "undefined" && canReadRealLocation) {
+                return window.location;
+            }
+
+            // Server fallback
+            return new URL(`${process.env.NEXT_PUBLIC_APP_URL}/${url}`) as unknown as Location;
+        },
+        start() {},
+        push(url) {
+            // Block push until after we've read from URL and updated state
+            if (!canPush) {
+                return;
+            }
+
+            window.history.pushState({}, "", url);
+        },
+        parseURL({ qsModule, location }) {
+            // Override to stop internal behavior
+            return qsModule.parse(location.search.slice(1)) as UiState;
+        },
+    },
+};
+```
+
+And that is it. We have successfully created the minimal-viable router! For the remaining steps we have to add the following `useEffect`.
+
+```
+    useEffect(() => {
+        // Only do this once at all cost
+        if (!canReadRealLocation) {
+            // Enable reading from real URL
+            canReadRealLocation = true;
+
+            // Dispatch popstate to trigger InstantSearch to read from URL (inPopState=true prevents write-back)
+            if (window.location.search) {
+                window.dispatchEvent(new PopStateEvent("popstate"));
+            }
+
+            // Enable push for future interactions
+            setTimeout(() => {
+                canPush = true;
+            }, 0);
+        }
+    }, []);
+```
+
+As you can see we now use the `canReadRealLocation` flag. If it has not been set, we set it after hydration. Then we dispatch a `PopStateEvent` to notify InstantSearch that we want to search, however we only do so if our URL has search params. Afterwards we schedule our `canPush` flag to be set to `true` after the render is completed, so after that InstantSearch can touch the URL.
+
+And that is it! You can further refine the behavior by passing props like a `createUrl` function (e.g., to filter out UTM parameters). Here is the entire thing, uninterrupted:
+
+```tsx
+"use client";
+
+import { FC, PropsWithChildren, useEffect, useRef } from "react";
+import type { UiState } from "instantsearch.js";
+import {
+    InstantSearchNext
+    InstantSearchNextRouting,
+    createInstantSearchNextInstance,
+} from "react-instantsearch-nextjs";
+
+const instance = createInstantSearchNextInstance();
+
+let canReadRealLocation = false;
+let canPush = false;
+
+export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProps>> = ({
+    url,
+    children,
+}) => {
+    useEffect(() => {
+        // Only do this once at all cost
+        if (!canReadRealLocation) {
+            // Enable reading from real URL
+            canReadRealLocation = true;
+
+            // Dispatch popstate to trigger InstantSearch to read from URL (inPopState=true prevents write-back)
+            if (window.location.search) {
+                window.dispatchEvent(new PopStateEvent("popstate"));
+            }
+
+            // Enable push for future interactions
+            setTimeout(() => {
+                canPush = true;
+            }, 0);
+        }
+    }, []);
+
+    const customRouting: InstantSearchNextRouting<UiState, UiState> = {
+        router: {
+            getLocation: () => {
+                // Return real browser location once reading is enabled
+                if (typeof window !== "undefined" && canReadRealLocation) {
+                    return window.location;
+                }
+
+                // Server fallback
+                return new URL(
+                    `${process.env.NEXT_PUBLIC_APP_URL}/${url}`
+                ) as unknown as Location;
+            },
+            start() {},
+            push(url) {
+                // Block push until after we've read from URL and updated state
+                if (!canPush) {
+                    return;
+                }
+
+                window.history.pushState({}, "", url);
+            },
+            parseURL({ qsModule, location }) {
+                // Override to stop internal behavior
+                return qsModule.parse(location.search.slice(1)) as UiState;
+            },
+        },
+    };
+
+    return (
+        <InstantSearchNext
+            indexName={process.env.NEXT_PUBLIC_ALGOLIA_TOUBIZ_INDEX ?? ""}
+            searchClient={ALGOLIA_SERACH_CLIENT}
+            instance={instance}
+            routing={customRouting}
+            future={{ preserveSharedStateOnUnmount: true }}>
+            {children}
+        </InstantSearchNext>
+    );
+};
+```
+
+You can now:
+
+1. Set a hardcoded search via `<Configure>`
+2. SSG results on the server
+3. Update state from the URL
+4. Allow users to filter on the client
+
+Crucially, the results show up even if the device has JS disabled and there is no request if the data from the SSG is still the current state. This is a massive improvement!
+
+## The Gotchas
+
+I previously mentioned that react-instantsearch does not render any children on the server. Not even a simple `<div>`. Gotchas are everywhere with InstantSearch, and this is one of many. As you can imagine, us hacking on the internals does not improve predictability.
+
+One of those gotchas hit me after I had my implementation up and running: react-instantsearch-nextjs can only be mounted once on the page. For somebody that wanted a reusable block that could be placed multiple times on a single page, this was annoying.
+
+However, a workaround via bandaids doesn't seem viable, as react-instantsearch-nextjs writes `initialSearchResults` to a global variable. For sure an area for further investigation.
+
+## Closing
+
+It shouldn't need this, but having peeked into the InstantSearch code base, I understand why not every render strategy enjoys first class level of support. While sacrifices had to be made, I am happy with the result. Initial tests show that the hacks hold, which makes me excited about what the cost savings will look like!
