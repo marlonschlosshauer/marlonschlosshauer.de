@@ -14,7 +14,7 @@ export const Anchor: FC<PropsWithChildren<PropsWithClassName>> = ({ className, c
         <a
             id={id}
             href={`#${id}`}
-            className={clsx("flex flex-row items-center gap-1 group", className)}>
+            className={clsx("flex flex-row items-center gap-1 group scroll-mt-[2lh]", className)}>
             <div>{children}</div>
             <Chain
                 className="w-[0.5lh] h-[0.5lh] text-white-alt opacity-0 group-hover:opacity-100 transition-opacity"
