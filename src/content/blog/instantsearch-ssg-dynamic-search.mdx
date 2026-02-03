@@ -19,10 +19,10 @@ InstantSearch offers a lot of functionality out of the box, but support for diff
 
 At work we had a use case where we wanted to have "blocks" that allowed users to query from Algolia. The blocks would have some hardcoded (base) queries applied with [Configure](https://www.algolia.com/doc/api-reference/widgets/configure/react#page-title). With react-instantsearch we saw two problems:
 
-1. No children inside of InstantSearch were server-rendered, resulting in a huge layout shift
+1. No children inside of InstantSearch were server-rendered
 2. Each visitor would always do a request against Algolia
 
-While problem 1. can be circumvented with hacks, it really was the insane costs from problem 2. that made me want to dive deeper. Ideally our solution should:
+Problem #1 creates a nasty layout shift, but could be circumvented. It was problem #2 that made me want to dive deeper, as it was causing our Algolia bill to be far bigger than it needed to be. Ideally our solution should:
 
 -   SSG based on a provided configuration (from our CMS)
 -   Hydrate on the client without doing a request
@@ -53,7 +53,7 @@ Here is a simplified rundown:
 7. If (and only if) we have a search in the URL dispatch an update event
 8. Schedule that InstantSearch can touch the URL after initial render
 
-Worth noting: During step 1. we don't infer state through the URL, but rather through a `<Configure>` element that is rendered in the DOM elsewhere.
+Worth noting: During step #1 we don't infer state through the URL, but rather through a `<Configure>` element that is rendered in the DOM elsewhere.
 
 ## The solution
 
@@ -105,7 +105,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
 };
 ```
 
-First, we will implement step 1, so overriding the URL on the server. This is simple! We check if `window` exists, if not we will use our server fallback. Keep in mind that without our (upcoming) changes, this will cause a hydration error. Also, we block if we are not allowed to read yet. This is also important. We will learn more about that flag, soon.
+First, we will implement step #1, so overriding the URL on the server. This is simple! We check if `window` exists, if not we will use our server fallback. Keep in mind that without our (upcoming) changes, this will cause a hydration error. Also, we block if we are not allowed to read yet. This is also important. We will learn more about that flag, soon.
 
 ```tsx
 const customRouting: InstantSearchNextRouting<UiState, UiState> = {
@@ -142,7 +142,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
 };
 ```
 
-Before we can continue with step 3 we have to introduce two variables:
+Before we can continue with step #3 we have to introduce two variables:
 
 ```
 let canReadUrl = false;
@@ -151,7 +151,7 @@ let canPushUrl = false;
 
 These will allow us to precisely reintroduce when InstantSearch can take control. You can place them outside of your component (see gotchas). FYI: I tried using refs for this and had mixed results.
 
-Now step 3 is trivial. We only touch the URL if InstantSearch is allowed to push.
+Now step #3 is trivial. We only touch the URL if InstantSearch is allowed to push.
 
 ```tsx
 const customRouting: InstantSearchNextRouting<UiState, UiState> = {
@@ -178,7 +178,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
 };
 ```
 
-Step 4 is also simple. Just provide a `parseURL` function that does exactly what we want from InstantSearch and nothing else.
+Step #4 is also simple. Just provide a `parseURL` function that does exactly what we want from InstantSearch and nothing else.
 
 ```tsx
 const customRouting: InstantSearchNextRouting<UiState, UiState> = {
