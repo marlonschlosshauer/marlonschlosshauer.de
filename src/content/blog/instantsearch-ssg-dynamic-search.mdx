@@ -130,7 +130,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
     router: {
         getLocation: () => {
             // Return real browser location once reading is enabled
-            if (typeof window !== "undefined" && canReadRealLocation) {
+            if (typeof window !== "undefined" && canReadUrl) {
                 return window.location;
             }
 
@@ -145,8 +145,8 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
 Before we can continue with step 3 we have to introduce two variables:
 
 ```
-let canReadRealLocation = false;
-let canPush = false;
+let canReadUrl = false;
+let canPushUrl = false;
 ```
 
 These will allow us to precisely reintroduce when InstantSearch can take control. You can place them outside of your component (see gotchas). FYI: I tried using refs for this and had mixed results.
@@ -158,7 +158,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
     router: {
         getLocation: () => {
             // Return real browser location once reading is enabled
-            if (typeof window !== "undefined" && canReadRealLocation) {
+            if (typeof window !== "undefined" && canReadUrl) {
                 return window.location;
             }
 
@@ -185,7 +185,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
     router: {
         getLocation: () => {
             // Return real browser location once reading is enabled
-            if (typeof window !== "undefined" && canReadRealLocation) {
+            if (typeof window !== "undefined" && canReadUrl) {
                 return window.location;
             }
 
@@ -214,9 +214,9 @@ And that is it. We have successfully created the minimal-viable router! For the 
 ```
     useEffect(() => {
         // Only do this once at all cost
-        if (!canReadRealLocation) {
+        if (!canReadUrl) {
             // Enable reading from real URL
-            canReadRealLocation = true;
+            canReadUrl = true;
 
             // Dispatch popstate to trigger InstantSearch to read from URL (inPopState=true prevents write-back)
             if (window.location.search) {
@@ -228,10 +228,15 @@ And that is it. We have successfully created the minimal-viable router! For the 
                 canPush = true;
             }, 0);
         }
+
+		return () => {
+			canReadUrl = false;
+			canPushUrl = false;
+		}
     }, []);
 ```
 
-As you can see we now use the `canReadRealLocation` flag. If it has not been set, we set it after hydration. Then we dispatch a `PopStateEvent` to notify InstantSearch that we want to search, however we only do so if our URL has search params. Afterwards we schedule our `canPush` flag to be set to `true` after the render is completed, so after that InstantSearch can touch the URL.
+As you can see we now use the `canReadUrl` flag. If it has not been set, we set it after hydration. Then we dispatch a `PopStateEvent` to notify InstantSearch that we want to search, however we only do so if our URL has search params. Afterwards we schedule our `canPush` flag to be set to `true` after the render is completed, so after that InstantSearch can touch the URL. We also reset our flags on unmount, to keep our state somewhat clean. It is tempting to move the flags into the component via a ref, but in my experience InstantSearch does some kind of memoization on the router, causing the refs to get closured, leading to stale references.
 
 And that is it! You can further refine the behavior by passing props like a `createUrl` function (e.g., to filter out UTM parameters). Here is the entire thing, uninterrupted:
 
@@ -248,8 +253,8 @@ import {
 
 const instance = createInstantSearchNextInstance();
 
-let canReadRealLocation = false;
-let canPush = false;
+let canReadUrl = false;
+let canPushUrl = false;
 
 export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProps>> = ({
     url,
@@ -257,9 +262,9 @@ export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProp
 }) => {
     useEffect(() => {
         // Only do this once at all cost
-        if (!canReadRealLocation) {
+        if (!canReadUrl) {
             // Enable reading from real URL
-            canReadRealLocation = true;
+            canReadUrl = true;
 
             // Dispatch popstate to trigger InstantSearch to read from URL (inPopState=true prevents write-back)
             if (window.location.search) {
@@ -268,16 +273,21 @@ export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProp
 
             // Enable push for future interactions
             setTimeout(() => {
-                canPush = true;
+                canPushUrl = true;
             }, 0);
         }
+
+		return () => {
+			canReadUrl = false;
+			canPushUrl = false;
+		}
     }, []);
 
     const customRouting: InstantSearchNextRouting<UiState, UiState> = {
         router: {
             getLocation: () => {
                 // Return real browser location once reading is enabled
-                if (typeof window !== "undefined" && canReadRealLocation) {
+                if (typeof window !== "undefined" && canReadUrl) {
                     return window.location;
                 }
 
@@ -289,7 +299,7 @@ export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProp
             start() {},
             push(url) {
                 // Block push until after we've read from URL and updated state
-                if (!canPush) {
+                if (!canPushUrl) {
                     return;
                 }
 
