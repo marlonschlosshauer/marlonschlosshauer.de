@@ -333,15 +333,17 @@ export const translate = (dictionary: Dictionary) => {
     key: keyof Dictionary,
     instances?: Record<string, string | number>,
   ) => {
-    const target = dictionary[key] ?? key;
+	let target = dictionary[key] ?? key;
 
-    if (!instances) {
-      return target;
-    }
+	if (!instances) {
+		return target;
+	}
 
-    return Object.entries(instances).map(([key, value]) =>
-      target.replace(`{{${key}}}`, `${value}`),
-    );
+	Object.entries(instances).forEach(([key, value]) => {
+		target = target.replaceAll(`{{${key}}}`, `${value}`);
+	});
+
+	return target;
   };
 };
 ```
