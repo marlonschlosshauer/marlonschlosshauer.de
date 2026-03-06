@@ -26,7 +26,14 @@ const Provider: FC<PropsWithChildren> = ({ children }) => {
     return <Context.Provider value={{ isHidden, toggle, hide, show }}>{children}</Context.Provider>;
 };
 
-const Frame: FC<PropsWithChildren<PropsWithClassName>> = ({ className, children }) => {
+type NoteVariant = "white" | "primary";
+
+const variantClasses: Record<NoteVariant, string> = {
+    white: "border-white",
+    primary: "border-primary bg-primary/10",
+};
+
+const Frame: FC<PropsWithChildren<PropsWithClassName<{ variant?: NoteVariant }>>> = ({ className, children, variant = "white" }) => {
     const { isHidden } = useNote();
 
     if (isHidden) {
@@ -36,7 +43,8 @@ const Frame: FC<PropsWithChildren<PropsWithClassName>> = ({ className, children 
     return (
         <aside
             className={clsx(
-                "grid [grid-template-areas:'header'_'body'_'footer'] p-3 border border-white rounded-lg",
+                "grid [grid-template-areas:'header'_'body'_'footer'] p-3 border rounded-lg",
+                variantClasses[variant],
                 className
             )}>
             {children}

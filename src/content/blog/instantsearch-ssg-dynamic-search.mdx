@@ -1,7 +1,8 @@
+import { Disclaimer } from "@/components/blog/demo/instantsearch-ssg-dynamic-search/Disclaimer";
 import { Meta } from "@/components/blog/meta/Meta";
 
 export const metadata = {
-    title: "Optimizing InstantSearch for SSG without sacrificing dynamic search",
+    title: "Optimizing InstantSearch for SSG (Deprecated)",
     description:
         "InstantSearch offers a lot of functionality out of the box, but support for different rendering strategies feels like an afterthought. Let's fix that!",
     date: "2026-02-03",
@@ -9,11 +10,13 @@ export const metadata = {
     tags: ["instantsearch", "next.js", "react"],
 };
 
-# Optimizing InstantSearch for SSG without sacrificing dynamic search
+# Optimizing InstantSearch for SSG (Deprecated)
 
 <Meta {...metadata} />
 
 InstantSearch offers a lot of functionality out of the box, but support for different rendering strategies feels like an afterthought. [react-instantsearch](https://www.npmjs.com/package/react-instantsearch) allows you to do traditional CSR. [react-instantsearch-nextjs](https://www.npmjs.com/package/react-instantsearch-nextjs) allows you to do SSR. But what about SSG? The docs [mention SSG](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react#static-site-generation-with-dynamic-route-segments), but at the expense of saving state into the URL (or other things). And that is just one of many gotchas that are attached to each implementation.
+
+<Disclaimer />
 
 ## Problems & Motivation
 
