@@ -5,3 +5,7 @@ export type PropsWithClassName<T = {}> = T & {
     tw?: string;
     style?: CSSProperties;
 };
+
+export type PropsWithClassNames<T = {}, R extends string = string> = T & {
+    classNames?: Partial<Record<R, string>>;
+};

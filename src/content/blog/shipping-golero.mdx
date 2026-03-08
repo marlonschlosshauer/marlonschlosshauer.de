@@ -1,0 +1,67 @@
+import Image from "next/image";
+import { PartyTrick } from "@/components/blog/demo/shipping-golero/PartyTrick/PartyTrick";
+import { Meta } from "@/components/blog/meta/Meta";
+
+export const metadata = {
+    title: "Shipping Golero",
+    description: "",
+    date: "2026-03-31",
+    words: 9999,
+};
+
+# Shipping Golero
+
+<Meta {...metadata} className="pb-4" />
+
+<Image
+    src="/img/blog/shipping-golero/hero.jpg"
+    width={1200}
+    height={600}
+    alt="Image of the Golero app"
+    unoptimized
+/>
+
+Early in my career I joined a small team to build a soccer prediction app. The operation was very amature and the business failed. Shortly before pronouncing the project dead, I embarked on a redesign of the entire app. I got to use part of that redesign in [pitch](https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=0-1&t=euCBXXiFDOqdV9dh-1), too, which I was very proud of at the time.
+
+My goal was to trim down the surface area of the app as much as possible. Remove all of the fat. Focus on the main functions and make those as easy & fast as possible to use.
+
+That redesign has been running around in my head for a couple of years now, so I thought why not build it myself. As it turns out, optimizing for simplicity, in combination with modern tools like Claude Code & Convex, made it a delight to implement.
+
+The app is available to download on the app store: [Golero](https://apps.apple.com/app/6760223128). The Figma file is available [here](https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=6-5924&t=VgC4hyVQZblLkrTo-4).
+
+## Party trick
+
+The core loop of the app is about entering predictions for upcoming matches. You receive points depending on how close you are to the actual result. I wanted to make that flow as fast and frictionless as possible. Here is a recreation of how it works in the app:
+
+<PartyTrick />
+
+All available matches are put into a slider. Predictions are only a single digits. Upon input, the focus immediatly jumps to the next possible input. Backspace goes moves the focus backwards.
+
+Allowing the user to navigate with their keyboard speeds up the process immensily. Having users spent as little time as possible in the app is a key goal. Having people bounce around the app makes expectations grow and for an app that focuses on doing one thing well, being modest in scope is the perfect fit.
+
+## Optimizing into existence
+
+## Modern tooling is incredible
+
+-   Expo is great
+-   Convex is incredible
+-   Claude Code is a game changer
+
+Initially I started out with Supabase, as I had previously worked with that, however after getting to taste Convex, I quickly became addicted. Claude is insane at implementing the backend functions. The sync just works, so a ton of
+
+## Pit falls
+
+-   Android not rendering text inside of a `<TextInput/>`
+-   Transitions in React Native 0.81 not working as they should
+-   Expo Router not having the concept of a `Loading.tsx`
+-   Convex Auth has some rough edges
+
+This was a reminder that APIs are the bottleneck. Claude can one-shot pretty much any of my simple requests. To the point where, I went through the app, made a TODO list of all the things I didn't yet like, and just fired them into Claude Code, queueing them up, one after another. I can also trivially steer it to do things how I would I would do them, with just a few lines in a `CLAUDE.md`.
+
+However inconsistencies stop the entire operation in its tracks. You now need to figure out why it doesn't work and you need to fix it, without destroying what currently works.
+
+This became painful when I finally embraced Convex. As backend functions became something Claude one-shotted in mere seconds, the UI components became the bottleneck. It felt weird spending minutes on getting a button to fit in the layout correctly while getting the API endpoint for an entire screen with live sync, done in a couple dozens of seconds.
+
+## Deploying mobile apps is still annoying
+
+Expo has made developing mobile apps so much easier. EAS has made deploying not make me want to jump off a bridge. It is still rough though. Feels like you're playing a turn-based quick-time event where at every turn something catastrophic might happen, all the while praying that the magic of EAS keeps the hell that is Xcode & App Store Connect away from you.
