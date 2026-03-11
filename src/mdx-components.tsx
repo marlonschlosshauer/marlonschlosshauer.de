@@ -19,12 +19,12 @@ const components: MDXComponents = {
     ),
     h3: (props: HeadingProps) => (
         <Anchor className=" mt-8 my-3">
-            <h3 className="font-semibold text-xl" {...props} />
+            <h3 className="font-semibold text-md" {...props} />
         </Anchor>
     ),
     h4: (props: HeadingProps) => (
         <Anchor>
-            <h4 className="font-medium text-lg" {...props} />
+            <h4 className="font-medium text-md" {...props} />
         </Anchor>
     ),
     p: (props: ParagraphProps) => (
