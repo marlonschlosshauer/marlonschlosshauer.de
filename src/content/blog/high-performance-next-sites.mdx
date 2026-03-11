@@ -1,0 +1,136 @@
+import { ExampleNavigation } from "@/components/blog/demo/why-parallel-routes/navigation/ExampleNavigation";
+import { Navigation } from "@/components/blog/demo/why-parallel-routes/navigation/Navigation";
+import { Meta } from "@/components/blog/meta/Meta";
+
+export const metadata = {
+    title: "Architecting high performance Next.js marketing sites",
+    description:
+        "Document my most important learnings on how to make high-performing marketing sites with Next.js. Discussing app directory wins, architecture & pitfalls.",
+    date: "2026-03-08",
+    words: 3000,
+};
+
+# Architecting high performance Next.js marketing sites
+
+<Meta {...metadata} />
+
+I've long wanted to document my most important learnings on how to make high-performing marketing sites with Next.js. In this blog post I'll discuss app directory wins, building an architecture that scales and I'll list a couple of common pitfalls.
+
+To me, a marketing website is one that focuses on delivering static content. Editors organize and curate content inside of a CMS, pages are server-side (or static) rendered and cached until they're updated (through the CMS). Occasionally interactive features are present (e.g filter curated data), but are edge cases.
+
+## Taking advantage of the app directory
+
+I am a huge fanboy of the app directory. Many bemoan the complexity of the app router, but those cries feel shortsighted to me. Being able to compose on a route level is incredible! Part of what makes this magical is streaming. As an example: Even if your users hit a page you haven't statically generated, with the layout being decoupled from your page, users don't have to wait for the entire page to finish generating before getting feedback from the server. You can take this to another level by composing with elements like [parallel routes](https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes) and [loading.tsx](#https://nextjs.org/docs/app/api-reference/file-conventions/loading).
+
+The app directory isn't perfect though. My biggest gripes are when the composability model breaks down. Quirks like `not-found.tsx` being scoped to routes (not the URL of the user) or `not-found.tsx` not taking any dynamic params (like a `layout.tsx` or `page.tsx` would). Both are small annoyances that I am sure will get remedied in future releases.
+
+When using the app directory the biggest performance boost is to make everything static. Use [generateStaticParams](https://nextjs.org/docs/app/api-reference/functions/generate-static-params) to your advantage (note: it also works in parallel routes). Fight with your team to make sure nothing dynamic needs to be called to render your page. Something like an auth check or a shopping cart can easily be fetched on the client, so aggressively move checks like that away from the server (and render a fallback).
+
+Like many things I will be mentioning here today, PPR will alleviate some of the pain here, so look towards upgrading if your site relies on dynamic data.
+
+Next.js also has some magical tricks for working with requests. Fetch calls within a given request are [deduplicated](https://nextjs.org/docs/app/getting-started/fetching-data#deduplicate-requests-and-cache-data). So fetching data in your `generateMetadata` and in the default export of the same `page.tsx` (or even `layout.tsx`, parallel routes) are consolidated, meaning only one external call is made (despite calling the same function in multiple places). The same applies to calls made in RSC.
+
+Furthermore Next.js caches [fetch](https://nextjs.org/docs/app/api-reference/functions/fetch) calls, if you haven't called dynamic functions up to that point. This is very cool, however keep in mind that this _might_ not apply to your third-party clients. As an example, the Contentful SDK uses Axios. This also doesn't work if you're using GraphQL.
+
+Personally, as sites are generated statically (and cached as a single entity) I don't think much about fetch caching. If there are calls that I don't want to do multiple times during a build or I want to cache them for a longer period of time, then I either use [unstable_cache](https://nextjs.org/docs/app/api-reference/functions/unstable_cache) or [Cache Components](https://nextjs.org/docs/app/getting-started/cache-components). Note: I do use [cache](https://react.dev/reference/react/cache) a lot to deduplicate GraphQL requests!
+
+Cache Components have already shown themselves to be disruptive (in a good way). Insane capabilities aside, Next.js becomes incredibly pedantic if you turn them on, forcing you to make good decisions. Cache components & PPR will be a lot of fun to explore for projects where the border between dynamic and static content isn't so clear.
+
+## Clean structure
+
+It can take years to work yourself out of a poor architecture. I learned this the hard way, so I am firm on my architecture. I almost exclusively build with Contentful at work, so I am all too familiar with the many drawbacks of their Content-Type System, however it does promote simplicity in your structure and I have come to appreciate this, massively.
+
+The "architecture" (if you can even call it that) that I landed on is made out of three pieces: Fetch, Normalize, Render. Nothing groundbreaking. We have things I call "Modules", these are allowed to initiate this process. Examples of a "Module" are:
+
+1. Page
+2. Block
+3. Navigation
+
+What I generally don't consider a "Module":
+
+1. `page.tsx`
+2. A specific Block (e.g `BlockContentTeaser`)
+3. Footer (fetched & normalized in Page)
+
+I introduced this "Module" distinction to indicate API usage and to communicate boundaries. While RSC allows us to await anywhere, making async work explicit is helpful to highlight complexity and potential money pits. The "Modules" also give us guarantees about client boundaries. As an example, a `<Page>` is mostly RSC and so can contain a `<Block>`. A `<Block>` might terminate into a client component. We can take away from this that we can call a "Module" from the server, but we can't call it from the client.
+
+Knowing when the client boundary starts is especially important when working with Contentful. All of our applications need to use the [Live Preview](https://www.contentful.com/developers/docs/tutorials/preview/live-preview/) with [Live Updates](https://www.contentful.com/developers/docs/tutorials/preview/live-updates/), which forces us to have things like Blocks (e.g `BlockContentTeaser`) able to be client-side rendered. This in turn forces us to move the fetching out of the actual block, upwards. One last thing about the fetching _phase_: Data fetched here isn't limited to Contentful. A block needs data from Algolia? Go ahead, fetch it!
+
+After fetching, we normalize. In basic terms: We translate the data from the request into what the component needs. Simple logic. The important thing is to make things as reusable as possible. To give an example we have to look back at our Content-Model. Every project of ours has basic types like "Internal Link", "External Link", "Image With Focalpoint". We establish these right from the start. Everything else builds with these! We create a GraphQL Fragment, React Components & normalization functions for each. They plug into each other, perfectly.
+
+Doing so makes your website stupidly easy to scale. Updates to one of your Content-Types are automatically applied everywhere, as Typescript will force you to touch the necessary parts. Boundaries are clear and deviations are instantly pointed out to you by the linter. Complexity is clearly documented and moved into appropriate positions. Talking to the CMS becomes boring, as it should be! The remaining difficulty is in how you orchestrate the "Modules". Being deliberate about what will be RSC also makes it painless to adopt Cache Components, later.
+
+## Personal hot takes
+
+Next.js gives you many magical tools. It is however important to understand the costs. Having seen other people struggle, I have collected a bunch of my thoughts here.
+
+### Proxy as a last resort
+
+I see a lot of people reach for `proxy.ts` (or `middleware.ts`) without giving it much thought. Understanding how your website generates cost is already not easy, throwing the multiplication of requests that the proxy can do in there, doesn't help. Personally, I am strict about proxy usage. I will only consider it, if I have exhausted all other options. As an example: We had to add redirects for more than 60 domains to a single domain. Oftentimes with specific redirect destinations (e.g `foo.com` being redirected to `bar.com/foo`). Instead of adding a proxy to the original project, we created a new Next.js project, with its own project inside of Vercel, which just runs this redirect proxy.
+
+### Misusing Server Actions
+
+Server Actions provide an awesome developer experience, however they're made for a very specific purpose -- and that purpose is not data fetching. Server Actions are a niche tool that is often misunderstood. I wrote more about it here: [Server Actions are not for fetching data](/server-actions-are-not-for-fetching). Bottom line: Unless you're doing advanced infinite scrolls, don't touch server actions for fetching.
+
+### Beware of dynamic functions
+
+This should go without saying, however after going around online spaces, I do see people not realizing that calling headers() or cookies() has a disastrous effect on your performance (and cost), as it deopts your entire route. This will not apply if you're already using PPR, however chances are, you aren't using it.
+
+If you're just creating a marketing page, most of the dynamic function calls can be circumvented. Examples:
+
+1. Redirecting user based on location: Instead of checking the header in your happy path, first redirect the user to a dedicated redirect route, then you can safely check the header there without deopting your route.
+2. Auth check in header: Instead of calling header in your navigation to see if the user is logged in or not, show a fallback on the server and check that on the client via an additional fetch
+
+Once more: This will change with Cache Components & PPR, but important to keep in mind nonetheless.
+
+### Using your public folder as a CDN
+
+It is totally valid to move static assets into your `/public` folder. However be aware that you'll pay for data transmission for those (at least on Vercel). This is especially important for videos! If you need to host a video, unless it is absolutely tiny, I would highly recommend not parking that in your `/public` folder. Move to a streaming service or at the very least use a CMS.
+
+### Be cautious about i18n libraries
+
+Doing i18n isn't as simple as it may seem. The content model should be carefully crafted and adjusted to fit your project's needs. However, the complexity doesn't stop there. Libraries for i18n promise a lot of magic, but they're bound by the same rules as everything else inside of Next.js.
+
+My gripe is with the magical approach with which server-side translations are handled. Libraries love giving you a clean API, where you don't have to supply any locale or dictionary. Instead, just like with the client-side code, you call a single function, from wherever. This comes at a cost though: They check cookies (which often is added via a proxy), causing your route to deopt (or turning it into a swiss cheese of dynamic content with PPR).
+
+I have huge respect for the authors of those libraries. Advanced features like reducing the sent dictionary to only what is needed, are awesome! However, if you just need simple i18n, rolling your own is dead easy and puts you completely in control. I wrote about it here: [Rolling your own i18n in Next.js](/rolling-your-own-i18n).
+
+### Prop drilling is fine, actually
+
+Similar to the issue with using magic to make the API for server-side translations too clean, I am a firm believer in prop drilling. Especially on the server! There is zero magic in it. It is predictable, type-safe and easy to extend.
+
+I have no doubt that I will have to rethink prop drilling in the future as Cache Components include props in their cache key. We also have alternatives (i.e request deduplication). Though until problems arise, prop drilling is a simple method that leads to predictable results.
+
+### Don't fear "use client"
+
+I see this all the time. Somebody is getting into Next.js. They love the promise of RSC and are now trying their hardest to avoid any and all client components. Their heart is in the right place! Having as much as possible be RSC is perfect, as it not only reduces the payload size but also reduces the time the main thread will be blocked, as it doesn't have to re-render those components.
+
+However, there comes a time where you're contorting your codebase (and probably yourself) to avoid a simple `"use client"`. Keep in mind your codebase will have hundreds (maybe even thousands) of components. This width of components stems from the complexity of the design and depth of your features. At some point it is totally valid to surrender yourself to this reality and make something a client component. If only for the maintainability of the codebase (but probably your sanity, too).
+
+### Some libraries don't SSR well
+
+Take this not as gospel, but as a word of caution. Some libraries do not SSR well (or SSR at all). To name a high profile example: [react-instantsearch](https://www.algolia.com/doc/guides/building-search-ui/what-is-instantsearch/react) It simply does not render anything on the server ([react-instantsearch-nextjs](https://www.algolia.com/doc/api-reference/widgets/instantsearch-next/react) isn't much better). It isn't the only one. We almost always use [keen-slider](https://keen-slider.io), as we have a great [hook](https://github.com/Becklyn-Studios/ts-libs/blob/f5fab8775014f762b99b20726aebfdafb076b56e/packages/next/lib/slider.ts) for it. However it does not do SSR, at all.
+
+There are ways around it, however the first step is knowing that libraries could break like this. Make sure to critically examine layout shifts! Once deployed, load your page with JavaScript disabled, to see what the client receives. If anything seems off, investigate.
+
+### Your components are not bloating the bundle
+
+I previously touched on the hundreds of components that you'll (probably) have to render to deliver a single page. Strategic placements for a [dynamic()](https://nextjs.org/docs/app/guides/lazy-loading#nextdynamic) import call are absolutely necessary, however your own code is most likely not the reason for an uncompetitive bundle size. It is sadly all too easy to have your bundle size explode because of a library. Tools like the [bundle analyzer](https://nextjs.org/docs/app/guides/package-bundling#nextjs-bundle-analyzer-experimental) make it easy to spot which libraries cause bloat.
+
+### Don't go broke chasing performance
+
+Image optimization & link prefetching are great. I am always stunned at how lightning fast navigation is on our Next.js sites. However, both of these features come at a big cost. While image optimization got a much-welcomed price reduction at [the start of 2025](https://vercel.com/changelog/faster-transformations-and-reduced-pricing-for-image-optimization), it is still pricey. Similarly, link prefetching is great, however with Next.js 16.1 the algorithm got upgraded and people [are reporting massive spikes in requests](https://github.com/vercel/next.js/issues/85470).
+
+The great thing with both is: You can decide where to use them. You can deactivate either one for each component, individually, with a single prop! Don't want tiny images from an external source optimized? Turn it off. Don't want the link in your header, to the alternative language version of your website, to be prefetched? Turn it off.
+
+I also extend this to services like Observability Plus or Analytics from Vercel. These are awesome! However, if you're not going to obsess over them (and you're on budget), these should go first if you're optimizing your bill. At least with Observability Plus, Vercel retains the logs, so if you ever need them, they're there! Just turn it on, investigate, observe the behavior and turn it off again, once you're done.
+
+## Closing thoughts
+
+Managing complexity is the most important part of our job. While we do have bigger clients, basically no customer of ours has an infinite budget. As such, it is essential that we understand the intention behind customer requests and turn them into something that works with the existing implementation, without bloating the entire website. This might even escalate into saying "no" and working with the customer to find other remedies to their pain. This cannot be understated. If we want to move fast without creating a hole in the budget we have to be smart about where we invite complexity.
+
+Next.js has become infamous for hidden complexity and troublesome pitfalls. While I can sympathize with how it has gotten this reputation, I do think it is somewhat undeserved. In fact, I believe this is actually Next.js suffering from its own success. Next.js, especially when hosted on Vercel, has made it so effortless to build things that previously were incredibly annoying to build (deploy & scale).
+
+You can actually see the Next.js team responding to this with Version 16. Turn on Cache Components and Next.js will baby you into shipping a more bulletproof implementation. We will see how this evolves. Finding the right mental model is hard. Warnings and errors are welcome, but the pace of problem-solving with Next.js is too high to spoon-feed developers everything.
+
+So even in the age of AI, knowledge is still the bottleneck. Heed that warning, acknowledge the power and take a stroll through the docs. Just know that you can build it, if you dare.
