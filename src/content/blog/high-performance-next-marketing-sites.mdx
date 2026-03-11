@@ -26,7 +26,7 @@ The app directory isn't perfect though. My biggest gripes are when the composabi
 
 When using the app directory the biggest performance boost is to make everything static. Use [generateStaticParams](https://nextjs.org/docs/app/api-reference/functions/generate-static-params) to your advantage (note: it also works in parallel routes). Fight with your team to make sure nothing dynamic needs to be called to render your page. Something like an auth check or a shopping cart can easily be fetched on the client, so aggressively move checks like that away from the server (and render a fallback).
 
-Like many things I will be mentioning here today, PPR will alleviate some of the pain here, so look towards upgrading if your site relies on dynamic data.
+Like many things I will be mentioning here today, [PPR](https://nextjs.org/docs/app/guides/prefetching#partial-prerendering-ppr) will alleviate some of the pain here, so look towards upgrading if your site relies on dynamic data.
 
 Next.js also has some magical tricks for working with requests. Fetch calls within a given request are [deduplicated](https://nextjs.org/docs/app/getting-started/fetching-data#deduplicate-requests-and-cache-data). So fetching data in your `generateMetadata` and in the default export of the same `page.tsx` (or even `layout.tsx`, parallel routes) are consolidated, meaning only one external call is made (despite calling the same function in multiple places). The same applies to calls made in RSC.
 
