@@ -20,7 +20,7 @@ To me, a marketing website is one that focuses on delivering static content. Edi
 
 ## Taking advantage of the app directory
 
-I am a huge fanboy of the app directory. Many bemoan the complexity of the app router, but those cries feel shortsighted to me. Being able to compose on a route level is incredible! Part of what makes this magical is streaming. As an example: Even if your users hit a page you haven't statically generated, with the layout being decoupled from your page, users don't have to wait for the entire page to finish generating before getting feedback from the server. You can take this to another level by composing with elements like [parallel routes](https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes) and [loading.tsx](#https://nextjs.org/docs/app/api-reference/file-conventions/loading).
+I am a huge fanboy of the app directory. Many bemoan the complexity of the app router, but those cries feel shortsighted to me. Being able to compose on a route level is incredible! Part of what makes this magical is streaming. As an example: Even if your users hit a page you haven't statically generated, with the layout being decoupled from your page, users don't have to wait for the entire page to finish generating before getting feedback from the server. You can take this to another level by composing with elements like [parallel routes](https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes) and [loading.tsx](https://nextjs.org/docs/app/api-reference/file-conventions/loading).
 
 The app directory isn't perfect though. My biggest gripes are when the composability model breaks down. Quirks like `not-found.tsx` being scoped to routes (not the URL of the user) or `not-found.tsx` not taking any dynamic params (like a `layout.tsx` or `page.tsx` would). Both are small annoyances that I am sure will get remedied in future releases.
 
@@ -58,7 +58,7 @@ Knowing when the client boundary starts is especially important when working wit
 
 After fetching, we normalize. In basic terms: We translate the data from the request into what the component needs. Simple logic. The important thing is to make things as reusable as possible. To give an example we have to look back at our Content-Model. Every project of ours has basic types like "Internal Link", "External Link", "Image With Focalpoint". We establish these right from the start. Everything else builds with these! We create a GraphQL Fragment, React Components & normalization functions for each. They plug into each other, perfectly.
 
-Doing so makes your website stupidly easy to scale. Updates to one of your Content-Types are automatically applied everywhere, as Typescript will force you to touch the necessary parts. Boundaries are clear and deviations are instantly pointed out to you by the linter. Complexity is clearly documented and moved into appropriate positions. Talking to the CMS becomes boring, as it should be! The remaining difficulty is in how you orchestrate the "Modules". Being deliberate about what will be RSC also makes it painless to adopt Cache Components, later.
+Doing so makes your website stupidly easy to scale. Updates to one of your Content-Types are automatically applied everywhere, as TypeScript will force you to touch the necessary parts. Boundaries are clear and deviations are instantly pointed out to you by the linter. Complexity is clearly documented and moved into appropriate positions. Talking to the CMS becomes boring, as it should be! The remaining difficulty is in how you orchestrate the "Modules". Being deliberate about what will be RSC also makes it painless to adopt Cache Components, later.
 
 ## Personal hot takes
 
@@ -78,8 +78,8 @@ This should go without saying, however after going around online spaces, I do se
 
 If you're just creating a marketing page, most of the dynamic function calls can be circumvented. Examples:
 
-1. Redirecting user based on location: Instead of checking the header in your happy path, first redirect the user to a dedicated redirect route, then you can safely check the header there without deopting your route.
-2. Auth check in header: Instead of calling header in your navigation to see if the user is logged in or not, show a fallback on the server and check that on the client via an additional fetch
+1. Redirecting user based on location: Instead of checking the `headers` in your happy path, first redirect the user to a dedicated redirect route, then you can safely check the header there without deopting your route.
+2. Auth check in header: Instead of calling `cookies` in your navigation to see if the user is logged in or not, show a fallback on the server and check that on the client via an additional fetch
 
 Once more: This will change with Cache Components & PPR, but important to keep in mind nonetheless.
 
