@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Note } from "@/components/shared/note/server";
 
 export const Disclaimer: FC = () => (
-    <Note.Frame variant="primary">
+    <Note.Frame variant="secondary">
         <Note.Header>
             <Note.Headline>Disclaimer</Note.Headline>
         </Note.Header>
