@@ -59,14 +59,16 @@
     --sh-comment: var(--color-black-alt);
 }
 
-:focus {
-    outline-color: var(--color-primary);
-    border-color: transparent;
-}
+@layer base {
+    :focus {
+        outline-color: var(--color-primary);
+        border-color: transparent;
+    }
 
-::selection {
-    background-color: var(--color-primary);
-    text-decoration: var(--color-white);
+    ::selection {
+        background-color: var(--color-primary);
+        text-decoration: var(--color-white);
+    }
 }
 
 html {
