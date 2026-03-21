@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import useSWR from "swr";
-import { Note } from "@/components/shared/note/Note";
+import { Note } from "@/components/shared/note/client";
 import { wasteTime } from "@/lib/time";
 
 export interface AlternativeProps {
