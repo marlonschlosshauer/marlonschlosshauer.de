@@ -6,7 +6,7 @@ import { NoteVariant } from "./type";
 const variantClasses: Record<NoteVariant, string> = {
     white: "border-white",
     primary: "border-primary bg-primary/10",
-    secondary: "border-secondary bg-secondary/10",
+    secondary: "border-secondary bg-secondary/10 selection:bg-secondary",
 };
 
 export const Frame: FC<PropsWithChildren<PropsWithClassName<{ variant?: NoteVariant }>>> = ({
