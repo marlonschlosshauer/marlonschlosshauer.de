@@ -1,1 +1,1 @@
-export type NoteVariant = "white" | "primary";
+export type NoteVariant = "white" | "primary" | "secondary";
