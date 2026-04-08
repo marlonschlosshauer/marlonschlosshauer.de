@@ -1,0 +1,135 @@
+import { Meta } from "@/components/blog/meta/Meta";
+import { Note } from "@/components/shared/note/server";
+
+export const metadata = {
+    title: "Next.js Quirks: Not Found are scoped to routes",
+    description:
+        "One of the more annoying quirks of the App Directory is that `not-found.tsx` are scoped to the current route. Let's find out why this is annoying and how to deal with it.",
+    date: "2026-04-08",
+    words: 850,
+    tags: ["next.js", "i18n", "app-router"],
+};
+
+# Next.js Quirks: Not Found are scoped to routes
+
+<Meta {...metadata} />
+
+One of the more annoying quirks of the App Directory is that `not-found.tsx` are scoped to the current route.
+
+Let me explain: Let's say we have a website that requires i18n. Our setup looks like this:
+
+```
+src
+	app
+		[locale]
+			layout.tsx
+			[[...slug]]
+				page.tsx
+```
+
+We want to show a not-found page in the relevant language. We browse the documentation for [not-found.js](https://nextjs.org/docs/app/api-reference/file-conventions/not-found) and quickly realize that we can't just place the `not-found.tsx` under `[locale]/[[...slug]]`, because it does not receive any dynamic segments (i.e. `locale`) like a [page.tsx](https://nextjs.org/docs/app/getting-started/layouts-and-pages#creating-a-dynamic-segment) would. What now?
+
+## Hitting a dead end
+
+Okay, no big deal. We want things to be static, so we just create dedicated routes for every locale and throw a `not-found.tsx` in each. Our modified setup would look like this:
+
+```
+src
+	app
+		[locale]
+			layout.tsx
+			[[...slug]]
+				page.tsx
+		en
+			layout.tsx
+			not-found.tsx
+		de
+			layout.tsx
+			not-found.tsx
+		fr
+			layout.tsx
+			not-found.tsx
+```
+
+Our assumption is that 404 pages would be chosen based on how the URL matches with the paths in the app directory. At least, that is how it works for `page.tsx`. Example: If we add `src/app/en/foo/page.tsx`, we could visit `/en/foo`.
+
+This is a great idea, however `not-found.tsx` does not work like that. If we test our 404 page, we will see the default Next.js 404 page, not our cool custom not-found.
+
+This is because we hit `/[locale]/[[...slug]]/page.tsx`, which calls [notFound()](https://nextjs.org/docs/app/api-reference/functions/not-found). In simplified terms, Next.js now walks up from that route and looks for the closest `not-found.tsx`.
+
+So it considers the following:
+
+```
+/[locale]/[[...slug]]/not-found.tsx
+/[locale]/not-found.tsx
+/not-found.tsx
+```
+
+We have none of those, so we get the default 404 page. None of our alternative routes are considered.
+
+## Potential solutions
+
+There are two potential fixes. I'll start with the rather basic one.
+
+### Checking headers
+
+If we don't care about making the request dynamic, we can check the [headers()](https://nextjs.org/docs/app/api-reference/functions/headers) for the preferred language of the browser:
+
+```
+const acceptLanguage = (await headers()).get("accept-language");
+const locales = acceptLanguage ? acceptLanguage.split(",") : ["en"];
+```
+
+This way we can move our `not-found.tsx` under `[locale]` (or top level, if we can repeat the layout code).
+
+```
+src
+	app
+		[locale]
+			layout.tsx
+			not-found.tsx
+			[[...slug]]
+				page.tsx
+```
+
+This is simple & reliable, however it does mean each request will be dynamic. We will need to make sure calls to our CMS/DB are cached correctly, `not-found.tsx` usually sees a lot of traffic. Another gotcha to consider is that there can be a mismatch between URL and what is shown. Example: If a user with a German browser visits `/en/something/that/does/not/exist`, they will get a German response coming from an English URL. Odd, but not a deal breaker.
+
+### Rotating our setup
+
+If we want our routes to stay static, we can modify our app directory like this:
+
+```
+src
+	app
+		en
+			layout.tsx
+			not-found.tsx
+			[[...slug]]
+				page.tsx
+		de
+			layout.tsx
+			not-found.tsx
+			[[...slug]]
+				page.tsx
+		fr
+			layout.tsx
+			not-found.tsx
+			[[...slug]]
+				page.tsx
+```
+
+Now each locale has a `layout.tsx`, dynamic `[[...slug]]` segment and a `not-found.tsx`. We can now set up each `not-found.tsx` to be exactly what that language needs.
+
+The obvious downside is that if we have many locales, this becomes annoying to set up and maintain, however we should be able to move all of the logic that would usually sit directly in our `page.tsx` etc. into another folder, so each of these repeating files just calls a function that gets a `locale` passed in.
+
+<Note.Frame variant="secondary">
+    <Note.Header>
+        <Note.Headline>Disclaimer</Note.Headline>
+    </Note.Header>
+    <Note.Body>
+        While this approach does not modify the visible URL to the user, in my experience it does
+        change the URL for revalidation <strong>for the landing page</strong>. What was previously{" "}
+        <code>/de</code> to revalidate the German landing page, is now <code>/de//</code>. I have
+        also only observed this behavior once deployed to Vercel, not locally!
+    </Note.Body>
+</Note.Frame>
