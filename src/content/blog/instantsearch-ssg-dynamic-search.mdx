@@ -70,7 +70,7 @@ I'll go over individual parts, to see the full code go to the end of this sectio
 import { FC, PropsWithChildren, useEffect, useRef } from "react";
 import type { UiState } from "instantsearch.js";
 import {
-    InstantSearchNext
+    InstantSearchNext,
     InstantSearchNextRouting,
     createInstantSearchNextInstance,
 } from "react-instantsearch-nextjs";
@@ -88,7 +88,7 @@ export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProp
     return (
         <InstantSearchNext
             indexName={process.env.NEXT_PUBLIC_ALGOLIA_TOUBIZ_INDEX ?? ""}
-            searchClient={ALGOLIA_SERACH_CLIENT}
+            searchClient={ALGOLIA_SEARCH_CLIENT}
             instance={instance}
             routing={customRouting}
             future={{ preserveSharedStateOnUnmount: true }}>
@@ -115,7 +115,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
     router: {
         getLocation: () => {
             // Return real browser location once reading is enabled
-            if (typeof window !== "undefined" && canReadRealLocation) {
+            if (typeof window !== "undefined" && canReadUrl) {
                 return window.location;
             }
 
@@ -171,7 +171,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
         start() {},
         push(url) {
             // Block push until after we've read from URL and updated state
-            if (!canPush) {
+            if (!canPushUrl) {
                 return;
             }
 
@@ -198,7 +198,7 @@ const customRouting: InstantSearchNextRouting<UiState, UiState> = {
         start() {},
         push(url) {
             // Block push until after we've read from URL and updated state
-            if (!canPush) {
+            if (!canPushUrl) {
                 return;
             }
 
@@ -228,7 +228,7 @@ And that is it. We have successfully created the minimal-viable router! For the 
 
             // Enable push for future interactions
             setTimeout(() => {
-                canPush = true;
+                canPushUrl = true;
             }, 0);
         }
 
@@ -249,7 +249,7 @@ And that is it! You can further refine the behavior by passing props like a `cre
 import { FC, PropsWithChildren, useEffect, useRef } from "react";
 import type { UiState } from "instantsearch.js";
 import {
-    InstantSearchNext
+    InstantSearchNext,
     InstantSearchNextRouting,
     createInstantSearchNextInstance,
 } from "react-instantsearch-nextjs";
@@ -318,7 +318,7 @@ export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProp
     return (
         <InstantSearchNext
             indexName={process.env.NEXT_PUBLIC_ALGOLIA_TOUBIZ_INDEX ?? ""}
-            searchClient={ALGOLIA_SERACH_CLIENT}
+            searchClient={ALGOLIA_SEARCH_CLIENT}
             instance={instance}
             routing={customRouting}
             future={{ preserveSharedStateOnUnmount: true }}>

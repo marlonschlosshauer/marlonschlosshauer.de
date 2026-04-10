@@ -16,7 +16,7 @@ export const metadata = {
 
 Parallel routes are a niche tool that is surprisingly powerful. The often talked about use cases are dashboards and [intercepting routes](https://nextjs.org/docs/app/api-reference/file-conventions/intercepting-routes#examples), however I want to showcase another possible application: Handling route specific content in a layout.
 
-Lets say we have the following structure in the app directory:
+Let's say we have the following structure in the app directory:
 
 ```
 - /[locale]
@@ -61,9 +61,9 @@ There is however another way: using parallel routes! Ultimately we have to ackno
 
 ## Splitting the problem up
 
-We can move our requirement into a parallel route and pass it as a child to our navigation. That way we benefit from all the rendering & streaming tricks that `layout.tsx` gives us, without any of the drawbacks mentioned above. Lets see how!
+We can move our requirement into a parallel route and pass it as a child to our navigation. That way we benefit from all the rendering & streaming tricks that `layout.tsx` gives us, without any of the drawbacks mentioned above. Let's see how!
 
-Lets start by creating a `@logo` folder in our app directory.
+Let's start by creating a `@logo` folder in our app directory.
 
 ```
 - [locale]
@@ -168,6 +168,6 @@ export default async function RootLayout({params, children, logo, banner, news, 
 
 ## Closing thoughts
 
-This might seem overkill at first, but keep in mind that we have the full power of the app directory available to us when working with parallel routes. That means we can statically prerender them with `generateStaticProps` (independently to our `page.tsx`). That also means we can fetch based on dynamic content. We can pass `loading.tsx` (or `<Suspense>`) fallbacks, without blocking the streaming of either `layout.tsx` or `page.tsx`. We don't bloat parts of our app that shouldn't have to know about this relationship. Most importantly: There is no performance degradation despite the added functionality.
+This might seem overkill at first, but keep in mind that we have the full power of the app directory available to us when working with parallel routes. That means we can statically prerender them with `generateStaticParams` (independently to our `page.tsx`). That also means we can fetch based on dynamic content. We can pass `loading.tsx` (or `<Suspense>`) fallbacks, without blocking the streaming of either `layout.tsx` or `page.tsx`. We don't bloat parts of our app that shouldn't have to know about this relationship. Most importantly: There is no performance degradation despite the added functionality.
 
 The app directory is full of these little gems that highlight the power of composition. I hope this tiny showcase of parallel routes acts as a small appetizer for what you can do with the app directory.

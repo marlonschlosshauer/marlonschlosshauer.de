@@ -20,7 +20,7 @@ Server Actions are a Next.js feature that was introduced with the app directory.
 
 We'll go over the reasons why you should not use server actions to fetch data. Afterwards, we will explore how you might do data fetching in Next.js.
 
-If you just want a TL:DR, the docs have a great & short section here: [How to use Next.js as a backend for your frontend](https://nextjs.org/docs/app/guides/backend-for-frontend#server-actions).
+If you just want a TL;DR, the docs have a great & short section here: [How to use Next.js as a backend for your frontend](https://nextjs.org/docs/app/guides/backend-for-frontend#server-actions).
 
 ## Server Actions do not cache well
 
@@ -113,7 +113,7 @@ If you watch the network tab, you can see the next request only starts when the 
 
 It is worth mentioning again that if you call server actions in a React Server Component, it is just regular function invocation, so you do not incur any of these downsides, as you don't cross any network boundary. However you also don't gain anything from marking the function as `"use server"` (aside from malicious actors being able to spam via an endpoint).
 
-## What do to instead
+## What to do instead
 
 The frequency with which people ask about server actions highlights how great of a DX they provide. While Next.js is all about making it easier to create complex applications, we shouldn't produce a far inferior experience for the user, just because it was easier to build. Especially not when alternatives are so plentiful!
 
@@ -123,7 +123,7 @@ I think it is fair to say that the app directory spent the past few years focusi
 
 If your app can support that pattern, it is a great fit to replace any server action (or regular fetching) that you're using to get data from the server. You gain performance and add flexibility in how you can handle the loading state, all without losing type-safety.
 
-### tRCP
+### tRPC
 
 While I have never worked with [tRPC](https://trpc.io/) before I have heard great things about it. Given what we observed about server actions it is fair to say that performance with tRPC will be guaranteed to be better. And type-safety remains!
 
@@ -139,4 +139,4 @@ It is worth taking a second and consider if you even need to fetch on the client
 
 Server Actions are great! However they are also a niche tool. The surprisingly excellent DX paired with the unopinionated way Next.js (or rather React) does client-server communication led to people seeing it as a solution to a problem that it never meant to solve.
 
-While we already have plenty of options, I think this showcases that a "server query" could be a great addition. Especially now with the new `"use cache"` semantic. Lets see what the future may bring.
+While we already have plenty of options, I think this showcases that a "server query" could be a great addition. Especially now with the new `"use cache"` semantic. Let's see what the future may bring.

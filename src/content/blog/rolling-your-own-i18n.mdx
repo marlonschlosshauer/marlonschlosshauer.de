@@ -17,7 +17,7 @@ I see packages like next-intl, next-i18next and next-translate commonly recommen
 
 My main concern is with the _magic_ that some of these libraries provide. Not only can it lead to performance problems if you're new to Next.js, but it can also mentally box you into a solution that is sub-optimal for your use-case.
 
-Static rendering is a specific example where I would caution developers reconsider libraries. Both [next-intl](https://next-intl.dev/docs/routing/setup#static-rendering) & i18next opt your route into dynamic rendering by default, if you want to translate on the server. There are ways around it (at least for next-intl), however not only are we losing losing some of that slickness which made us choose those libraries in the first place, but you also have to realize that the deopt is going on!
+Static rendering is a specific example where I would caution developers reconsider libraries. Both [next-intl](https://next-intl.dev/docs/routing/setup#static-rendering) & i18next opt your route into dynamic rendering by default, if you want to translate on the server. There are ways around it (at least for next-intl), however not only are we losing some of that slickness which made us choose those libraries in the first place, but you also have to realize that the deopt is going on!
 
 Another gripe is the fact that rolling your own, type safe, optimized, i18n with Next.js is trivial. Yes, that means implementing the translation logic and any other functionality yourself, however as you're about to see, that is straight forward, too.
 
@@ -127,7 +127,7 @@ export const Foo = () => {
 
 ## Server side translations
 
-With some minor refactoring we translate on the server, too! Lets clean up first by moving all of the shared stuff into a `shared.ts`:
+With some minor refactoring we translate on the server, too! Let's clean up first by moving all of the shared stuff into a `shared.ts`:
 
 ```
 // shared.ts
@@ -219,7 +219,7 @@ You might notice the drawback to this implementation: The component needs to hav
 
 Right now we call `getDictionary` on the client, which causes both dictionaries to be present on the client. To make our bundle as small as possible, we can update our `TranslationProvider` to take a `dictionary`, instead of a `locale`.
 
-First lets start by creating a `type.ts` file where we move the types from `shared.ts`:
+First let's start by creating a `type.ts` file where we move the types from `shared.ts`:
 
 ```
 // type.ts
@@ -230,7 +230,7 @@ export type Dictionary = typeof en | typeof de;
 export type Locale = "en" | "de";
 ```
 
-Now lets move the `getDictionary()` function into `server.ts`:
+Now let's move the `getDictionary()` function into `server.ts`:
 
 ```
 // server.ts
@@ -348,7 +348,7 @@ export const translate = (dictionary: Dictionary) => {
 };
 ```
 
-With this I can now place templates into my translation strings and replace them aftewards, during translation:
+With this I can now place templates into my translation strings and replace them afterwards, during translation:
 
 ```
 // en.json
