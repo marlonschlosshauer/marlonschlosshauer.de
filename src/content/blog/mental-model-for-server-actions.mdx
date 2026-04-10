@@ -1,0 +1,29 @@
+import { Meta } from "@/components/blog/meta/Meta";
+import { Note } from "@/components/shared/note/server";
+
+export const metadata = {
+    title: "A Mental Model for Server Actions",
+    description:
+        "Server Actions are a constant source of confusion. Let's examine its origins to build a better mental model.",
+    date: "2026-04-10",
+    words: 400,
+    tags: ["next.js", "react", "app-router"],
+};
+
+# A Mental Model for Server Actions
+
+<Meta {...metadata} />
+
+[Server Actions](https://react.dev/reference/rsc/server-functions) (or Server Functions) seem to be a constant source of confusion among the community. What can you do with them? What should you do with them? Is this or that correct? I have a simple trick to make them easier to reason about!
+
+Think about _why_ Server Actions got added to React. Improved developer experience is a big part of why people talk about them and I am sure that played a role in why the React Team built Server Actions, but the main reason for them being introduced, was as a new tool to make React Server Components easier to adopt.
+
+If your entire component is static (i.e. RSC), it would be a shame to have to turn it into a client component, just because you have to send something to the server. It is my theory that Server Actions got added for this exact reason!
+
+Instead of having to add a `useMutation` hook, we can just use the reliable (and always available) [form element](https://react.dev/reference/react-dom/components/form) (or [Form component](https://nextjs.org/docs/app/api-reference/components/form)) with a Server Action. Add a little bit of bundling magic and our feature is complete! The fact that Server Actions work without JavaScript isn't a happy accident, it was the main motivator for the feature.
+
+Venturing into conspiracy theories: This is also why we haven't received a "Server Query", which could provide similar DX, but with optimizations for data fetching (you should not be [fetching data with Server Actions](/blog/server-actions-are-not-for-fetching)).
+
+So, when questioning your usage of a Server Action, you should always remember: This isn't some magical DX feature, but rather a performance-oriented addition!
+
+Are you after DX? Reconsider. Are you after a smaller bundle? Consider.
