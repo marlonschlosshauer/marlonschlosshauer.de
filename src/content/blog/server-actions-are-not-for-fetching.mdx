@@ -2,6 +2,7 @@ import { RawAction } from "@/components/blog/demo/server-actions-are-not-for-fet
 import { UnstableAction } from "@/components/blog/demo/server-actions-are-not-for-fetching/cache/UnstableAction";
 import { WasteTimeAction } from "@/components/blog/demo/server-actions-are-not-for-fetching/cache/WasteTimeAction";
 import { Meta } from "@/components/blog/meta/Meta";
+import { Note } from "@/components/shared/note/server";
 
 export const metadata = {
     title: "Server Actions are not for fetching data",
@@ -140,3 +141,16 @@ It is worth taking a second and consider if you even need to fetch on the client
 Server Actions are great! However they are also a niche tool. The surprisingly excellent DX paired with the unopinionated way Next.js (or rather React) does client-server communication led to people seeing it as a solution to a problem that it never meant to solve.
 
 While we already have plenty of options, I think this showcases that a "server query" could be a great addition. Especially now with the new `"use cache"` semantic. Let's see what the future may bring.
+
+<Note.Frame variant="secondary">
+    <Note.Header>
+        <Note.Headline>Update</Note.Headline>
+    </Note.Header>
+    <Note.Body>
+        TanStack Start provides [Server
+        Functions](https://tanstack.com/start/latest/docs/framework/react/guide/server-functions#static-server-functions)
+        which can be used to query data. This is especially cool because it lets [you grab RSC from
+        the client](https://tanstack.com/blog/react-server-components#what-do-they-look-like)
+        without any of the drawbacks mentioned in this post!
+    </Note.Body>
+</Note.Frame>
