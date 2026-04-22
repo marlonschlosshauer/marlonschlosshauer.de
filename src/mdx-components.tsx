@@ -9,6 +9,7 @@ type ParagraphProps = ComponentPropsWithoutRef<"p">;
 type ListProps = ComponentPropsWithoutRef<"ul">;
 type AnchorProps = ComponentPropsWithoutRef<"a">;
 type CodeProps = ComponentPropsWithoutRef<"code">;
+type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 
 const components: MDXComponents = {
     h1: (props: HeadingProps) => <h1 className="font-semibold mb-8 text-2xl" {...props} />,
@@ -58,6 +59,9 @@ const components: MDXComponents = {
     code: ({ children, ...props }: CodeProps) => {
         const codeHTML = highlight(children as string);
         return <code dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />;
+    },
+    blockquote: ({ children }: BlockquoteProps) => {
+        return <blockquote className="blockquote">{children}</blockquote>;
     },
 };
 

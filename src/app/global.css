@@ -119,3 +119,19 @@ ul + pre {
 input[type="radio"] {
     accent-color: var(--color-primary);
 }
+
+.blockquote > p {
+    color: var(--color-secondary-alt) !important;
+}
+
+.blockquote > p::before {
+    content: "\201c";
+    color: var(--color-white-alt);
+    margin-right: 2px;
+}
+
+.blockquote > p::after {
+    content: "\201d";
+    color: var(--color-white-alt);
+    margin-left: 2px;
+}
