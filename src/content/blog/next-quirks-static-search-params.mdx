@@ -1,0 +1,144 @@
+import { Meta } from "@/components/blog/meta/Meta";
+
+export const metadata = {
+    title: "Next.js Quirks: useSearchParams in Static Pages",
+    description:
+        "Lifting state into the URL is very powerful, but we need to be careful not to blow a hole into our website",
+    date: "2026-04-22",
+    words: 700,
+    tags: ["next.js", "app-router"],
+};
+
+# Next.js Quirks: useSearchParams in Static Pages
+
+<Meta {...metadata} />
+
+Next.js gives developers many tools to lift state into the URL. This is very powerful, both in terms of usability, as it allows us to make state shareable via links, but also from a code perspective, as it enables us to solve problems by using composition within the app directory.
+
+Search Params are a part of the puzzle here. However, the App Directory has a restriction when prerendering pages with `useSearchParams`.
+
+## A hole in your page
+
+From the [docs](https://nextjs.org/docs/app/api-reference/functions/use-search-params#prerendering):
+
+> If a route is prerendered, calling useSearchParams will cause the Client Component tree up to the closest Suspense boundary to be client-side rendered.
+
+That means you will have to wrap it in a Suspense and provide a valid fallback, as Next.js won't prerender whatever is happening inside the Suspense. Not providing a fallback would lead to a blank hole in our website until hydration happens. That would be bad for both crawlers that can't execute JS and for users, because hydration would cause a nasty layout shift.
+
+## Using composition
+
+Multiple coworkers (and their Claude Code instances) got stuck on how to fix this gracefully. The solution is actually pretty simple: We're going to use composition!
+
+Here is an example:
+
+```
+export interface BlogPostOverviewProps {
+    tags: Tag[];
+    posts: Post[];
+}
+
+export const BlogPostOverview: FC<BlogPostOverviewProps> = ({ tags, posts }) => {
+    const params = useSearchParams();
+    const router = useRouter();
+    const tag = params.get("t");
+
+    const filteredPosts = tag ? posts.filter(p => p.tags.includes(tag)) : posts;
+
+    const onSelectTag = (tag: string) => {};
+
+    return (
+        <section>
+            <aside>
+				<TagCards currentTag={tag} tags={tags} onSelectTag={onSelectTag}>
+            </aside>
+            <PostCards posts={filteredPosts} />
+        </section>
+    );
+};
+```
+
+A quick breakdown of what is happening:
+
+1. Our component calls `useSearchParams` to get the current state
+2. We filter posts based on that state
+3. We have a function to select a tag
+4. We render out both tags and posts
+
+The next step would be to wrap our `useSearchParams` call with Suspense. For that, we need a new component:
+
+```
+export const Foo: FC<BlogPostOverviewProps> = (props) => {
+	return (
+		<Suspense>
+			<BlogPostOverview {...props}  />
+		</Suspense>
+)
+```
+
+This is where most people run into problems. What should our fallback look like? We can't put `BlogPostOverview` in the fallback, because it calls `useSearchParams`.
+
+Let's fix this! First, we're going to split our state management and rendering into two components.
+
+Our (new) `Content` component handles the rendering. Take note how it does not rely on `useSearchParams` (or any state management implementation). Just input & output.
+
+```
+export interface BlogPostOverviewContentProps extends BlogPostOverviewProps {
+    currentTag?: string;
+    onSelectTag: (tag: string) => void;
+}
+
+export const BlogPostOverviewContent: FC<BlogPostOverviewContentProps> = ({
+    posts,
+    tags,
+    currentTag,
+    onSelectTag,
+}) => {
+    const filteredPosts = currentTag ? posts.filter(p => p.tags.includes(currentTag)) : posts;
+
+    return (
+        <section>
+            <aside>
+				<TagCards currentTag={currentTag} tags={tags} onSelectTag={onSelectTag}>
+            </aside>
+            <PostCards posts={filteredPosts} />
+        </section>
+    );
+};
+```
+
+The existing `BlogPostOverview` component keeps its `useSearchParams` call, but only uses it to set up props, which it then passes to our newly created `BlogPostOverviewContent` component:
+
+```
+export const BlogPostOverview: FC<BlogPostOverviewProps> = ({ tags, posts }) => {
+    const params = useSearchParams();
+    const router = useRouter();
+    const tag = params.get("t");
+
+    const onSelectTag = (tag: string) => {};
+
+    return (
+        <BlogPostOverviewContent
+            posts={posts}
+            tags={tags}
+            currentTag={tag}
+            onSelectTag={onSelectTag}
+        />
+    );
+};
+```
+
+Lastly, we bring it all together in `Foo` by using our new `Content` component as the fallback (and providing it with a no-op `onSelectTag` function):
+
+```
+export const Foo: FC<BlogPostOverviewProps> = props => {
+    return (
+        <Suspense fallback={<BlogPostOverviewContent {...props} onSelectTag={() => {}} />}>
+            <BlogPostOverview {...props} />
+        </Suspense>
+    );
+};
+```
+
+The trick is simple: By moving the state management out of our rendering, we're free to use it to render our default state.
+
+So by leveraging simple composition, we managed to fix the hole in our page without any compromises. In fact, by splitting our component into pure rendering and implementation-specific code, we also made it more reusable!
