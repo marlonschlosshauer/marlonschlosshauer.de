@@ -30,7 +30,7 @@ export const PartyTrick = () => {
             const scrollLeft = tileCenter - container.offsetWidth / 2;
 
             container.scrollTo({ left: scrollLeft, behavior: "smooth" });
-        }, 150);
+        }, 0);
     };
 
     const onNext = (i: number) => {

@@ -29,8 +29,8 @@ export const useScore = ({
     onNext,
     onPrev,
 }: UseScoreProps) => {
-    const focusHome = () => homeStandingRef?.current?.focus();
-    const focusAway = () => awayStandingRef?.current?.focus();
+    const focusHome = () => setTimeout(() => homeStandingRef?.current?.focus(), 100);
+    const focusAway = () => setTimeout(() => awayStandingRef?.current?.focus(), 100);
 
     const onPress = () => {
         if (!homeStanding) {
