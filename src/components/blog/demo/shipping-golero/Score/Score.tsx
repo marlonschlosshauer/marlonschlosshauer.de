@@ -46,6 +46,8 @@ export const Score = forwardRef<ScoreRef, PropsWithClassNames<ScoreProps, "block
                     onKeyDown={e => {
                         if (e.code === "Backspace") onBack?.();
                     }}
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                 />
             </div>
         );

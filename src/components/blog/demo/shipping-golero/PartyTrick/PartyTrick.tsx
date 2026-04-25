@@ -3,22 +3,76 @@
 import { createRef, useRef, useState } from "react";
 import { HalfTile, HalfTileRef } from "../HalfTile/HalfTile";
 
-const MATCH_COUNT = 10;
+const MATCHES = [
+    {
+        day: "SA",
+        time: "12:00",
+        home: "RSC",
+        away: "SPA",
+    },
+    {
+        day: "SA",
+        time: "13:00",
+        home: "SSR",
+        away: "CSR",
+    },
+    {
+        day: "SA",
+        time: "14:00",
+        home: "JSX",
+        away: "DOM",
+    },
+    {
+        day: "SA",
+        time: "15:00",
+        home: "PPR",
+        away: "ISR",
+    },
+    {
+        day: "SA",
+        time: "16:00",
+        home: "HOC",
+        away: "FC",
+    },
+    {
+        day: "SU",
+        time: "12:00",
+        home: "FCP",
+        away: "LCP",
+    },
+    {
+        day: "SU",
+        time: "13:00",
+        home: "HRM",
+        away: "ESM",
+    },
+    {
+        day: "SU",
+        time: "14:00",
+        home: "SSR",
+        away: "CSR",
+    },
+    {
+        day: "SU",
+        time: "15:00",
+        home: "RTK",
+        away: "SWR",
+    },
+    {
+        day: "SU",
+        time: "16:00",
+        home: "VER",
+        away: "CDFL",
+    },
+];
 
 export const PartyTrick = () => {
     const [values, setValues] = useState<
         Record<string, { home: number | null; away: number | null }>
     >({});
 
-    const refs = useRef(Array.from({ length: MATCH_COUNT }).map(() => createRef<HalfTileRef>()));
+    const refs = useRef(Array.from({ length: MATCHES.length }).map(() => createRef<HalfTileRef>()));
     const scrollRef = useRef<HTMLDivElement | null>(null);
-
-    const base = {
-        day: new Intl.DateTimeFormat("en-US", { weekday: "short" }).format(new Date()),
-        time: "12:00",
-        home: "ABC",
-        away: "XYZ",
-    };
 
     const scrollToTile = (i: number) => {
         setTimeout(() => {
@@ -76,10 +130,10 @@ export const PartyTrick = () => {
                 ref={scrollRef}
                 className="overflow-x-scroll scroll-smooth -ml-16 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <ol className="flex flex-row gap-2 pl-16">
-                    {Array.from({ length: MATCH_COUNT }).map((_, i) => (
+                    {MATCHES.map((match, i) => (
                         <li id={`tile-${i}`} className="tile" key={i}>
                             <HalfTile
-                                {...base}
+                                {...match}
                                 ref={refs.current[i]}
                                 homeStanding={values[`${i}`]?.home ?? null}
                                 awayStanding={values[`${i}`]?.away ?? null}
