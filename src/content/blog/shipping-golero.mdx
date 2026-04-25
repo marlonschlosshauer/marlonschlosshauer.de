@@ -1,59 +1,96 @@
 import Image from "next/image";
 import { PartyTrick } from "@/components/blog/demo/shipping-golero/PartyTrick/PartyTrick";
 import { Meta } from "@/components/blog/meta/Meta";
+import { Note } from "@/components/shared/note/server";
 
 export const metadata = {
     title: "Shipping Golero",
-    description: "",
-    date: "2026-03-31",
-    words: 9999,
+    description:
+        "Revisiting an old idea and trimming it down to as little surface area as possible.",
+    date: "2026-04-26",
+    words: 1600,
 };
 
 # Shipping Golero
 
 <Meta {...metadata} className="pb-4" />
 
-Early in my career I joined a small team to build a soccer prediction app. The operation was very amature and the business failed. Shortly before pronouncing the project dead, I embarked on a redesign of the entire app. I got to use part of that redesign in [pitch](https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=0-1&t=euCBXXiFDOqdV9dh-1), too, which I was very proud of at the time.
+Early in my career I joined a small team to build a social soccer prediction app. The operation was very amateur and the business failed. Shortly before pronouncing the project dead, I embarked on [a redesign of the entire app](https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=0-1&t=euCBXXiFDOqdV9dh-1).
 
-My goal was to trim down the surface area of the app as much as possible. Remove all of the fat. Focus on the main functions and make those as easy & fast as possible to use.
+The previous design was well-intentioned, but was lacking in clarity. Common actions got shoved deep into nested menus. Important screens didn't account for the complexity that they could produce. Most importantly: There was a lot going on, for what was essentially something of the complexity of a note-taking app. It took way too many components and pages to express the core functionality. This was deadly for a one-man developer operation.
+
+My goal with the redesign was to trim down the surface area of the app as much as possible. Remove all of the fat. Focus on the main functions and make those easy.
 
 That redesign has been running around in my head for a couple of years now, so I thought why not build it myself. As it turns out, optimizing for simplicity, in combination with modern tools like Claude Code & Convex, made it a delight to implement.
 
-The app is available to download on the app store: [Golero](https://apps.apple.com/app/6760223128). The Figma file is available [here](https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=6-5924&t=VgC4hyVQZblLkrTo-4).
+<Note.Frame variant="primary">
+    <Note.Body>
+        The app will be available [here](https://apps.apple.com/app/6760223128) once the tax
+        documents are done processing (:
+    </Note.Body>
+</Note.Frame>
 
-## Party trick
+The Figma file is available [here](https://www.figma.com/design/Wg2c9sk6nqbeWrydDOxCMg/Portfolio--Tippinho?node-id=6-5924&t=VgC4hyVQZblLkrTo-4).
 
-The core loop of the app is about entering predictions for upcoming matches. You receive points depending on how close you are to the actual result. I wanted to make that flow as fast and frictionless as possible. Here is a recreation of how it works in the app:
+## The Party Trick
+
+The core loop of the app is about entering predictions for upcoming matches. You receive points depending on how close you are to the actual result. I wanted to make that flow as frictionless as possible.
+
+All available matches are put into a slider. Predictions are only a single digit (good news if your favorite loses 13:1). Upon input, the focus immediately jumps to the next possible input. Backspace moves the focus backwards.
+
+This makes you fire out predictions like you're emptying a revolver. Here is a recreation of how it works in the app:
 
 <PartyTrick />
 
-All available matches are put into a slider. Predictions are only a single digits. Upon input, the focus immediatly jumps to the next possible input. Backspace goes moves the focus backwards.
+To keep the tiles as simple as possible, all tiles in the slider are for the same matchday. Furthermore, names of the clubs are restricted to four letters, making the tiles easier to read.
 
-Allowing the user to navigate with their keyboard speeds up the process immensily. Having users spent as little time as possible in the app is a key goal. Having people bounce around the app makes expectations grow and for an app that focuses on doing one thing well, being modest in scope is the perfect fit.
+Allowing the user to navigate with their keyboard speeds up the process immensely. Having users spend as little time as possible in the app is the goal. Apart from the app, I don't have anything to sell, so having people bounce around just makes expectations grow. For an app that focuses on doing one thing well, being modest in scope is the perfect fit.
+
+This "Party Trick" is also used to input the actual results, making it immediately familiar and requiring fewer components.
 
 ## Optimizing into existence
 
+The same philosophy as with the "Party Trick" was applied everywhere. Here are some examples:
+
+1. No automated match creation. Integrating existing third-party services is expensive and time-consuming (ask me how I know). So you're the boss of your group. This cuts down on cost and requires less UI (e.g. "find your league").
+2. Data is always previewed in a condensed format first (e.g. top 3 users for a given matchday), with the option to see it all with a simple tap.
+3. Everything starts on the home screen, with links that follow hierarchical order, allowing you to go from a season to seeing all the predictions on a specific match, with just a few taps.
+
+This radical way of cutting down scope by taking on limitations was born because of a shortage of time, which naturally adapted perfectly when transitioning from a startup idea to a weekend project.
+
 ## Modern tooling is incredible
 
--   Expo is great
--   Convex is incredible
--   Claude Code is a game changer
+I have a deep love for [Expo](https://expo.dev/home), as it removes (almost) all of the un-fun things about React Native. It also takes a lot of the pain out of deploying to the app stores. Setting up the splash screen, app icons and deep links is simple, too! Expo was great a couple of years ago and it just keeps getting better.
 
-Initially I started out with Supabase, as I had previously worked with that, however after getting to taste Convex, I quickly became addicted. Claude is insane at implementing the backend functions. The sync just works, so a ton of
+Initially I started out with Supabase, as I had previously worked with that. However, after getting to taste [Convex](https://www.convex.dev), I quickly became addicted! The developer experience is out of this world! Like Supabase, with Convex you get a database, a server and an auth layer. However, everything in Convex is synced, so changes are instantly visible on other devices. This shrinks the problem space. As a developer, you don't have to worry about cache invalidation anymore (among other things). As if this wasn't enough, the way you write and deploy code is best-in-class, too!
 
-## Pit falls
+Your Convex code lives in a folder in your repository. Files placed inside it get automatically synced with your Convex instance. You don't need to worry about a server. Your changes are uploaded instantly. You get instant feedback if something is wrong, and everything is type-safe. The code you write in those files will run on their servers, but also generates function stubs which you can call in your code. Consuming Convex queries is simple and can be augmented by using TanStack Query (giving you Suspense-enabled queries).
 
--   Android not rendering text inside of a `<TextInput/>`
--   Transitions in React Native 0.81 not working as they should
--   Expo Router not having the concept of a `Loading.tsx`
--   Convex Auth has some rough edges
+It gets even better. Because the code is in your repo and because it is type-safe, code agents like Claude are insane at implementing backend functions. Claude one-shotted every backend function I asked for. While yes, they all required another round of iteration to become secure, at no point did I get a broken or wrong result, which is impressive.
 
-This was a reminder that APIs are the bottleneck. Claude can one-shot pretty much any of my simple requests. To the point where, I went through the app, made a TODO list of all the things I didn't yet like, and just fired them into Claude Code, queueing them up, one after another. I can also trivially steer it to do things how I would I would do them, with just a few lines in a `CLAUDE.md`.
+Claude is also decent at writing Expo code, making this stack not just fun for developers, but also fast for agents. Convex hosting the functions on their backend makes it a perfect pick for app development, as you really don't have to worry about any resources. No doubt this will get even crazier once [RSC gets stabilized](https://docs.expo.dev/guides/server-components/).
 
-However inconsistencies stop the entire operation in its tracks. You now need to figure out why it doesn't work and you need to fix it, without destroying what currently works.
+## Pitfalls
 
-This became painful when I finally embraced Convex. As backend functions became something Claude one-shotted in mere seconds, the UI components became the bottleneck. It felt weird spending minutes on getting a button to fit in the layout correctly while getting the API endpoint for an entire screen with live sync, done in a couple dozens of seconds.
+Convex is awesome, Claude is a game-changer and the Expo team is putting in the work. However, developing apps is still far from perfect. Here are some examples:
 
-## Deploying mobile apps is still annoying
+1.  Transitions in React Native 0.81 not working as they should
+2.  Expo Router not having the concept of a `Loading.tsx`
+3.  Convex Auth has some rough edges
+4.  Android Simulator feels like a deep-state torture device that escaped containment
 
-Expo has made developing mobile apps so much easier. EAS has made deploying not make me want to jump off a bridge. It is still rough though. Feels like you're playing a turn-based quick-time event where at every turn something catastrophic might happen, all the while praying that the magic of EAS keeps the hell that is Xcode & App Store Connect away from you.
+My key takeaway is that APIs are still the bottleneck. Claude can one-shot pretty much any of my simple requests. To the point where I went through the app, made a TODO list of all the things I didn't yet like, and just fired them into Claude Code, queueing them up, one after another. I can also trivially steer it to do things how I would do them, with just a few lines in a `CLAUDE.md`.
+
+However, inconsistencies stop the entire operation in its tracks. You now need to figure out why it doesn't work and you need to fix it, without destroying what currently works.
+
+This became particularly annoying when I finally embraced Convex, as backend functions got implemented by Claude in mere seconds. Spending an order of magnitude more time on making a button fit just right when compared to setting up an entire screen with live sync is weird.
+
+The difference in how transitions work between React in web and React in native was particularly puzzling to me, as it behaved exactly opposite to how it does in web (not consuming a suspense signal, instead letting it trigger a nearby Suspense boundary). This was fixed with the next React Native version, but was a problem for a long time.
+
+Previously, I found documentation (or rather the lack thereof) to be a big hindrance, but while docs have improved, LLMs really have stepped up to make this less of an issue. Tools like Expo (and Convex) also make it easy to build little prototypes, which beats even the best documentation.
+
+Aside from APIs, it has to be said that deploying and managing apps is still hellish when compared to websites. Expo is a necessity. So is EAS. However, it is still rough. It feels like you're playing a turn-based game consisting of quick-time events where at every turn something catastrophic might happen, all the while praying that the magic of EAS keeps Xcode away from you.
+
+## Closing thoughts
+
+Developing apps is more fun than ever and I am so glad I finally scratched that itch. Even if the app isn't perfect, it feels good to realize an idea. The process of stripping the initial app down to its essentials and then building it back up again was the right choice. Sadly this process doesn't happen often enough. Shipping incrementally is still underrated.
