@@ -67,7 +67,10 @@ export const PartyTrick = () => {
 
     return (
         <div className="relative">
-            <div className="absolute -left-16 top-0 bottom-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+            <div
+                className="absolute top-0 bottom-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"
+                style={{ left: -65 }}
+            />
             <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-black from-30% to-transparent z-10 pointer-events-none" />
             <div
                 ref={scrollRef}
