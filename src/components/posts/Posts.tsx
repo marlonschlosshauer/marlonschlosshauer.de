@@ -12,10 +12,10 @@ export const Posts = async () => {
                 .toReversed()
                 .map((post, key) => (
                     <li key={key} className="flex">
-                        <Link href={post.href} className="flex flex-row items-center gap-1">
+                        <Link href={post.href}>
                             {new Date(post.date).getFullYear()} {post.title}
                             {post.favorite && (
-                                <Star aria-hidden className="w-[12px] h-[12px] text-primary-alt" />
+                                <Star aria-hidden className="inline w-[12px] h-[12px] text-primary-alt ml-1" />
                             )}
                         </Link>
                     </li>
