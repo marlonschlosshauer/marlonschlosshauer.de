@@ -31,5 +31,9 @@ export const ShareButton: FC = () => {
         timeoutRef.current = t;
     };
 
-    return <button onClick={onShare}>{hasCopied ? "Copied!" : "Share"}</button>;
+    return (
+        <button className="cursor-pointer" onClick={onShare}>
+            {hasCopied ? "Copied!" : "Share"}
+        </button>
+    );
 };
