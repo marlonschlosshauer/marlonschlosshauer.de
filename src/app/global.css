@@ -75,6 +75,27 @@ html {
     scrollbar-gutter: stable;
 }
 
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 24px;
+    pointer-events: none;
+    z-index: 50;
+}
+
+body::before {
+    top: 0;
+    background: linear-gradient(to bottom, var(--color-black), transparent);
+}
+
+body::after {
+    bottom: 0;
+    background: linear-gradient(to top, var(--color-black), transparent);
+}
+
 body {
     text-rendering: optimizeLegibility;
 }
