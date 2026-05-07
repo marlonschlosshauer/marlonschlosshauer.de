@@ -8,7 +8,7 @@ export default function BlogLayout({ children }: PropsWithChildren) {
             <footer>
                 <Socials />
             </footer>
-            <span className="p-8" />
+            <span className="pb-8" />
         </div>
     );
 }
