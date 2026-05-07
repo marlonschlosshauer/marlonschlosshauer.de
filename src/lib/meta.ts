@@ -9,6 +9,7 @@ export const buildMetadata = ({
     return {
         title,
         description,
+        keywords: tags,
         openGraph: {
             title,
             description,
