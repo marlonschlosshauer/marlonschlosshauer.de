@@ -29,13 +29,13 @@ const components: MDXComponents = {
         </Anchor>
     ),
     p: (props: ParagraphProps) => (
-        <p className="leading-snug my-8 text-white-alt selection:text-white" {...props} />
+        <p className="leading-snug my-6 text-white-alt selection:text-white" {...props} />
     ),
     ol: (props: ListProps) => <ol className={`list-["-"]`} {...props} />,
     ul: (props: ListProps) => <ol className="list-decimal" {...props} />,
     em: (props: ComponentPropsWithoutRef<"em">) => <em className="font-medium" {...props} />,
     strong: (props: ComponentPropsWithoutRef<"strong">) => (
-        <strong className="font-medium" {...props} />
+        <strong className="font-medium text-white" {...props} />
     ),
     a: ({ href, children, ...props }: AnchorProps) => {
         if (!href) {
