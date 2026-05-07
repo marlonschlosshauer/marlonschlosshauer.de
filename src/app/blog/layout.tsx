@@ -6,7 +6,7 @@ export default function BlogLayout({ children }: PropsWithChildren) {
         <>
             {children}
             <footer className="pb-8">
-                <Socials.Complete />
+                <Socials.Internal />
             </footer>
         </>
     );
