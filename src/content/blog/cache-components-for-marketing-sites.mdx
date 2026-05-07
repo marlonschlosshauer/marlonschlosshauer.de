@@ -1,0 +1,240 @@
+import { Meta } from "@/components/blog/meta/Meta";
+import { Note } from "@/components/shared/note/server";
+
+export const metadata = {
+    title: "Cache Components for Marketing Sites",
+    description:
+        "With the new caching semantic we can finally compose caching on a component level. This brings new possibilities, tricks and quirks.",
+    date: "2026-05-07",
+    words: 2800,
+    tags: ["next.js", "app-router", "ppr", "cache-components"],
+    favorite: true,
+};
+
+# Cache Components for Marketing Sites
+
+<Meta {...metadata} />
+
+When Next.js introduced the App Directory, it took a big step forward, massively expanding what developers could build with the framework. However, while things like React Server Components and file-based-routing scaled with the new breadth of possibilities, the caching semantics crumbled.
+
+In 2025 we saw the release of [Cache Components](https://nextjs.org/docs/app/api-reference/directives/use-cache#usage) and [Partial-Prerendering](https://nextjs.org/docs/app/guides/public-static-pages#partial-prerendering) (PPR) as a new caching semantic, bringing an idiomatic way to compose caching by allowing us to split up pages into many static and dynamic pieces that are computed, cached, and recomputed independently of each other.
+
+Composability that was previously only possible on a route level is now possible on a per-component level. This landmark change in how compute is cached and served is exciting, but for static sites the upgrades are easily missed.
+
+Thanks to PPR, Next.js is now much smarter in how it tracks static parts across routes and we can take advantage of that to build faster pages with less code.
+
+<Note.Frame variant="secondary">
+    <Note.Header>
+        <Note.Headline>Already have a mental model for Cache Components?</Note.Headline>
+    </Note.Header>
+    <Note.Body>Make sure to check out the [quirks section](#quirks) for in-depth tips!</Note.Body>
+</Note.Frame>
+
+## What is Static anyways
+
+Making sure sites are static has historically been incredibly important. The app directory is a [composition powerhouse](/blog/why-parallel-routes); however, one dynamic call was enough to deopt everything into dynamic behavior. **As an example**: Highlighting that a user is logged in (e.g inside of the header) could be enough to deopt your entire route to dynamic, resulting in each request having to compute everything and hit your CMS for all of it. Not good. And not composable.
+
+As a quick reminder: A page is considered dynamic if it depends on information about the request (i.e., headers, cookies, search params). If your page depends on information from an API, it will also be considered dynamic; however, you can turn these pages static by telling Next.js that you're okay with serving potentially stale content (i.e., revalidation). That last part is important!
+
+**Simplified**: A static page doesn't depend on a request and **provides stale indicators**.
+
+PPR can't change the reality of needing compute to render components that depend on request data. However, it can change how much impact that has on the surrounding component tree. While the request is dynamic, the rest of the tree can stay static. Only what is needed is recomputed. Everything else streams in, instantly.
+
+This mechanism is also super helpful for static sites: Previously Next.js only allowed us to provide stale indicators on a route level (e.g., [revalidation](https://nextjs.org/docs/app/guides/incremental-static-regeneration)), however, with Cache Components, we can now provide these indicators at the component level.
+
+When considering if a route is static, instead of just looking at the route, think of Next.js as now having a little "todo list" of cached components for each page. All of them serve as indicators, giving Next.js a more detailed map of what is actually going on.
+
+The page is essentially always static until we hit a Cache Component. Those Cache Components can either return instantly if they're a cache HIT, or they can stream in later if they're a MISS. Now, if everything in our todo list is static, our route stays static.
+
+## Benefits of Precision
+
+The "todo list" also enables Next.js to be much smarter about revalidating content. Again, instead of considering the entire route as something static, it can examine individual cache components. Pieces can update in isolation and updates can happen at different intervals, without disrupting each other.
+
+**An example**: You have two modules on Page A. Module X should update every 2 weeks. Module Y should update every 2 hours. A request comes in, gets the static (stale) version of the page. Next.js now uses the todo list to figure out if it should update any of the Cache Components. It sees that Module Y is stale, discards the cache for Module Y and recomputes the page again (reusing existing caches), so future requests get the latest (at that moment) version.
+
+```
+export const RestaurantMenu = async () => {
+	"use cache";
+
+	cacheTag("module-x");
+	cacheLife("bi-weekly"); // custom profile
+
+	const data = await getMenuData();
+
+	return <MenuWidget data={data} />
+}
+
+export const WeatherForecast = async () => {
+	"use cache";
+
+	cacheTag("module-y");
+	cacheLife("bi-hourly"); // custom profile
+
+	const data = await getWeatherData();
+
+	return <WeatherWidget data={data} />
+}
+
+
+export const PageA = () => (
+		<>
+			<Suspense fallback={MenuWidgetFallback}><MenuSchedule/></Suspense>
+			<Suspense fallback={WeatherWidgetFallback}><WeatherForecast/></Suspense>
+		</>
+)
+
+```
+
+Crucially, the cache for Module X is kept intact. It only updates Module Y! That alone is already incredibly powerful and a huge upgrade; however, the fact that Next.js now does this **automatically** is insane!
+
+```
+- Page A
+  - Module X
+  - Module Y
+  - Module Z
+
+- Page B
+  - Module X
+  - Module V
+
+- Page C
+  - Module X
+  - Module W
+  - Module Z
+
+// revalidateTag("Module X") revalidates parts (!) of Page A, B, C
+// while revalidateTag("Module V") only revalidates parts of Page B
+```
+
+Contrast this to the previous mental model: Once a route is static, it is your job to figure out how to resolve that. You would have to set a revalidation time manually on that route, which would need to match the 2-hour interval that you wanted. Then you would have to set the caches up with [unstable_cache](https://nextjs.org/docs/app/api-reference/functions/unstable_cache) (with revalidation time). You need to manually calculate the lowest revalidation time and pray that there aren't any race conditions or conflicts with your shortest cache time.
+
+With the new caching semantic, that connection between intervals and routes is made automatically, making it much easier to set up caching. However, our todo list isn't only used for revalidation intervals; it is also used for tags!
+
+## The Magic of Tags
+
+Cache Components allow you to set a [cache life](https://nextjs.org/docs/app/api-reference/functions/cacheLife) (how long should it cache this) and [cache tags](https://nextjs.org/docs/app/api-reference/functions/cacheTag) (under what it should cache it). If you invalidate a tag on a static page, Next.js will now also automatically update the page, the same way as it did with the interval we discussed in the previous section. And it will only discard the caches for tags that actually got revalidated.
+
+<Note.Frame variant="ghost">
+    <Note.Header>
+        <Note.Headline>Example</Note.Headline>
+    </Note.Header>
+    <Note.Body>
+        Let's say an editor updated a blog post. A webhook from your CMS automatically fires an
+        update to our revalidation API endpoint, that the entry with ID `XYZ` got updated.
+        Previously, we would have to query the CMS to find out which page corresponds to this blog
+        post, then call
+        [revalidatePath](https://nextjs.org/docs/app/api-reference/functions/revalidatePath) on that
+        URL.
+    </Note.Body>
+</Note.Frame>
+
+We now get this for free by simply tagging the blog post component that calls our CMS with the ID from the entry. Next.js auto-magically revalidates the part that it needs on the next invocation of the page, in the background (using stale-while-revalidating logic). All thanks to PPR and its "todo list" for each page!
+
+## Building a Mental Model
+
+A bunch of things happen when you turn on Cache Components. The immediate thing you will notice is that Next.js becomes way more opinionated in how you can use it.
+
+Fetches should be cached. Caches should be suspended. Suspensions should have a fallback. This is because turning on Cache Components also turns on PPR. Viewing Cache Components through the lens of indicators helps to demystify why this happens.
+
+While it is my personal conspiracy theory that the Next.js team got fed up with people whining about not having instant navigations (despite [loading.tsx](https://nextjs.org/docs/app/api-reference/file-conventions/loading) existing), the warnings and errors that Next.js now throws are important, as it needs the underlying signals to understand how to serve your content.
+
+Think of the following tools and how they interact with Next.js:
+
+-   `"use cache"` tells it to cache a part
+-   `Suspense` tells it to stream in this part if needed
+-   `loading.tsx` allows you to block during page generation, by showing a fallback
+-   `generateStaticParams` allows you to block during page generation, by prerendering
+-   `connection` do not cache this
+
+The happy path of hitting only hot caches simply collapses all of this, allowing us to skip all suspense boundaries. However, when we encounter a cache MISS, we either suspend to the nearest suspense boundary or to the `loading.tsx` (if present).
+
+This is nothing new. However, how this interacts with dynamic and revalidated content is new! Instead of blindly going through the entire page and (re)computing everything, the same suspense boundaries are skipped where caches get HIT. On a cache MISS, they return a fallback, while streaming in the result.
+
+The granularity we gained in revalidating individual pieces of a page is the same granularity we gained for hitting (or rather skipping) suspense boundaries (by caching).
+
+**So my mental model is**: Next.js wants us to feed it indicators with `"use cache"` and define holes by placing `<Suspense/>` boundaries. We can now place these all along our component tree. From within these components, we can influence the tree by tagging caches and defining the lifetimes of the caches. When we consume the tree, in a route file, we can override the behavior by providing a `loading.tsx` or calling `generateStaticParams`.
+
+The goal is to be explicit and provide the smoothest user experience, by making it obvious to the developer that they can provide a loading fallback.
+
+It takes time and hands-on experience to understand this. While annoying, these new errors help us to build better experiences. They also turn caching into less of a footgun for Next.js developers who haven't dug deep into these new cache semantics.
+
+## Quirks
+
+A huge paradigm shift like this naturally comes with a couple of quirks. Here are the ones to look out for.
+
+### Changes to revalidatePath
+
+We already covered that [revalidateTag](https://nextjs.org/docs/app/api-reference/functions/revalidateTag) is enough to update pages. It is worth mentioning that [revalidatePath](https://nextjs.org/docs/app/api-reference/functions/revalidatePath) also takes on a new role in this PPR world. It still refreshes the desired path, but it does so while disregarding any of the caches. You're essentially turning off Cache Components when calling it. This is a good escape hatch and mirrors the previous behavior in its result, but should be avoided if you want granularity in your caching.
+
+<Note.Frame variant="ghost">
+    <Note.Header>
+        <Note.Headline>Example</Note.Headline>
+    </Note.Header>
+    <Note.Body>
+        A user has visited a URL that leads to a 404; now an editor creates that page. Without a
+        `revalidatePath` call, that URL will still serve the 404. Alternatively, you can set the
+        path of that URL as a tag, resolve that in your endpoint, and revalidate it.
+    </Note.Body>
+</Note.Frame>
+
+### Planting Bombs in your Codebase
+
+I mentioned that Cache Components also turn on PPR. This makes sense. However, as of Next.js 16.2, turning on Cache Components also turns on [Activity](#) for route navigation. To say this [has been an issue for some](https://github.com/vercel/next.js/issues/86577) is an understatement.
+
+`<Activity/>` is an awesome component! It allows you to hide components while preserving their state. Think about all the times you have filled out a form, accidentally navigated somewhere, gone back, and the form was gone! With Cache Components turned on, that can't happen anymore, as route state is preserved auto-magically by Next.js via `<Activity/>`. The downside? Any of your third-party integrations could explode and crash your entire website.
+
+This is because of how components are taken out of the DOM (triggering cleanups) and how components are re-mounted, without triggering `useEffect` invocations.
+
+**Bottom line**: If you have third-party components (video players, maps, widgets) that aren't simple iframes, test if you can navigate away and then back to pages containing them. And if you can, make sure to try this on the slowest device you have access to.
+
+### Sticky Tags
+
+Another quirk is how the different files interact in the app directory and what this means for our cache components.
+
+When you request a page, Next.js doesn't just build the page it requests (with all of its layouts, templates, and parallel pages), it also builds the corresponding [not-found.tsx](#). You might have noticed this already if you regularly watch your terminal while loading pages, as traces of building the "404 page" are often shown there.
+
+This makes sense if you think about serving something to the user, as fast as possible. Building the 404 page preemptively means we don't need to block the request even longer if we end up bailing to the 404 page.
+
+This sadly means all of the tags used in our `not-found.tsx` are also leaking into the corresponding route. So expect tags specifically for the `not-found.tsx` to be associated with all pages that would bail to it.
+
+```
+- /[[...slug]]/page.tsx
+  - Module X..Z // maybe any of these
+
+- /[[...slug]]/not-found.tsx
+  - Module A
+  - Module B
+
+// Every page under `[[...slugs]]` has at least `Module A` & `Module B` as dependencies
+```
+
+Looking [at the source code](https://github.com/vercel/next.js/blob/a6782fa6203183cc25a616b89c03f12141e8678d/packages/next/src/server/app-render/create-component-tree.tsx#L236), I suspect the same is true for the newly added [Forbidden](#) & [Unauthorized](#) pages. This does not apply to [error.tsx](https://nextjs.org/docs/app/api-reference/file-conventions/error) as that is client-side, so not a Cache Component.
+
+### Which directive to choose
+
+With Cache Components, Next.js added three new directives, two of which are important for us: ["use cache"](#) and ["use cache: remote"](#). These look similar because they are, as they both act as cache indicators for Next.js.
+
+However, just `"use cache"` is often mistaken for `"use cache:remote"`. The `"use cache"` directive caches the result in memory, so in a serverless environment the cache is lost when the instance gets torn down and spins up again later. With `"use cache: remote"`, the cache is persisted in some external store (thus the "remote").
+
+There are also platform-specific quirks. For instance, on Vercel, the `"use cache: remote"` directive does persist caches across instances, but not across regions. So a request from `fra1` and later another one from `dub1` will each initially incur a cache MISS, instead of being able to reuse the `fra1` result in `dub1`.
+
+If you're on Vercel, think of `"use cache"` as something you'd use if you wanted to cache short-lived but important data that will be accessed in bursts. **Example:** A user visits the site and sees content specific to them in multiple places. They quickly navigate through many pages, hitting the same instance (and thus cache) in succession. The benefit isn't just that no request needed to be made to the origin API. Rather, the benefit is that no external source had to be hit at all, because the data was already in memory (as the same instance was hit).
+
+If the same user were to visit once every hour, we might incur a cache MISS each time, as the instance that previously cached the result could have been torn down. With `"use cache: remote"` (given we set the correct `cacheLife`), we will get a cache HIT each time. Each invocation will incur a bit of latency though, as we need to request the data from Vercel's CDN first.
+
+<Note.Frame variant="ghost">
+    <Note.Header>
+        <Note.Headline>Types of Caches</Note.Headline>
+    </Note.Header>
+    <Note.Body>
+        Funnily enough, Vercel uses a cache called [Runtime
+        Cache](https://vercel.com/docs/caching/runtime-cache) for `"use cache: remote"`, you can
+        check your usage under `Observability > Runtime Cache > Runtime Cache`.
+    </Note.Body>
+</Note.Frame>
+
+## Final thoughts
+
+We finally have an idiomatic way of controlling caching in Next.js. While some sharp edges remain, the resulting interface is damn impressive. I especially love the granularity we got. What previously only worked on a route level now works on a component level. Awesome! With it comes complexity, but I welcome it! Caching is complex, so having a cohesive system that, while intricate, makes the complexity managable is exactly what I want.
+
+Plan in extra time to tinker with prototypes and enjoy (:
