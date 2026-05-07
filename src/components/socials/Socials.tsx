@@ -1,17 +1,28 @@
-import { FC } from "react";
-import { Link } from "../shared/link/Link";
+import { External } from "./External";
+import { Frame } from "./Frame";
+import { Internal } from "./Internal";
 
-export const Socials: FC = () => (
-    <ul className="flex flex-row gap-2 text-white">
-        <li>
-            <Link href="https://github.com/marlonschlosshauer" inNewTab>
-                Github
-            </Link>
-        </li>
-        <li>
-            <Link href="https://twitter.com/kehrin" inNewTab>
-                Twitter
-            </Link>
-        </li>
-    </ul>
+const Complete = () => (
+    <Frame>
+        <Internal />
+        <External />
+    </Frame>
 );
+
+const Internal_ = () => (
+    <Frame>
+        <External />
+    </Frame>
+);
+
+const External_ = () => (
+    <Frame>
+        <External />
+    </Frame>
+);
+
+export const Socials = {
+    Complete: Complete,
+    Internal: Internal_,
+    External: External_,
+};

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, useSyncExternalStore } from "react";
+import React, { useState } from "react";
 
 export interface AuthorDateProps {
     date: string;
