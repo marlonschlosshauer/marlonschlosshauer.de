@@ -31,8 +31,8 @@ const components: MDXComponents = {
     p: (props: ParagraphProps) => (
         <p className="leading-snug my-6 text-white-alt selection:text-white" {...props} />
     ),
-    ol: (props: ListProps) => <ol className={`list-["-"]`} {...props} />,
-    ul: (props: ListProps) => <ol className="list-decimal" {...props} />,
+    ul: (props: ListProps) => <ol className={`list-["-"]`} {...props} />,
+    ol: (props: ListProps) => <ol className="list-decimal" {...props} />,
     em: (props: ComponentPropsWithoutRef<"em">) => <em className="font-medium" {...props} />,
     strong: (props: ComponentPropsWithoutRef<"strong">) => (
         <strong className="font-medium text-white" {...props} />
