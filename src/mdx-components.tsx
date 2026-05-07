@@ -19,7 +19,7 @@ const components: MDXComponents = {
         </Anchor>
     ),
     h3: (props: HeadingProps) => (
-        <Anchor className="mt-8 my-3">
+        <Anchor className="my-2">
             <h3 className="font-semibold text-md" {...props} />
         </Anchor>
     ),
