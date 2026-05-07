@@ -14,12 +14,12 @@ type BlockquoteProps = ComponentPropsWithoutRef<"blockquote">;
 const components: MDXComponents = {
     h1: (props: HeadingProps) => <h1 className="font-semibold mb-8 text-2xl" {...props} />,
     h2: (props: HeadingProps) => (
-        <Anchor className=" mt-8 my-3">
+        <Anchor className="mt-8 my-3">
             <h2 className="font-semibold text-xl" {...props} />
         </Anchor>
     ),
     h3: (props: HeadingProps) => (
-        <Anchor className=" mt-8 my-3">
+        <Anchor className="mt-8 my-3">
             <h3 className="font-semibold text-md" {...props} />
         </Anchor>
     ),
