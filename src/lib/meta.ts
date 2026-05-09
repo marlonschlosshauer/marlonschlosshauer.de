@@ -5,7 +5,12 @@ export const buildMetadata = ({
     description,
     date,
     tags,
-}: Partial<{ title: string; description: string; date: string; tags: string[] }>): Metadata => {
+}: Partial<{
+    title: string;
+    description: string;
+    date: string;
+    tags: string[];
+}>): Metadata => {
     return {
         title,
         description,
