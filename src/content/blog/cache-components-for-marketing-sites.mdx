@@ -108,6 +108,17 @@ Crucially, the cache for Module X is kept intact. It only updates Module Y! That
 
 Contrast this to the previous mental model: Once a route is static, it is your job to figure out how to resolve that. You would have to set a revalidation time manually on that route, which would need to match the 2-hour interval that you wanted. Then you would have to set the caches up with [unstable_cache](https://nextjs.org/docs/app/api-reference/functions/unstable_cache) (with revalidation time). You need to manually calculate the lowest revalidation time and pray that there aren't any race conditions or conflicts with your shortest cache time.
 
+<Note.Frame variant="ghost">
+    <Note.Header>
+        <Note.Headline>Note</Note.Headline>
+    </Note.Header>
+    <Note.Body>
+        It is important to note that [the nesting of Cache
+        Components](https://nextjs.org/docs/app/api-reference/functions/cacheLife#nested-caching-behavior)
+        can influence this behavior!
+    </Note.Body>
+</Note.Frame>
+
 With the new caching semantic, that connection between intervals and routes is made automatically, making it much easier to set up caching. However, our todo list isn't only used for revalidation intervals; it is also used for tags!
 
 ## The Magic of Tags
