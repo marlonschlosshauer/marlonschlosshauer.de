@@ -19,7 +19,7 @@ export const Link: FC<PropsWithChildren<PropsWithClassName<LinkProps>>> = ({
             rel={inNewTab ? "noopener noreferrer" : undefined}
             {...props}
             className={clsx(
-                "underline decoration-primary hover:decoration-primary-alt transition-[text-decoration-color] duration-300 text-white",
+                "underline decoration-primary hover:decoration-black-alt hover:text-white-alt transition-colors duration-300 text-white",
                 className
             )}>
             {children}

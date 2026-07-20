@@ -28,8 +28,11 @@ export const Designs = () => {
         <ul>
             {metadatas.map(({ label, date, href }, key) => (
                 <li key={key} className="flex">
-                    <Link href={href} className="flex flex-row items-center gap-1" inNewTab>
-                        {date} {label}
+                    <Link href={href} className="group flex gap-2">
+                        <span className="text-white-alt underline decoration-black mr-2 group-hover:text-white transition-colors duration-300">
+                            {new Date(date).getFullYear()}
+                        </span>
+                        <span>{label}</span>
                     </Link>
                 </li>
             ))}

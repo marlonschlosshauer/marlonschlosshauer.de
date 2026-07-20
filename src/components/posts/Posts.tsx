@@ -26,14 +26,19 @@ export const Posts = async () => {
                     .toReversed()
                     .map((post, key) => (
                         <li key={key} className="flex">
-                            <Link href={post.href}>
-                                {new Date(post.date).getFullYear()} {post.title}
-                                {post.favorite && (
-                                    <Star
-                                        aria-hidden
-                                        className="inline w-[12px] h-[12px] text-primary-alt ml-1"
-                                    />
-                                )}
+                            <Link href={post.href} className="group flex gap-2">
+                                <span className="text-white-alt underline decoration-black mr-2 group-hover:text-white transition-colors duration-300">
+                                    {new Date(post.date).getFullYear()}
+                                </span>
+                                <span>
+                                    {post.title}
+                                    {post.favorite && (
+                                        <Star
+                                            aria-label="Featured post"
+                                            className="inline w-[12px] h-[12px] text-primary-alt ml-1 transition-colors group-hover:text-black-alt"
+                                        />
+                                    )}
+                                </span>
                             </Link>
                         </li>
                     ))}
