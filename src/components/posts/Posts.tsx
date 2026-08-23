@@ -1,7 +1,7 @@
 import { Star } from "@/icons/Star";
 import { getBlogPosts } from "@/lib/mdx";
-import { Link } from "../shared/link/Link";
 import { StructuredData } from "../shared/structuredData/StructuredData";
+import { PostPreviewLink } from "./PostPreviewLink";
 
 export const Posts = async () => {
     const metadatas = await getBlogPosts();
@@ -24,9 +24,14 @@ export const Posts = async () => {
                 {metadatas
                     .sort((a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf())
                     .toReversed()
-                    .map((post, key) => (
-                        <li key={key} className="flex">
-                            <Link href={post.href} className="group flex gap-2">
+                    .map(post => (
+                        <li key={post.slug} className="flex">
+                            <PostPreviewLink
+                                href={post.href}
+                                slug={post.slug}
+                                title={post.title}
+                                description={post.description}
+                                className="group flex gap-2">
                                 <span className="text-white-alt underline decoration-black mr-2 group-hover:text-white transition-colors duration-300">
                                     {new Date(post.date).getFullYear()}
                                 </span>
@@ -39,7 +44,7 @@ export const Posts = async () => {
                                         />
                                     )}
                                 </span>
-                            </Link>
+                            </PostPreviewLink>
                         </li>
                     ))}
             </ul>
