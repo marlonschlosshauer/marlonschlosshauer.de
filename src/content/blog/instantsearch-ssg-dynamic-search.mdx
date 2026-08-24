@@ -1,5 +1,5 @@
-import { Disclaimer } from "@/components/blog/demo/instantsearch-ssg-dynamic-search/Disclaimer";
 import { Meta } from "@/components/blog/meta/Meta";
+import { Note } from "@/components/shared/note/server";
 
 export const metadata = {
     title: "Optimizing InstantSearch for SSG (Deprecated)",
@@ -16,7 +16,18 @@ export const metadata = {
 
 InstantSearch offers a lot of functionality out of the box, but support for different rendering strategies feels like an afterthought. [react-instantsearch](https://www.npmjs.com/package/react-instantsearch) allows you to do traditional CSR. [react-instantsearch-nextjs](https://www.npmjs.com/package/react-instantsearch-nextjs) allows you to do SSR. But what about SSG? The docs [mention SSG](https://www.algolia.com/doc/guides/building-search-ui/going-further/server-side-rendering/react#static-site-generation-with-dynamic-route-segments), but at the expense of saving state into the URL (or other things). And that is just one of many gotchas that are attached to each implementation.
 
-<Disclaimer />
+<Note.Frame variant="secondary">
+    <Note.Header>
+        <Note.Headline>Disclaimer</Note.Headline>
+    </Note.Header>
+    <Note.Body>
+        This approach ended up not shipping as it had many subtle issues with Next.js (particularly
+        with navigation). Instead of continuing with <code>react-instantsearch-nextjs</code> we
+        decided to throw Claude at the problem; creating a version that mirrors the surface API of
+        InstantSearch but works in a React-idiomatic way. That ended up shipping and was a complete
+        success!
+    </Note.Body>
+</Note.Frame>
 
 ## Problems & Motivation
 
@@ -280,10 +291,10 @@ export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProp
             }, 0);
         }
 
-		return () => {
-			canReadUrl = false;
-			canPushUrl = false;
-		}
+        return () => {
+            canReadUrl = false;
+            canPushUrl = false;
+        };
     }, []);
 
     const customRouting: InstantSearchNextRouting<UiState, UiState> = {
@@ -295,9 +306,7 @@ export const DynamicInstantSearch: FC<PropsWithChildren<DynamicInstantSearchProp
                 }
 
                 // Server fallback
-                return new URL(
-                    `${process.env.NEXT_PUBLIC_APP_URL}/${url}`
-                ) as unknown as Location;
+                return new URL(`${process.env.NEXT_PUBLIC_APP_URL}/${url}`) as unknown as Location;
             },
             start() {},
             push(url) {
