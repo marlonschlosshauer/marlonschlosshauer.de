@@ -29,6 +29,19 @@ src
 
 We want to show a not-found page in the relevant language. We browse the documentation for [not-found.js](https://nextjs.org/docs/app/api-reference/file-conventions/not-found) and quickly realize that we can't just place the `not-found.tsx` under `[locale]/[[...slug]]`, because it does not receive any dynamic segments (i.e. `locale`) like a [page.tsx](https://nextjs.org/docs/app/getting-started/layouts-and-pages#creating-a-dynamic-segment) would. What now?
 
+<Note.Frame variant="secondary">
+    <Note.Header>
+        <Note.Headline>Update</Note.Headline>
+    </Note.Header>
+    <Note.Body>
+        The Next.js team added an experimental feature called
+        [root-params](https://nextjs.org/docs/app/api-reference/functions/next-root-params) which
+        makes this a non-issue! [Here is an article by Aurora
+        Scharff](https://aurorascharff.no/posts/implementing-nextjs-16-use-cache-with-next-intl-internationalization/#update-nextroot-params-is-here-nextjs-162)
+        showing how use this new feature.
+    </Note.Body>
+</Note.Frame>
+
 ## Hitting a dead end
 
 Okay, no big deal. We want things to be static, so we just create dedicated routes for every locale and throw a `not-found.tsx` in each. Our modified setup would look like this:
