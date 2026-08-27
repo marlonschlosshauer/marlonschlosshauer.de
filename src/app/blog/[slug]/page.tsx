@@ -15,7 +15,8 @@ export interface PostProps {
 
 export const generateMetadata = async ({ params }: PostProps): Promise<Metadata> => {
     const { slug } = await params;
-    const { metadata } = await import(`@/content/blog/${slug}.mdx`);
+
+    const { metadata } = await import(`@/content/blog/${slug}.mdx`).catch(() => notFound());
 
     if (!metadata) {
         return {};
@@ -26,7 +27,10 @@ export const generateMetadata = async ({ params }: PostProps): Promise<Metadata>
 
 export default async function Post({ params }: PostProps) {
     const { slug } = await params;
-    const { default: Post, metadata } = await import(`@/content/blog/${slug}.mdx`);
+
+    const { default: Post, metadata } = await import(`@/content/blog/${slug}.mdx`).catch(() =>
+        notFound()
+    );
 
     if (!Post) {
         notFound();
