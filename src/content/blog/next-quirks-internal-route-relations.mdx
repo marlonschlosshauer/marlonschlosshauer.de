@@ -1,0 +1,60 @@
+import { Meta } from "@/components/blog/meta/Meta";
+import { Note } from "@/components/shared/note/server";
+
+export const metadata = {
+    title: "Next.js Quirks: Internal Route Relations",
+    description: "How speculative rendering affects cache tags in the Next.js App Router",
+    date: "2026-08-27",
+    words: 500,
+    tags: ["next.js", "app-router"],
+};
+
+# Next.js Quirks: Internal Route Relations
+
+<Meta {...metadata} />
+
+Have you ever wondered why your debug logs show that Next.js renders your `not-found.tsx`, despite you receiving the correct `page.tsx`? Or maybe you have adopted Cache Components and noticed that your `page.tsx` has way more cache tags attached to it than you anticipated? The reason is actually simple: Next.js renders not just the page, but other outcomes too (and passes them to the client as fallbacks).
+
+Imagine you're halfway through rendering a heavy `page.tsx`. Seconds have already passed! Suddenly you find out that the requested content is gone and you now need to display the not-found page. To avoid delaying the result any further, Next.js has already rendered (or begun rendering) the associated `not-found.tsx` page. This speculative rendering also applies to the newly added [forbidden.tsx](https://nextjs.org/docs/app/api-reference/functions/forbidden) and [unauthorized.tsx](https://nextjs.org/docs/app/api-reference/functions/unauthorized).
+
+If you're brave enough, you can check this out yourself by visiting the `createComponentTreeInternal` function in [create-component-tree.tsx](https://github.com/vercel/next.js/blob/3d85af96be3953a336e887a665d74f021eed443f/packages/next/src/server/app-render/create-component-tree.tsx#L128). The code is very complex, so I won't go into detail. I'll instead point you to one of the biggest smoking guns: [L507-530](https://github.com/vercel/next.js/blob/3d85af96be3953a336e887a665d74f021eed443f/packages/next/src/server/app-render/create-component-tree.tsx#L507-L530).
+
+```tsx
+const [notFoundElement, notFoundFilePath] = await createBoundaryConventionElement({
+    ctx,
+    conventionName: "not-found",
+    Component: NotFound,
+    styles: notFoundStyles,
+    tree,
+});
+
+const [forbiddenElement] = await createBoundaryConventionElement({
+    ctx,
+    conventionName: "forbidden",
+    Component: Forbidden,
+    styles: forbiddenStyles,
+    tree,
+});
+
+const [unauthorizedElement] = await createBoundaryConventionElement({
+    ctx,
+    conventionName: "unauthorized",
+    Component: Unauthorized,
+    styles: unauthorizedStyles,
+    tree,
+});
+```
+
+AFAIK Next.js recursively walks the relevant parts of your app directory to produce the result for the request, so the `createComponentTreeInternal` function is called multiple times with different files.
+
+At the start, I mentioned Cache Components. They're also affected by this mechanism. Next.js associates all tags used to produce a result with that specific render pass. If you're using a Cache Component in `not-found.tsx`, those tags are also associated with the corresponding `page.tsx` (and vice versa). Having a `not-found.tsx` with the tag `foo` high up in the app directory means all `page.tsx` files below it will have the tag `foo` attached. If you invalidate the tag `foo` (to update your `not-found.tsx`), all of those `page.tsx` files will also be marked as `STALE`, potentially causing unwanted computation. This is especially expensive if you have a lot of dynamic segments!
+
+<Note.Frame variant="secondary">
+    <Note.Body>
+        If you deploy to Vercel, check the Logs section; each request has its associated
+        cache tags attached. This makes it easy to spot anomalies. Furthermore, you can revalidate cache entries under CDN and check the logs for `STALE` requests.
+    </Note.Body>
+
+</Note.Frame>
+
+If you want to learn about another niche Next.js quirk that relates to the app directory, I have [previously written](/blog/next-quirks-not-found-scoped-routes) about how `not-found.tsx` routes are actually scoped to their position in the app directory (and not the URL) and what this means for composition.
