@@ -1,0 +1,138 @@
+import { Meta } from "@/components/blog/meta/Meta";
+
+export const metadata = {
+    title: "Building an agent for job hunting",
+    description:
+        "Going through dozens of job listings can be a pain - So let the robots do it! Using eve to build a job hunting agent.",
+    date: "2026-08-30",
+    words: 1200,
+    tags: ["eve"],
+};
+
+# Building an agent for job hunting
+
+<Meta {...metadata} />
+
+I recently handed in my letter of resignation. On my quest to push agents further, I wanted to see how easy (and helpful) an agent would be at finding job offerings that actually fit me.
+
+Unsurprisingly, it was trivial! I created a new [Eve project](https://eve.dev) and asked GPT-5.6 Sol to build the agent. Some minor tweaking later and the first results came in! Let's explore my process together.
+
+## Deciding on a channel
+
+When building agents, the surface through which I consume the agent is always my starting point. While yes, you can add multiple channels, usually the way I want to interact with the agent informs its capabilities and purpose. I could integrate this agent into Slack, but I don't use Slack in my personal life. Notion is an interesting idea as it could use Notion's database feature, too. This agent will run unprompted, on a schedule. It should do the work for me, I just want to collect its findings. As such email is what I ended up going with, as it is already embedded into my daily routine, meaning I don't need a separate client to keep an eye on or maintain some web UI.
+
+To get the agent off the ground quicker, I decided to hold off on actually using email as a channel. Instead, I will use the agent in a headless configuration (i.e., no channel at all) and a schedule that sends me the results by email. In the future, I could expand on this by setting up [Resend as my channel provider](https://eve.dev/integrations/chat-sdk-resend), letting me follow up on specific leads by sending a reply.
+
+## Orchestration
+
+Knowing that I want to execute this job on a schedule, I decided to have a main agent for orchestration and a subagent for research. With Eve, you can run subagents in parallel, so I can visit all relevant sites at the same time. The main agent knows about me and about all the sites I want to be monitored. The subagent gets one of these sites and uses the [agent-browser](https://github.com/vercel-labs/agent-browser/blob/main/packages/@agent-browser/eve/README.md) to visit and interact with them. Finally, the main agent has a tool to send an email based on leads.
+
+Here is the resulting agent folder:
+
+```
+- agent.ts
+- instructions.md
+- channels
+  - eve.ts
+- schedules
+  - job-investigation.md
+- tools
+  - send-job-digest.ts
+- subagents
+  - job-source
+	- agent.ts
+	- instructions.md
+	- extensions
+		- browser.ts
+```
+
+## Details
+
+This being tailored to me, I decided to include my search prompt in the `instructions.md` for both agents. Additionally, by defining an output schema on the subagent, I can make sure it doesn't return garbage (and we can reuse the same schema as the input for the send tool).
+
+```ts
+export default defineAgent({
+    description:
+        "Search one specified job site for current frontend product-engineering roles that fit the candidate. Call this subagent independently for each source.",
+    model: "zai/glm-5.2",
+    outputSchema: z.object({
+        leads: z.array(leadSchema).max(8),
+    }),
+});
+```
+
+To send the leads to my inbox, I use Resend. I have previously used Resend to integrate email as an entire channel, which was both easy and mind-blowing. Here I just use their SDK to send an email via their provided `foo@resend.dev` domain.
+
+```ts
+// can you guess which LLM wrote this? (fable would never lol)
+export default defineTool({
+    description:
+        "Send the final plain-text job-lead digest to the configured personal email. Call exactly once after an investigation.",
+    inputSchema: z.object({
+        leads: z.array(leadSchema).max(20),
+    }),
+    async execute({ leads }) {
+        const apiKey = process.env.RESEND_API_KEY!;
+        const from = process.env.RESEND_FROM!;
+        const to = process.env.RESEND_TO!;
+        const utcDate = new Date().toISOString().slice(0, 10);
+        const text = leads.length
+            ? leads
+                  .map(({ title, company, url, description, location, fitScore, concerns }) =>
+                      [
+                          `${title} — ${company}`,
+                          url,
+                          description,
+                          `Location: ${location}`,
+                          `Fit: ${fitScore}/10`,
+                          concerns.length ? `Concerns: ${concerns.join("; ")}` : null,
+                      ]
+                          .filter(line => line !== null)
+                          .join("\n")
+                  )
+                  .join("\n\n")
+            : "No strong, verifiable job leads were found in this investigation.";
+        const digestHash = createHash("sha256")
+            .update(JSON.stringify(leads))
+            .digest("hex")
+            .slice(0, 24);
+        const resend = new Resend(apiKey);
+        const { data, error } = await resend.emails.send(
+            {
+                from,
+                to: [to],
+                subject: `Job leads — ${utcDate}`,
+                text,
+            },
+            { idempotencyKey: `job-digest-${utcDate}-${digestHash}` }
+        );
+
+        if (error) throw new Error(`Resend could not send the job digest: ${error.message}`);
+        return { sent: true, emailId: data?.id ?? null, leadCount: leads.length };
+    },
+});
+```
+
+The main agent gets triggered on a schedule with a simple prompt to start the investigation. The only channel being `eve` means there is no other way to trigger the agent (either maliciously or accidentally).
+
+```md
+---
+cron: "0 7 * * *"
+---
+
+This is the daily scheduler tick for the private job search. Follow the scheduled-investigation procedure exactly: run the complete parallel job investigation and send the resulting digest with `send_job_digest`.
+```
+
+## Results
+
+I was happily surprised to see the agent's email pop up in my inbox this morning. To be honest, I wasn't sure when to expect it. The results are strong. It even found some that I was previously looking at. All candidates resemble what I am looking for (to some degree, at least), so the agent is well aligned! Aside from the title, company, and URL, all 13 candidates also have a short description of why they are a good fit and a note on possible concerns (I am a picky person). As a quick prototype, this is definitely a success!
+
+## Improvements
+
+There is a lot that can be improved. Firstly, there is no mechanism to deduplicate leads. So if I ran this lead generation every day, the chance of me getting the same leads again is very high. Having some form of persistence would be necessary to make this a real product.
+
+Cost is also something that can be improved. This initial run cost over $5, running for ~15 minutes and making >300 requests.
+
+Lastly, while not that important, being able to follow up would be nice to have.
+
+I have thought a lot about what can be done with continuation tokens for another agent. If we can somehow use the continuation token to continue a session on a schedule, then we have some basic persistence through [state](https://eve.dev/docs/concepts/state), which we can use to dedupe the leads. Furthermore, we could keep track of continuation tokens for the subagents. This is very powerful, as it would allow us to resurrect a subagent with knowledge of a specific lead. There are some powerful patterns that this can enable. For example, if we can encode the continuation token in the email (think `MgW40aP2yc2mOZpbGZ-agent@resend.dev`), we can have long-term email conversations with subagents, all without any additional services like a database.
