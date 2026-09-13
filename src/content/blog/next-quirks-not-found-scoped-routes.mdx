@@ -1,4 +1,5 @@
 import { Meta } from "@/components/blog/meta/Meta";
+import { Quirks } from "@/components/blog/quirks/Quirks";
 import { Note } from "@/components/shared/note/server";
 
 export const metadata = {
@@ -146,3 +147,5 @@ The obvious downside is that if we have many locales, this becomes annoying to s
         also only observed this behavior once deployed to Vercel, not locally!
     </Note.Body>
 </Note.Frame>
+
+<Quirks title={metadata.title} />

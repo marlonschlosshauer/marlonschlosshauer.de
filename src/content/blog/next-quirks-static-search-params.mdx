@@ -1,4 +1,5 @@
 import { Meta } from "@/components/blog/meta/Meta";
+import { Quirks } from "@/components/blog/quirks/Quirks";
 
 export const metadata = {
     title: "Next.js Quirks: useSearchParams in Static Pages",
@@ -142,3 +143,5 @@ export const Foo: FC<BlogPostOverviewProps> = props => {
 The trick is simple: By moving the state management out of our rendering, we're free to use it to render our default state.
 
 So by leveraging simple composition, we managed to fix the hole in our page without any compromises. In fact, by splitting our component into pure rendering and implementation-specific code, we also made it more reusable!
+
+<Quirks title={metadata.title} />

@@ -1,4 +1,5 @@
 import { Meta } from "@/components/blog/meta/Meta";
+import { Quirks } from "@/components/blog/quirks/Quirks";
 import { Note } from "@/components/shared/note/server";
 
 export const metadata = {
@@ -58,3 +59,5 @@ At the start, I mentioned Cache Components. They're also affected by this mechan
 </Note.Frame>
 
 If you want to learn about another niche Next.js quirk that relates to the app directory, I have [previously written](/blog/next-quirks-not-found-scoped-routes) about how `not-found.tsx` routes are actually scoped to their position in the app directory (and not the URL) and what this means for composition.
+
+<Quirks title={metadata.title} />
