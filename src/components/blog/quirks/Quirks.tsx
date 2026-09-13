@@ -13,8 +13,8 @@ export const Quirks = async ({ title }: QuirksProps) => {
 
     return (
         <section className="mb-8">
-            <Anchor>
-                <h2 className="mt-8 mb-3 font-semibold text-xl">Related posts</h2>
+            <Anchor className="mt-8 mb-3">
+                <h2 className="font-semibold text-xl">Related posts</h2>
             </Anchor>
             <ul className={`list-["-"]`}>
                 {quirks.map(quirk => (
